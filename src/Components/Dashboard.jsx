@@ -271,7 +271,9 @@ export default function Dashboard() {
                         <a
                           href="#"
                           className={classNames(
-                            active ? "bg-pink-500 text-white" : "text-gray-700",
+                            active
+                              ? "bg-orange-500 text-white"
+                              : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
                         >
@@ -284,7 +286,9 @@ export default function Dashboard() {
                         <a
                           href="#"
                           className={classNames(
-                            active ? "bg-cyan-400 text-white" : "text-gray-700",
+                            active
+                              ? "bg-orange-500 text-white"
+                              : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
                         >
@@ -298,7 +302,7 @@ export default function Dashboard() {
                           href="#"
                           className={classNames(
                             active
-                              ? "bg-orange-400 text-white"
+                              ? "bg-orange-500 text-white"
                               : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
@@ -314,7 +318,9 @@ export default function Dashboard() {
                         <a
                           href="#"
                           className={classNames(
-                            active ? "bg-lime-500 text-white" : "text-gray-700",
+                            active
+                              ? "bg-orange-500 text-white"
+                              : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
                         >
@@ -329,7 +335,9 @@ export default function Dashboard() {
                         <a
                           href="#"
                           className={classNames(
-                            active ? "bg-red-600 text-white" : "text-gray-700",
+                            active
+                              ? "bg-orange-500 text-white"
+                              : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
                         >
@@ -374,7 +382,7 @@ export default function Dashboard() {
                     href={item.href}
                     className={classNames(
                       item.current
-                        ? "bg-gray-200 text-gray-900"
+                        ? "bg-orange-500 text-white"
                         : "text-gray-700 hover:bg-gray-50 hover:text-gray-900",
                       "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
                     )}
@@ -383,7 +391,7 @@ export default function Dashboard() {
                     <item.icon
                       className={classNames(
                         item.current
-                          ? "text-gray-500"
+                          ? "text-white"
                           : "text-gray-400 group-hover:text-gray-500",
                         "mr-3 h-6 w-6 flex-shrink-0"
                       )}
@@ -645,7 +653,7 @@ export default function Dashboard() {
                         </p>
                       </div>
                       <Menu as="div" className="flex-shrink-0 pr-2">
-                        <Menu.Button className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                        <Menu.Button className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
                           <span className="sr-only">Open options</span>
                           <EllipsisVerticalIcon
                             className="h-5 w-5"
