@@ -130,7 +130,7 @@ export default function Dashboard() {
                     <div className="absolute right-0 top-0 -mr-12 pt-2">
                       <button
                         type="button"
-                        className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                        className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500"
                         onClick={() => setSidebarOpen(false)}
                       >
                         <span className="sr-only">Close sidebar</span>
@@ -157,7 +157,7 @@ export default function Dashboard() {
                             href={item.href}
                             className={classNames(
                               item.current
-                                ? "bg-gray-100 text-gray-900"
+                                ? "bg-orange-500 text-white"
                                 : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                               "group flex items-center rounded-md px-2 py-2 text-base font-medium leading-5"
                             )}
@@ -166,7 +166,7 @@ export default function Dashboard() {
                             <item.icon
                               className={classNames(
                                 item.current
-                                  ? "text-gray-500"
+                                  ? "text-white"
                                   : "text-gray-400 group-hover:text-gray-500",
                                 "mr-3 h-6 w-6 flex-shrink-0"
                               )}
@@ -354,21 +354,18 @@ export default function Dashboard() {
               <label htmlFor="search" className="sr-only">
                 Search Events
               </label>
-              <div className="relative mt-1 rounded-md shadow-sm">
+              <div className="relative mt-1 rounded-md shadow-sm focus-within:text-orange-500 focus-within:caret-orange-500">
                 <div
                   className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
                   aria-hidden="true"
                 >
-                  <MagnifyingGlassIcon
-                    className="h-4 w-4 text-gray-400"
-                    aria-hidden="true"
-                  />
+                  <MagnifyingGlassIcon className="h-4 w-4" aria-hidden="true" />
                 </div>
                 <input
                   type="text"
                   name="search"
                   id="search"
-                  className="block w-full rounded-md border-0 py-1.5 pl-9 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 pl-9 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 text-black focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
                   placeholder="Search Events"
                 />
               </div>
@@ -441,7 +438,7 @@ export default function Dashboard() {
           <div className="sticky top-0 z-10 flex h-16 flex-shrink-0 border-b border-gray-200 bg-white lg:hidden">
             <button
               type="button"
-              className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 lg:hidden"
+              className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500 lg:hidden"
               onClick={() => setSidebarOpen(true)}
             >
               <span className="sr-only">Open sidebar</span>
@@ -474,11 +471,11 @@ export default function Dashboard() {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
-                    <Menu.Button className="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                    <Menu.Button className="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        src="https://cdn.mos.cms.futurecdn.net/kXUihcLa33aC96RgbUpX6a-1920-80.png"
                         alt=""
                       />
                     </Menu.Button>
@@ -500,7 +497,7 @@ export default function Dashboard() {
                               href="#"
                               className={classNames(
                                 active
-                                  ? "bg-gray-100 text-gray-900"
+                                  ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
@@ -515,7 +512,7 @@ export default function Dashboard() {
                               href="#"
                               className={classNames(
                                 active
-                                  ? "bg-gray-100 text-gray-900"
+                                  ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
@@ -530,7 +527,7 @@ export default function Dashboard() {
                               href="#"
                               className={classNames(
                                 active
-                                  ? "bg-gray-100 text-gray-900"
+                                  ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
@@ -547,7 +544,7 @@ export default function Dashboard() {
                               href="#"
                               className={classNames(
                                 active
-                                  ? "bg-gray-100 text-gray-900"
+                                  ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
@@ -562,7 +559,7 @@ export default function Dashboard() {
                               href="#"
                               className={classNames(
                                 active
-                                  ? "bg-gray-100 text-gray-900"
+                                  ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
@@ -579,7 +576,7 @@ export default function Dashboard() {
                               href="#"
                               className={classNames(
                                 active
-                                  ? "bg-gray-100 text-gray-900"
+                                  ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
@@ -791,8 +788,9 @@ export default function Dashboard() {
                       >
                         <span className="lg:pl-2">Upcoming Events</span>
                       </th>
+                      {/* Attendees Header */}
                       <th
-                        className="border-b border-gray-200 bg-gray-50 px-6 py-3 text-left text-sm font-semibold text-gray-900"
+                        className="border-b border-gray-200 bg-gray-50 px-6 py-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap"
                         scope="col"
                         onClick={() => {
                           setAttendeesSortOrder((attendeesSortOrder + 1) % 3);
@@ -818,8 +816,10 @@ export default function Dashboard() {
                           />
                         )}
                       </th>
+                      {/* Event Date Header */}
                       <th
-                        className="hidden border-b border-gray-200 bg-gray-50 px-6 py-3 text-right text-sm font-semibold text-gray-900 md:table-cell"
+                        // className="hidden border-b border-gray-200 bg-gray-50 px-6 py-3 text-right text-sm font-semibold text-gray-900 md:table-cell"
+                        className="border-b border-gray-200 bg-gray-50 px-6 py-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap"
                         scope="col"
                         onClick={() => {
                           setEventDateSortOrder((eventDateSortOrder + 1) % 3);
