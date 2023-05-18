@@ -16,6 +16,8 @@ import {
   EllipsisVerticalIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
+import { useStytch } from "@stytch/react";
+import { useNavigate } from "react-router-dom";
 
 import ListingView from "./ListingView";
 import MapView from "./MapView";
@@ -75,11 +77,19 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Dashboard() {
+export default function Dashboard({ currentUser, setCurrentUser }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isListingView, setIsListingView] = useState(true);
   const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);
   const [eventDateSortOrder, setEventDateSortOrder] = useState(0);
+
+  const stytchClient = useStytch();
+  const navigate = useNavigate();
+
+  const logout = () => {
+    stytchClient.session.revoke();
+    navigate("/login");
+  };
 
   return (
     <>
@@ -133,7 +143,7 @@ export default function Dashboard() {
                     <div className="absolute right-0 top-0 -mr-12 pt-2">
                       <button
                         type="button"
-                        className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                        className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500"
                         onClick={() => setSidebarOpen(false)}
                       >
                         <span className="sr-only">Close sidebar</span>
@@ -160,7 +170,7 @@ export default function Dashboard() {
                             href={item.href}
                             className={classNames(
                               item.current
-                                ? "bg-gray-100 text-gray-900"
+                                ? "bg-orange-500 text-white"
                                 : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                               "group flex items-center rounded-md px-2 py-2 text-base font-medium leading-5"
                             )}
@@ -169,7 +179,7 @@ export default function Dashboard() {
                             <item.icon
                               className={classNames(
                                 item.current
-                                  ? "text-gray-500"
+                                  ? "text-white"
                                   : "text-gray-400 group-hover:text-gray-500",
                                 "mr-3 h-6 w-6 flex-shrink-0"
                               )}
@@ -244,10 +254,10 @@ export default function Dashboard() {
                       />
                       <span className="flex min-w-0 flex-1 flex-col">
                         <span className="truncate text-sm font-medium text-gray-900">
-                          Youssef Mohamed Farouk
+                          {currentUser.first_name + " " + currentUser.last_name}
                         </span>
                         <span className="truncate text-sm text-gray-500">
-                          @ymf
+                          @{currentUser.username}
                         </span>
                       </span>
                     </span>
@@ -274,7 +284,9 @@ export default function Dashboard() {
                         <a
                           href="#"
                           className={classNames(
-                            active ? "bg-pink-500 text-white" : "text-gray-700",
+                            active
+                              ? "bg-orange-500 text-white"
+                              : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
                         >
@@ -287,7 +299,9 @@ export default function Dashboard() {
                         <a
                           href="#"
                           className={classNames(
-                            active ? "bg-cyan-400 text-white" : "text-gray-700",
+                            active
+                              ? "bg-orange-500 text-white"
+                              : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
                         >
@@ -301,7 +315,7 @@ export default function Dashboard() {
                           href="#"
                           className={classNames(
                             active
-                              ? "bg-orange-400 text-white"
+                              ? "bg-orange-500 text-white"
                               : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
@@ -317,7 +331,9 @@ export default function Dashboard() {
                         <a
                           href="#"
                           className={classNames(
-                            active ? "bg-lime-500 text-white" : "text-gray-700",
+                            active
+                              ? "bg-orange-500 text-white"
+                              : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
                         >
@@ -330,11 +346,14 @@ export default function Dashboard() {
                     <Menu.Item>
                       {({ active }) => (
                         <a
-                          href="#"
+                          // href="javascript:;"
                           className={classNames(
-                            active ? "bg-red-600 text-white" : "text-gray-700",
+                            active
+                              ? "bg-orange-500 text-white"
+                              : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
+                          onClick={logout}
                         >
                           Logout
                         </a>
@@ -349,21 +368,18 @@ export default function Dashboard() {
               <label htmlFor="search" className="sr-only">
                 Search Events
               </label>
-              <div className="relative mt-1 rounded-md shadow-sm">
+              <div className="relative mt-1 rounded-md shadow-sm focus-within:text-orange-500 focus-within:caret-orange-500">
                 <div
                   className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
                   aria-hidden="true"
                 >
-                  <MagnifyingGlassIcon
-                    className="h-4 w-4 text-gray-400"
-                    aria-hidden="true"
-                  />
+                  <MagnifyingGlassIcon className="h-4 w-4" aria-hidden="true" />
                 </div>
                 <input
                   type="text"
                   name="search"
                   id="search"
-                  className="block w-full rounded-md border-0 py-1.5 pl-9 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 pl-9 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 text-black focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
                   placeholder="Search Events"
                 />
               </div>
@@ -377,7 +393,7 @@ export default function Dashboard() {
                     href={item.href}
                     className={classNames(
                       item.current
-                        ? "bg-gray-200 text-gray-900"
+                        ? "bg-orange-500 text-white"
                         : "text-gray-700 hover:bg-gray-50 hover:text-gray-900",
                       "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
                     )}
@@ -386,7 +402,7 @@ export default function Dashboard() {
                     <item.icon
                       className={classNames(
                         item.current
-                          ? "text-gray-500"
+                          ? "text-white"
                           : "text-gray-400 group-hover:text-gray-500",
                         "mr-3 h-6 w-6 flex-shrink-0"
                       )}
@@ -436,7 +452,7 @@ export default function Dashboard() {
           <div className="sticky top-0 z-10 flex h-16 flex-shrink-0 border-b border-gray-200 bg-white lg:hidden">
             <button
               type="button"
-              className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 lg:hidden"
+              className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500 lg:hidden"
               onClick={() => setSidebarOpen(true)}
             >
               <span className="sr-only">Open sidebar</span>
@@ -469,11 +485,11 @@ export default function Dashboard() {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
-                    <Menu.Button className="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                    <Menu.Button className="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        src="https://cdn.mos.cms.futurecdn.net/kXUihcLa33aC96RgbUpX6a-1920-80.png"
                         alt=""
                       />
                     </Menu.Button>
@@ -495,7 +511,7 @@ export default function Dashboard() {
                               href="#"
                               className={classNames(
                                 active
-                                  ? "bg-gray-100 text-gray-900"
+                                  ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
@@ -510,7 +526,7 @@ export default function Dashboard() {
                               href="#"
                               className={classNames(
                                 active
-                                  ? "bg-gray-100 text-gray-900"
+                                  ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
@@ -525,7 +541,7 @@ export default function Dashboard() {
                               href="#"
                               className={classNames(
                                 active
-                                  ? "bg-gray-100 text-gray-900"
+                                  ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
@@ -542,7 +558,7 @@ export default function Dashboard() {
                               href="#"
                               className={classNames(
                                 active
-                                  ? "bg-gray-100 text-gray-900"
+                                  ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
@@ -557,7 +573,7 @@ export default function Dashboard() {
                               href="#"
                               className={classNames(
                                 active
-                                  ? "bg-gray-100 text-gray-900"
+                                  ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
@@ -571,13 +587,13 @@ export default function Dashboard() {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              href="#"
                               className={classNames(
                                 active
-                                  ? "bg-gray-100 text-gray-900"
+                                  ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
+                              onClick={logout}
                             >
                               Logout
                             </a>
@@ -648,7 +664,7 @@ export default function Dashboard() {
                         </p>
                       </div>
                       <Menu as="div" className="flex-shrink-0 pr-2">
-                        <Menu.Button className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                        <Menu.Button className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
                           <span className="sr-only">Open options</span>
                           <EllipsisVerticalIcon
                             className="h-5 w-5"
