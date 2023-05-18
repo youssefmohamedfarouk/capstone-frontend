@@ -16,6 +16,8 @@ import {
   EllipsisVerticalIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
+import { useStytch } from "@stytch/react";
+import { useNavigate } from "react-router-dom";
 
 import ListingView from "./ListingView";
 import MapView from "./MapView";
@@ -75,11 +77,19 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Dashboard() {
+export default function Dashboard({ currentUser, setCurrentUser }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isListingView, setIsListingView] = useState(true);
   const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);
   const [eventDateSortOrder, setEventDateSortOrder] = useState(0);
+
+  const stytchClient = useStytch();
+  const navigate = useNavigate();
+
+  const logout = () => {
+    stytchClient.session.revoke();
+    navigate("/login");
+  };
 
   return (
     <>
@@ -244,10 +254,10 @@ export default function Dashboard() {
                       />
                       <span className="flex min-w-0 flex-1 flex-col">
                         <span className="truncate text-sm font-medium text-gray-900">
-                          Youssef Mohamed Farouk
+                          {currentUser.first_name + " " + currentUser.last_name}
                         </span>
                         <span className="truncate text-sm text-gray-500">
-                          @ymf
+                          @{currentUser.username}
                         </span>
                       </span>
                     </span>
@@ -336,13 +346,14 @@ export default function Dashboard() {
                     <Menu.Item>
                       {({ active }) => (
                         <a
-                          href="#"
+                          // href="javascript:;"
                           className={classNames(
                             active
                               ? "bg-orange-500 text-white"
                               : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
+                          onClick={logout}
                         >
                           Logout
                         </a>
@@ -576,13 +587,13 @@ export default function Dashboard() {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              href="#"
                               className={classNames(
                                 active
                                   ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
+                              onClick={logout}
                             >
                               Logout
                             </a>
