@@ -21,6 +21,11 @@ import { useNavigate } from "react-router-dom";
 
 import ListingView from "./ListingView";
 import MapView from "./MapView";
+import axios from "axios";
+import { useEffect } from "react";
+
+import LogoSVG from "../socialCircleLogo.svg";
+import EventSlideover from "./EventSlideover";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
@@ -32,7 +37,8 @@ const teams = [
   { name: "Comic Book Club", href: "#", bgColorClass: "bg-green-500" },
   { name: "Pursuit Brunch", href: "#", bgColorClass: "bg-yellow-500" },
 ];
-const events = [
+
+const eventsOld = [
   {
     id: 1,
     title: "Pursuit Meet and Greet",
@@ -71,20 +77,49 @@ const events = [
   },
   // More events...
 ];
-const pinnedEvents = events.filter((event) => event.pinned);
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Dashboard({ currentUser, setCurrentUser }) {
+export default function Dashboard({
+  currentUser,
+  setCurrentUser,
+  API,
+  session,
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isListingView, setIsListingView] = useState(true);
   const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);
   const [eventDateSortOrder, setEventDateSortOrder] = useState(0);
+  const [events, setEvents] = useState([]);
+  const [rsvpdUsers, setRSVPDUsers] = useState([]);
+  const [totalRSVPS, setTotalRSVPS] = useState([]);
+  const [slideoverOpen, setSlideoverOpen] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState([]);
+
+  const pinnedEvents = events.filter((event) => event.pinned);
 
   const stytchClient = useStytch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axios.get(`${API}/events`).then((res) => {
+      setEvents(res.data);
+    });
+    axios.get(`${API}/usersevents/firstfour`).then((res) => {
+      setRSVPDUsers(res.data);
+    });
+    axios.get(`${API}/usersevents/totalrsvps`).then((res) => {
+      setTotalRSVPS(res.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!session || !session.session_id) {
+      navigate("/login");
+    }
+  }, [session]);
 
   const logout = () => {
     stytchClient.session.revoke();
@@ -157,7 +192,7 @@ export default function Dashboard({ currentUser, setCurrentUser }) {
                   <div className="flex flex-shrink-0 items-center px-4">
                     <img
                       className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=purple&shade=500"
+                      src={LogoSVG}
                       alt="Your Company"
                     />
                   </div>
@@ -233,11 +268,7 @@ export default function Dashboard({ currentUser, setCurrentUser }) {
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-gray-200 lg:bg-gray-100 lg:pb-4 lg:pt-5">
           <div className="flex flex-shrink-0 items-center px-6">
-            <img
-              className="h-8 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=purple&shade=500"
-              alt="Social CIRCLE"
-            />
+            <img className="h-8 w-auto" src={LogoSVG} alt="Social CIRCLE" />
           </div>
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="mt-5 flex h-0 flex-1 flex-col overflow-y-auto pt-1">
@@ -779,6 +810,12 @@ export default function Dashboard({ currentUser, setCurrentUser }) {
               </ul>
             </div>
 
+            <EventSlideover
+              slideoverOpen={slideoverOpen}
+              setSlideoverOpen={setSlideoverOpen}
+              currentEvent={currentEvent}
+            />
+
             {/* events table (small breakpoint and up) */}
             <div className="mt-8 hidden sm:block">
               <div className="inline-block min-w-full border-b border-gray-200 align-middle">
@@ -796,11 +833,17 @@ export default function Dashboard({ currentUser, setCurrentUser }) {
                 {isListingView ? (
                   <ListingView
                     events={events}
+                    setEvents={setEvents}
                     classNames={classNames}
                     attendeesSortOrder={attendeesSortOrder}
                     setAttendeesSortOrder={setAttendeesSortOrder}
                     eventDateSortOrder={eventDateSortOrder}
                     setEventDateSortOrder={setEventDateSortOrder}
+                    rsvpdUsers={rsvpdUsers}
+                    totalRSVPS={totalRSVPS}
+                    setSlideoverOpen={setSlideoverOpen}
+                    currentEvent={currentEvent}
+                    setCurrentEvent={setCurrentEvent}
                   />
                 ) : (
                   <MapView />
