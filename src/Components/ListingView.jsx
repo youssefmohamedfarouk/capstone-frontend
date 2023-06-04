@@ -19,6 +19,7 @@ export default function ListingView({
   currentEvent,
   setCurrentEvent,
 }) {
+  console.log(totalRSVPS);
   return (
     <table className="min-w-full">
       <thead>
@@ -37,14 +38,24 @@ export default function ListingView({
               setEventDateSortOrder(0);
               if (attendeesSortOrder === 1) {
                 setEvents([
-                  ...events.sort(
-                    (a, b) => new Date(b.event_date) - new Date(a.event_date)
+                  ...events.sort((a, b) =>
+                    totalRSVPS.filter((event) => event.event_id === a.id)[0]
+                      .total_rsvps >
+                    totalRSVPS.filter((event) => event.event_id === b.id)[0]
+                      .total_rsvps
+                      ? -1
+                      : 1
                   ),
                 ]);
               } else if (eventDateSortOrder === 2) {
                 setEvents([
-                  ...events.sort(
-                    (a, b) => new Date(a.event_date) - new Date(b.event_date)
+                  ...events.sort((a, b) =>
+                    totalRSVPS.filter((event) => event.event_id === a.id)[0]
+                      .total_rsvps >
+                    totalRSVPS.filter((event) => event.event_id === b.id)[0]
+                      .total_rsvps
+                      ? 1
+                      : -1
                   ),
                 ]);
               }
