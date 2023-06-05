@@ -11,6 +11,7 @@ import SignUp from "./Components/SignUp";
 import "./App.css";
 import { useStytchSession } from "@stytch/react";
 import axios from "axios";
+import Example from "./Components/CreateEventSlideOver";
 
 function App() {
   const { session } = useStytchSession();
@@ -73,6 +74,17 @@ function App() {
               path="/sign-up"
               element={
                 <SignUp
+                  session={session}
+                  currentUser={currentUser}
+                  setCurrentUser={setCurrentUser}
+                />
+              }
+            />
+            <Route
+              path="/example"
+              element={
+                <Example
+                  API={API}
                   session={session}
                   currentUser={currentUser}
                   setCurrentUser={setCurrentUser}
