@@ -3,11 +3,16 @@ import {
   BarsArrowDownIcon,
   BarsArrowUpIcon,
 } from "@heroicons/react/20/solid";
+import axios from "axios";
 import { useState } from "react";
 
 export default function ListingView({
+  API,
+  currentUser,
   events,
   setEvents,
+  listingEvents,
+  setListingEvents,
   classNames,
   attendeesSortOrder,
   setAttendeesSortOrder,
@@ -18,8 +23,14 @@ export default function ListingView({
   setSlideoverOpen,
   currentEvent,
   setCurrentEvent,
+  currentUsersRSVPS,
+  setCurrentUsersRSVPS,
+  confirmationModalOpen,
+  setConfirmationModalOpen,
 }) {
-  console.log(totalRSVPS);
+  console.log(currentUsersRSVPS);
+  const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
+
   return (
     <table className="min-w-full">
       <thead>
@@ -37,8 +48,8 @@ export default function ListingView({
               setAttendeesSortOrder((attendeesSortOrder + 1) % 3);
               setEventDateSortOrder(0);
               if (attendeesSortOrder === 1) {
-                setEvents([
-                  ...events.sort((a, b) =>
+                setListingEvents([
+                  ...listingEvents.sort((a, b) =>
                     totalRSVPS.filter((event) => event.event_id === a.id)[0]
                       .total_rsvps >
                     totalRSVPS.filter((event) => event.event_id === b.id)[0]
@@ -48,8 +59,8 @@ export default function ListingView({
                   ),
                 ]);
               } else if (eventDateSortOrder === 2) {
-                setEvents([
-                  ...events.sort((a, b) =>
+                setListingEvents([
+                  ...listingEvents.sort((a, b) =>
                     totalRSVPS.filter((event) => event.event_id === a.id)[0]
                       .total_rsvps >
                     totalRSVPS.filter((event) => event.event_id === b.id)[0]
@@ -58,6 +69,8 @@ export default function ListingView({
                       : -1
                   ),
                 ]);
+              } else {
+                setListingEvents(events);
               }
             }}
           >
@@ -87,17 +100,19 @@ export default function ListingView({
               setEventDateSortOrder((eventDateSortOrder + 1) % 3);
               setAttendeesSortOrder(0);
               if (eventDateSortOrder === 1) {
-                setEvents([
-                  ...events.sort(
+                setListingEvents([
+                  ...listingEvents.sort(
                     (a, b) => new Date(b.event_date) - new Date(a.event_date)
                   ),
                 ]);
               } else if (eventDateSortOrder === 2) {
-                setEvents([
-                  ...events.sort(
+                setListingEvents([
+                  ...listingEvents.sort(
                     (a, b) => new Date(a.event_date) - new Date(b.event_date)
                   ),
                 ]);
+              } else {
+                setListingEvents(events);
               }
             }}
           >
@@ -126,7 +141,7 @@ export default function ListingView({
         </tr>
       </thead>
       <tbody className="divide-y divide-gray-100 bg-white">
-        {events?.map((event) => (
+        {listingEvents?.map((event) => (
           <tr key={event.id}>
             <td className="w-full max-w-0 whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900">
               <div className="flex items-center space-x-3 lg:pl-2">
@@ -169,7 +184,7 @@ export default function ListingView({
                       />
                     ))}
                 </div>
-                {console.log(totalRSVPS)}
+                {console.log(listingEvents)}
                 {totalRSVPS?.filter(
                   (listing) => listing.event_id === event.id
                 )[0]?.total_rsvps > 4 ? (
@@ -188,9 +203,32 @@ export default function ListingView({
             <td className="whitespace-nowrap px-6 py-3 text-right text-sm font-medium">
               <button
                 type="button"
-                className="rounded bg-orange-500 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className={
+                  currentUsersRSVPS.some((entry) => entry.event_id === event.id)
+                    ? "rounded bg-gray-400 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    : "rounded bg-orange-500 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                }
+                onClick={() => {
+                  setCurrentEvent(event);
+                  currentUsersRSVPS.some((entry) => entry.event_id === event.id)
+                    ? setConfirmationModalOpen(true)
+                    : axios
+                        .post(`${API}/usersevents/`, {
+                          user_id: currentUserId,
+                          event_id: event.id,
+                          rsvp: true,
+                        })
+                        .then((res) => {
+                          console.log(res);
+                          const tempUsersRSVPS = [...currentUsersRSVPS];
+                          tempUsersRSVPS.push(res.data);
+                          setCurrentUsersRSVPS(tempUsersRSVPS);
+                        });
+                }}
               >
-                RSVP
+                {currentUsersRSVPS.some((entry) => entry.event_id === event.id)
+                  ? `RSVP'D`
+                  : `RSVP`}
               </button>
             </td>
           </tr>
