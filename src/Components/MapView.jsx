@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { GoogleMap, useLoadScript, MarkerF } from "@react-google-maps/api";
 import usePlacesAutocomplete, {
   getGeocode,
@@ -6,7 +6,7 @@ import usePlacesAutocomplete, {
 } from "use-places-autocomplete";
 import { Combobox } from "@headlessui/react";
 
-export default function MapView() {
+export default function MapView({isLoaded}) {
   
   const [selected, setSelected] = useState({ lat: 40.7127753, lng: -74.0059728 });
   const center = useMemo(() => (selected ), []);
@@ -16,11 +16,12 @@ export default function MapView() {
     height: "550px",
   };
 
-  const { isLoaded } = useLoadScript({
-    id: "google-map-script",
-    googleMapsApiKey: process.env.REACT_APP_API_KEY,
-    libraries: ["places"],
-  });
+  // const { isLoaded } = useLoadScript({
+  //   id: "google-map-script",
+  //   googleMapsApiKey: process.env.REACT_APP_API_KEY,
+  //   libraries: ["places"],
+  // });
+
 
   if (!isLoaded) return <div>Loading... </div>;
 
@@ -39,7 +40,7 @@ export default function MapView() {
       </thead>
       <tbody className="divide-y divide-gray-100 bg-white">
         <div className="places-container">
-          <PlacesAutocomplete setSelected={setSelected} />
+          {/* <PlacesAutocomplete setSelected={setSelected} /> */}
         </div>
         <GoogleMap zoom={10} center={center} mapContainerStyle={containerStyle}>
           {selected && <MarkerF position={selected} />}

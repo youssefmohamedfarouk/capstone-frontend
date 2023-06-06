@@ -89,12 +89,13 @@ export default function Dashboard({
   setCurrentUser,
   API,
   session,
+  isLoaded
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isListingView, setIsListingView] = useState(true);
   const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);
   const [eventDateSortOrder, setEventDateSortOrder] = useState(0);
-  const [createEventSlideOverOpen, setCreateEventSlideOverOpen] = useState(true);
+  const [createEventSlideOverOpen, setCreateEventSlideOverOpen] = useState(false);
   const [events, setEvents] = useState([]);
   const [rsvpdUsers, setRSVPDUsers] = useState([]);
   const [totalRSVPS, setTotalRSVPS] = useState([]);
@@ -664,7 +665,7 @@ export default function Dashboard({
                 </button>
               </div>
             </div>
-            <CreateEventSlideOver createEventSlideOverOpen={createEventSlideOverOpen} setCreateEventSlideOverOpen={setCreateEventSlideOverOpen}/> 
+            <CreateEventSlideOver createEventSlideOverOpen={createEventSlideOverOpen} setCreateEventSlideOverOpen={setCreateEventSlideOverOpen} API={API} isLoaded={isLoaded}/> 
             <div className="mt-6 px-4 sm:px-6 lg:px-8">
               {/* <h2 className="text-sm font-medium text-gray-900">
                 RSVP'd Events
@@ -851,7 +852,7 @@ export default function Dashboard({
                     setCurrentEvent={setCurrentEvent}
                   />
                 ) : (
-                  <MapView />
+                  <MapView isLoaded={isLoaded}/>
                 )}
               </div>
             </div>

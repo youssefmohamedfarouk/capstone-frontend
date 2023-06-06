@@ -12,6 +12,7 @@ import "./App.css";
 import { useStytchSession } from "@stytch/react";
 import axios from "axios";
 import Example from "./Components/CreateEventSlideOver";
+import { GoogleMap, useLoadScript, MarkerF } from "@react-google-maps/api";
 
 function App() {
   const { session } = useStytchSession();
@@ -30,6 +31,12 @@ function App() {
   });
 
   console.log(session);
+
+  const { isLoaded } = useLoadScript({
+    id: "google-map-script",
+    googleMapsApiKey: process.env.REACT_APP_API_KEY,
+    libraries: ["places"],
+  });
 
   useEffect(() => {
     // const currentUserID = session.user_id;
@@ -57,6 +64,7 @@ function App() {
                   session={session}
                   currentUser={currentUser}
                   setCurrentUser={setCurrentUser}
+                  isLoaded={isLoaded}
                 />
               }
             />

@@ -2,26 +2,95 @@ import { Fragment, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from "use-places-autocomplete";
+import { Combobox } from "@headlessui/react";
 import axios from "axios";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+const PlacesAutocomplete = ({ setSelected }) => {
+  const {
+    ready, //whether is ready to go having load the google script
+    value, // what the users typed into the userbox
+    setValue,
+    suggestions: { status, data }, // status of the result, data: all of the actual suggestions
+    clearSuggestions,
+  } = usePlacesAutocomplete();
+
+  const handleSelect = async (address) => {
+    setValue(address, false);
+    clearSuggestions();
+
+    const results = await getGeocode({ address });
+    const { lat, lng } = await getLatLng(results[0]);
+    setSelected({ lat, lng, address });
+  };
+
+  return (
+    <Combobox onChange={handleSelect}>
+      <Combobox.Input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        disabled={!ready}
+        className="combobox-input"
+        placeholder="Search an address"
+      />
+      <Combobox.Options>
+        {status === "OK" &&
+          data.map(({ place_id, description }) => (
+            <Combobox.Option key={place_id} value={description}>
+              {" "}
+              {description}
+            </Combobox.Option>
+          ))}
+      </Combobox.Options>
+    </Combobox>
+  );
+};
 
 export default function CreateEventSlideOver({
   createEventSlideOverOpen,
   setCreateEventSlideOverOpen,
+  API,
+  isLoaded,
 }) {
   const [createEvent, setCreateEvent] = useState({
-    event_name:"",
-    event_description:"",
-    event_address:"",
-    latitude:0,
-    longitude:0,
-    event_date:"",
+    event_name: "",
+    event_description: "",
+    event_address: "",
+    latitude: 0,
+    longitude: 0,
+    event_date: "",
   });
 
-  // axios.post(`${API}/events`).then((res) => {});
+  const [address, setAddress] = useState({
+    streetAddress: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios.post(`${API}/events`, { ...createEvent }).then((res) => {});
+  };
+
+  const onChange = (e) => {
+    setCreateEvent({ ...createEvent, [e.target.id]: e.target.value });
+  };
+
+  const onAddressSelected = ({ lat, lng, address }) => {
+    setCreateEvent({
+      ...createEvent,
+      latitude: lat,
+      longitude: lng,
+      event_address: address,
+    });
+  };
+  // const onAddressChange = (e) => {
+  //   setAddress({...address, [e.target.id]: e.target.value})
+  // }
 
   return (
     <Transition.Root show={createEventSlideOverOpen} as={Fragment}>
@@ -78,9 +147,10 @@ export default function CreateEventSlideOver({
                         <input
                           type="text"
                           name="eventName"
-                          id="eventName"
+                          id="event_name"
                           className="block w-96 ml-6 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           aria-describedby="eventName-description"
+                          onChange={onChange}
                         />
                       </div>
                       <p
@@ -100,11 +170,12 @@ export default function CreateEventSlideOver({
                       </label>
                       <div className="mt-2 ml-6 mr-6">
                         <textarea
-                          id="about"
-                          name="about"
+                          id="event_description"
+                          name="event_description"
                           rows={3}
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           defaultValue={""}
+                          onChange={onChange}
                         />
                       </div>
                       <p className="mt-2 ml-6 text-sm text-gray-500">
@@ -129,17 +200,23 @@ export default function CreateEventSlideOver({
                             Street address
                           </label>
                           <div className="mt-2">
-                            <input
+                            {/* <input
                               type="text"
-                              name="street-address"
-                              id="street-address"
+                              name="event_address"
+                              id="event_address"
                               autoComplete="street-address"
                               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            />
+                              onChange={onChange}
+                            /> */}
+                            {isLoaded ? (
+                              <PlacesAutocomplete
+                                setSelected={onAddressSelected}
+                              />
+                            ) : null}
                           </div>
                         </div>
 
-                        <div className="sm:col-span-2 sm:col-start-1">
+                        {/* <div className="sm:col-span-2 sm:col-start-1">
                           <label
                             htmlFor="city"
                             className="block text-sm font-small leading-6 text-gray-900"
@@ -153,6 +230,7 @@ export default function CreateEventSlideOver({
                               id="city"
                               autoComplete="address-level2"
                               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              onChange={onAddressChange}
                             />
                           </div>
                         </div>
@@ -167,10 +245,11 @@ export default function CreateEventSlideOver({
                           <div className="mt-2">
                             <input
                               type="text"
-                              name="region"
-                              id="region"
+                              name="state"
+                              id="state"
                               autoComplete="address-level1"
                               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              onChange={onAddressChange}
                             />
                           </div>
                         </div>
@@ -185,14 +264,15 @@ export default function CreateEventSlideOver({
                           <div className="mt-2">
                             <input
                               type="text"
-                              name="postal-code"
-                              id="postal-code"
+                              name="zip"
+                              id="zip"
                               autoComplete="postal-code"
                               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              onChange={onAddressChange}
                             />
                           </div>
-                        </div>
-                        <div className="sm:col-span-3">
+                        </div> */}
+                        {/* <div className="sm:col-span-3">
                           <label
                             htmlFor="country"
                             className="block text-sm font-small leading-6 text-gray-900"
@@ -211,10 +291,13 @@ export default function CreateEventSlideOver({
                               <option>Mexico</option>
                             </select>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
-                    <button class=" ml-6 mr-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <button
+                      className=" ml-6 mr-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      onClick={handleSubmit}
+                    >
                       Create
                     </button>
                   </div>
