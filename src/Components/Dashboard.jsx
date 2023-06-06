@@ -28,6 +28,7 @@ import { useEffect } from "react";
 import LogoSVG from "../socialCircleLogo.svg";
 import EventSlideover from "./EventSlideover";
 import IconCarousel from "./IconCarousel";
+import ConfirmationModal from "./ConfirmationModal";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
@@ -96,19 +97,30 @@ export default function Dashboard({
   const [eventDateSortOrder, setEventDateSortOrder] = useState(0);
   const [createEventSlideOverOpen, setCreateEventSlideOverOpen] = useState(true);
   const [events, setEvents] = useState([]);
+  const [listingEvents, setListingEvents] = useState([]);
   const [rsvpdUsers, setRSVPDUsers] = useState([]);
   const [totalRSVPS, setTotalRSVPS] = useState([]);
   const [slideoverOpen, setSlideoverOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentUsersRSVPS, setCurrentUsersRSVPS] = useState([]);
+  const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
 
   const pinnedEvents = events.filter((event) => event.pinned);
 
   const stytchClient = useStytch();
   const navigate = useNavigate();
 
+  const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
+  const currentUserName = JSON.parse(localStorage.getItem("currentUserName"));
+  const currentUserUsername = JSON.parse(
+    localStorage.getItem("currentUserUsername")
+  );
+
   useEffect(() => {
     axios.get(`${API}/events`).then((res) => {
       setEvents(res.data);
+      setListingEvents(res.data);
     });
     axios.get(`${API}/usersevents/firstfour`).then((res) => {
       setRSVPDUsers(res.data);
@@ -116,6 +128,9 @@ export default function Dashboard({
     axios.get(`${API}/usersevents/totalrsvps`).then((res) => {
       setTotalRSVPS(res.data);
     });
+    axios
+      .get(`${API}/usersevents/${currentUserId}`)
+      .then((res) => setCurrentUsersRSVPS(res.data));
   }, []);
 
   useEffect(() => {
@@ -124,13 +139,39 @@ export default function Dashboard({
     }
   }, [session]);
 
+  useEffect(() => {
+    if (searchTerm) {
+      console.log(events);
+      setListingEvents(
+        events.filter((event) => {
+          return (
+            event.event_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            event.event_address.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        })
+      );
+    } else {
+      setListingEvents(events);
+    }
+  }, [searchTerm]);
+
   const logout = () => {
     stytchClient.session.revoke();
     navigate("/login");
   };
 
+  console.log(currentUser);
+
   return (
     <>
+      <ConfirmationModal
+        API={API}
+        currentEvent={currentEvent}
+        confirmationModalOpen={confirmationModalOpen}
+        setConfirmationModalOpen={setConfirmationModalOpen}
+        setCurrentUsersRSVPS={setCurrentUsersRSVPS}
+        currentUsersRSVPS={currentUsersRSVPS}
+      />
       {/*
         This example requires updating your template:
 
@@ -288,10 +329,10 @@ export default function Dashboard({
                       />
                       <span className="flex min-w-0 flex-1 flex-col">
                         <span className="truncate text-sm font-medium text-gray-900">
-                          {currentUser.first_name + " " + currentUser.last_name}
+                          {currentUserName}
                         </span>
                         <span className="truncate text-sm text-gray-500">
-                          @{currentUser.username}
+                          @{currentUserUsername}
                         </span>
                       </span>
                     </span>
@@ -415,6 +456,10 @@ export default function Dashboard({
                   id="search"
                   className="block w-full rounded-md border-0 py-1.5 pl-9 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 text-black focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
                   placeholder="Search Events"
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    setSearchTerm(e.target.value);
+                  }}
                 />
               </div>
             </div>
@@ -784,7 +829,7 @@ export default function Dashboard({
                 role="list"
                 className="mt-3 divide-y divide-gray-100 border-t border-gray-200"
               >
-                {events.map((event) => (
+                {listingEvents.map((event) => (
                   <li key={event.id}>
                     <a
                       href="#"
@@ -816,9 +861,14 @@ export default function Dashboard({
             </div>
 
             <EventSlideover
+              API={API}
               slideoverOpen={slideoverOpen}
               setSlideoverOpen={setSlideoverOpen}
               currentEvent={currentEvent}
+              currentUsersRSVPS={currentUsersRSVPS}
+              setCurrentUsersRSVPS={setCurrentUsersRSVPS}
+              confirmationModalOpen={confirmationModalOpen}
+              setConfirmationModalOpen={setConfirmationModalOpen}
             />
 
             {/* events table (small breakpoint and up) */}
@@ -837,8 +887,12 @@ export default function Dashboard({
 
                 {isListingView ? (
                   <ListingView
+                    API={API}
+                    currentUser={currentUser}
                     events={events}
                     setEvents={setEvents}
+                    listingEvents={listingEvents}
+                    setListingEvents={setListingEvents}
                     classNames={classNames}
                     attendeesSortOrder={attendeesSortOrder}
                     setAttendeesSortOrder={setAttendeesSortOrder}
@@ -849,6 +903,10 @@ export default function Dashboard({
                     setSlideoverOpen={setSlideoverOpen}
                     currentEvent={currentEvent}
                     setCurrentEvent={setCurrentEvent}
+                    currentUsersRSVPS={currentUsersRSVPS}
+                    setCurrentUsersRSVPS={setCurrentUsersRSVPS}
+                    confirmationModalOpen={confirmationModalOpen}
+                    setConfirmationModalOpen={setConfirmationModalOpen}
                   />
                 ) : (
                   <MapView />
