@@ -90,16 +90,16 @@ export default function ConfirmationModal({
                           `${API}/usersevents/${currentUserId}/${currentEvent.id}`
                         )
                         .then((res) => {
-                          const tempUsersRSVPS = [...currentUsersRSVPS];
-                          const indxOfDeletedRSVP = tempUsersRSVPS.indexOf(
-                            (elem) => elem.event_id === res.data.event_id
+                          console.log(res);
+                          const tempUsersRSVPS = currentUsersRSVPS.filter(
+                            (rsvp) => rsvp.event_id !== res.data.event_id
                           );
-                          tempUsersRSVPS.splice(indxOfDeletedRSVP, 1);
                           setCurrentUsersRSVPS([...tempUsersRSVPS]);
+                          setConfirmationModalOpen(false);
                         });
-                      setConfirmationModalOpen(false);
                     }}
                   >
+                    {console.log(currentUsersRSVPS)}
                     Cancel RSVP
                   </button>
                   <button

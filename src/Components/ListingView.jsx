@@ -221,7 +221,7 @@ export default function ListingView({
                         .then((res) => {
                           console.log(res);
                           const tempUsersRSVPS = [...currentUsersRSVPS];
-                          tempUsersRSVPS.push(res.data);
+                          tempUsersRSVPS.push({ ...res.data });
                           setCurrentUsersRSVPS(tempUsersRSVPS);
                         });
                 }}
