@@ -2,6 +2,7 @@ import { Fragment, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
+import Comments from "./Comments";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -190,6 +191,10 @@ export default function EventSlideover({
                                 {currentEvent.event_date}
                               </time>
                             </dd>
+                          </div>
+                          <div>
+                            <h1 className="mb-1 text-lg font-bold text-gray-900">Comments</h1>
+                            <Comments/>
                           </div>
                         </dl>
                       </div>

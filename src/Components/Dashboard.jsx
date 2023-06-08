@@ -89,13 +89,14 @@ export default function Dashboard({
   setCurrentUser,
   API,
   session,
-  isLoaded
+  isLoaded,
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isListingView, setIsListingView] = useState(true);
   const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);
   const [eventDateSortOrder, setEventDateSortOrder] = useState(0);
-  const [createEventSlideOverOpen, setCreateEventSlideOverOpen] = useState(false);
+  const [createEventSlideOverOpen, setCreateEventSlideOverOpen] =
+    useState(false);
   const [events, setEvents] = useState([]);
   const [rsvpdUsers, setRSVPDUsers] = useState([]);
   const [totalRSVPS, setTotalRSVPS] = useState([]);
@@ -129,6 +130,10 @@ export default function Dashboard({
     stytchClient.session.revoke();
     navigate("/login");
   };
+
+  const updateEvents = (newEvent) => {
+    setEvents([...events, newEvent])
+  }
 
   return (
     <>
@@ -659,13 +664,21 @@ export default function Dashboard({
                 <button
                   type="button"
                   className="order-0 inline-flex items-center rounded-md bg-orange-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600 sm:order-1 sm:ml-3"
-                  onClick={() => setCreateEventSlideOverOpen(!createEventSlideOverOpen)}
+                  onClick={() =>
+                    setCreateEventSlideOverOpen(!createEventSlideOverOpen)
+                  }
                 >
                   Create
                 </button>
               </div>
             </div>
-            <CreateEventSlideOver createEventSlideOverOpen={createEventSlideOverOpen} setCreateEventSlideOverOpen={setCreateEventSlideOverOpen} API={API} isLoaded={isLoaded}/> 
+            <CreateEventSlideOver
+              createEventSlideOverOpen={createEventSlideOverOpen}
+              setCreateEventSlideOverOpen={setCreateEventSlideOverOpen}
+              API={API}
+              isLoaded={isLoaded}
+              updateEvents={updateEvents}
+            />
             <div className="mt-6 px-4 sm:px-6 lg:px-8">
               {/* <h2 className="text-sm font-medium text-gray-900">
                 RSVP'd Events
@@ -852,7 +865,7 @@ export default function Dashboard({
                     setCurrentEvent={setCurrentEvent}
                   />
                 ) : (
-                  <MapView isLoaded={isLoaded}/>
+                  <MapView isLoaded={isLoaded} />
                 )}
               </div>
             </div>
