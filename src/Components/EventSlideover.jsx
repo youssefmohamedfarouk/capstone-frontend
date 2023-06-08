@@ -4,6 +4,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import ConfirmationModal from "./ConfirmationModal";
 import axios from "axios";
+import Comments from "./Comments";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -18,6 +19,8 @@ export default function EventSlideover({
   setCurrentUsersRSVPS,
   confirmationModalOpen,
   setConfirmationModalOpen,
+  comments,
+  setComments
 }) {
   const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
 
@@ -232,6 +235,10 @@ export default function EventSlideover({
                                 {currentEvent.event_date}
                               </time>
                             </dd>
+                          </div>
+                          <div>
+                            <h1 className="mb-1 text-lg font-bold text-gray-900">Comments</h1>
+                            <Comments currentEvent={currentEvent}/>
                           </div>
                         </dl>
                       </div>

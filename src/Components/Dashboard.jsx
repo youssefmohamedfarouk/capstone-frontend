@@ -90,12 +90,14 @@ export default function Dashboard({
   setCurrentUser,
   API,
   session,
+  isLoaded,
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isListingView, setIsListingView] = useState(true);
   const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);
   const [eventDateSortOrder, setEventDateSortOrder] = useState(0);
-  const [createEventSlideOverOpen, setCreateEventSlideOverOpen] = useState(true);
+  const [createEventSlideOverOpen, setCreateEventSlideOverOpen] =
+    useState(false);
   const [events, setEvents] = useState([]);
   const [listingEvents, setListingEvents] = useState([]);
   const [rsvpdUsers, setRSVPDUsers] = useState([]);
@@ -105,6 +107,8 @@ export default function Dashboard({
   const [searchTerm, setSearchTerm] = useState("");
   const [currentUsersRSVPS, setCurrentUsersRSVPS] = useState([]);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+
+  const [comments, setComments] = useState([]);
 
   const pinnedEvents = events.filter((event) => event.pinned);
 
@@ -131,6 +135,7 @@ export default function Dashboard({
     axios
       .get(`${API}/usersevents/${currentUserId}`)
       .then((res) => setCurrentUsersRSVPS(res.data));
+
   }, []);
 
   useEffect(() => {
@@ -161,6 +166,10 @@ export default function Dashboard({
   };
 
   console.log(currentUser);
+
+  const updateEvents = (newEvent) => {
+    setEvents([...events, newEvent])
+  }
 
   return (
     <>
@@ -703,13 +712,21 @@ export default function Dashboard({
                 <button
                   type="button"
                   className="order-0 inline-flex items-center rounded-md bg-orange-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600 sm:order-1 sm:ml-3"
-                  onClick={() => setCreateEventSlideOverOpen(!createEventSlideOverOpen)}
+                  onClick={() =>
+                    setCreateEventSlideOverOpen(!createEventSlideOverOpen)
+                  }
                 >
                   Create
                 </button>
               </div>
             </div>
-            <CreateEventSlideOver createEventSlideOverOpen={createEventSlideOverOpen} setCreateEventSlideOverOpen={setCreateEventSlideOverOpen}/> 
+            <CreateEventSlideOver
+              createEventSlideOverOpen={createEventSlideOverOpen}
+              setCreateEventSlideOverOpen={setCreateEventSlideOverOpen}
+              API={API}
+              isLoaded={isLoaded}
+              updateEvents={updateEvents}
+            />
             <div className="mt-6 px-4 sm:px-6 lg:px-8">
               {/* <h2 className="text-sm font-medium text-gray-900">
                 RSVP'd Events
@@ -869,6 +886,8 @@ export default function Dashboard({
               setCurrentUsersRSVPS={setCurrentUsersRSVPS}
               confirmationModalOpen={confirmationModalOpen}
               setConfirmationModalOpen={setConfirmationModalOpen}
+              comments={comments}
+              setComments={setComments}
             />
 
             {/* events table (small breakpoint and up) */}
@@ -909,7 +928,7 @@ export default function Dashboard({
                     setConfirmationModalOpen={setConfirmationModalOpen}
                   />
                 ) : (
-                  <MapView />
+                  <MapView isLoaded={isLoaded} />
                 )}
               </div>
             </div>

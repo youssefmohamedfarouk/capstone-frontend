@@ -2,27 +2,78 @@ import { Fragment, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
-import axios from "axios";
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from "use-places-autocomplete";
+import Datepicker from "react-tailwindcss-datepicker";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import { Combobox } from "@headlessui/react";
+import axios from "axios";
 
 export default function CreateEventSlideOver({
   createEventSlideOverOpen,
   setCreateEventSlideOverOpen,
+  API,
+  isLoaded,
+  setEvents,
+  updateEvents,
 }) {
   const [createEvent, setCreateEvent] = useState({
-    event_name:"",
-    event_description:"",
-    event_address:"",
-    latitude:0,
-    longitude:0,
-    event_date:"",
+    event_name: "",
+    event_description: "",
+    event_address: "",
+    latitude: 0,
+    longitude: 0,
+    event_date: "",
   });
 
-  // axios.post(`${API}/events`).then((res) => {});
+  const [address, setAddress] = useState({
+    streetAddress: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
 
+  const [value, setValue] = useState({
+    startDate: null,
+    endDate: null,
+  });
+
+  const handleValueChange = (newValue) => {
+    console.log("newValue:", newValue);
+    setCreateEvent({ ...createEvent, event_date: newValue });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let date = createEvent.event_date.startDate.split("-");
+    date = `${date[1]}/${date[2]}/${date[0]}`;
+
+    axios
+      .post(`${API}/events`, { ...createEvent, event_date: date })
+      .then((res) => {
+        updateEvents(res.data);
+      });
+  };
+
+  const onChange = (e) => {
+    setCreateEvent({ ...createEvent, [e.target.id]: e.target.value });
+  };
+
+  const onAddressSelected = ({ lat, lng, address }) => {
+    setCreateEvent({
+      ...createEvent,
+      latitude: lat,
+      longitude: lng,
+      event_address: address,
+    });
+  };
+
+  // const onAddressChange = (e) => {
+  //   setAddress({...address, [e.target.id]: e.target.value})
+  // }
+  console.log(createEvent);
   return (
     <Transition.Root show={createEventSlideOverOpen} as={Fragment}>
       <Dialog
@@ -67,20 +118,21 @@ export default function CreateEventSlideOver({
                       </div>
                     </div>
                     {/* Main */}
-                    <div>
+                    <div className="mt-1">
                       <label
-                        htmlFor="eventName"
-                        className="block ml-6 mt-2 text-medium font-medium leading-6 text-gray-900"
+                        htmlFor="event-name"
+                        className="block ml-6 text-medium font-medium leading-6 text-gray-900"
                       >
                         Event Name
                       </label>
                       <div className="mt-2">
                         <input
                           type="text"
-                          name="eventName"
-                          id="eventName"
+                          name="event_name"
+                          id="event_name"
                           className="block w-96 ml-6 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           aria-describedby="eventName-description"
+                          onChange={onChange}
                         />
                       </div>
                       <p
@@ -91,7 +143,7 @@ export default function CreateEventSlideOver({
                       </p>
                     </div>
 
-                    <div className="col-span-full">
+                    <div className=" mt-1 col-span-full">
                       <label
                         htmlFor="about"
                         className="block ml-6 mt-3 text-medium font-medium leading-6 text-gray-900"
@@ -100,123 +152,76 @@ export default function CreateEventSlideOver({
                       </label>
                       <div className="mt-2 ml-6 mr-6">
                         <textarea
-                          id="about"
-                          name="about"
+                          id="event_description"
+                          name="event_description"
                           rows={3}
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           defaultValue={""}
+                          onChange={onChange}
                         />
                       </div>
                       <p className="mt-2 ml-6 text-sm text-gray-500">
                         Describe your event for users that are viewing.
                       </p>
                     </div>
+                    {/* Setup Date */}
+                    <div className="mt-2 col-span-full">
+                      <label
+                        htmlFor="event_date"
+                        className="block ml-6 mt-2 text-medium font-medium leading-6 text-gray-900"
+                      >
+                        Date
+                      </label>
+                      <div className="ml-5 mr-5 mt-2">
+                        <Datepicker
+                          value={createEvent.event_date}
+                          inputId="event_date"
+                          onChange={handleValueChange}
+                          useRange={false}
+                          wrapperClassName="w-full"
+                          className="block w-96 ml-6 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          tog
+                          asSingle={true}
+                          minDate={new Date()}
+                          displayFormat={"MM/DD/YYYY"}
+                        />
+                      </div>
+                    </div>
 
-                    <div className="border-b border-gray-900/10 pb-12">
-                      <h2 className="block ml-6 mt-3 text-medium font-medium leading-6 text-gray-900">
-                        Location
-                      </h2>
-                      <p className="mt-2 ml-6 text-sm text-gray-500">
-                        Use a permanent address where you can receive mail.
-                      </p>
-
-                      <div className="mt-5 ml-7 mr-7 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div className="col-span-full">
-                          <label
-                            htmlFor="street-address"
-                            className="block text-sm font-small leading-6 text-gray-900"
-                          >
-                            Street address
-                          </label>
-                          <div className="mt-2">
-                            <input
+                    <div className=" mt-5 mb-9 ml-6 mr-6">
+                      <div className="col-span-full">
+                        <label
+                          htmlFor="street-address"
+                          className="block mt-2 text-medium font-medium leading-6 text-gray-900"
+                        >
+                          Location
+                        </label>
+                        <div className="mt-2">
+                          {/* <input
                               type="text"
-                              name="street-address"
-                              id="street-address"
+                              name="event_address"
+                              id="event_address"
                               autoComplete="street-address"
                               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              onChange={onChange}
+                            /> */}
+                          {isLoaded ? (
+                            <PlacesAutocomplete
+                              setSelected={onAddressSelected}
                             />
-                          </div>
-                        </div>
-
-                        <div className="sm:col-span-2 sm:col-start-1">
-                          <label
-                            htmlFor="city"
-                            className="block text-sm font-small leading-6 text-gray-900"
-                          >
-                            City
-                          </label>
-                          <div className="mt-2">
-                            <input
-                              type="text"
-                              name="city"
-                              id="city"
-                              autoComplete="address-level2"
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="sm:col-span-2">
-                          <label
-                            htmlFor="region"
-                            className="block text-sm font-small leading-6 text-gray-900"
-                          >
-                            State / Province
-                          </label>
-                          <div className="mt-2">
-                            <input
-                              type="text"
-                              name="region"
-                              id="region"
-                              autoComplete="address-level1"
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="sm:col-span-2">
-                          <label
-                            htmlFor="postal-code"
-                            className="block text-sm font-small leading-6 text-gray-900"
-                          >
-                            ZIP Code
-                          </label>
-                          <div className="mt-2">
-                            <input
-                              type="text"
-                              name="postal-code"
-                              id="postal-code"
-                              autoComplete="postal-code"
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            />
-                          </div>
-                        </div>
-                        <div className="sm:col-span-3">
-                          <label
-                            htmlFor="country"
-                            className="block text-sm font-small leading-6 text-gray-900"
-                          >
-                            Country
-                          </label>
-                          <div className="mt-2">
-                            <select
-                              id="country"
-                              name="country"
-                              autoComplete="country-name"
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                            >
-                              <option>United States</option>
-                              <option>Canada</option>
-                              <option>Mexico</option>
-                            </select>
-                          </div>
+                          ) : null}
                         </div>
                       </div>
                     </div>
-                    <button class=" ml-6 mr-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                      Create
-                    </button>
+
+                    <div className="border-b border-gray-900/10 pb-12 w-full">
+                      <button
+                        className=" ml-6 mr-6 bg-pink-600 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded"
+                        onClick={handleSubmit}
+                      >
+                        Create
+                      </button>
+                    </div>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
@@ -227,3 +232,56 @@ export default function CreateEventSlideOver({
     </Transition.Root>
   );
 }
+
+const PlacesAutocomplete = ({ setSelected }) => {
+  const {
+    ready, //whether is ready to go having load the google script
+    value, // what the users typed into the userbox
+    setValue,
+    suggestions: { status, data }, // status of the result, data: all of the actual suggestions
+    clearSuggestions,
+  } = usePlacesAutocomplete();
+
+  const handleSelect = async (address) => {
+    setValue(address, false);
+    clearSuggestions();
+
+    const results = await getGeocode({ address });
+    const { lat, lng } = await getLatLng(results[0]);
+    setSelected({ lat, lng, address });
+  };
+
+  return (
+    <Combobox onChange={handleSelect}>
+      <div className="relative mt-1">
+        <Combobox.Input
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          disabled={!ready}
+          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          placeholder="Search an address"
+        />
+        <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          {status === "OK" &&
+            data.map(({ place_id, description }) => (
+              <Combobox.Option
+                key={place_id}
+                value={description}
+                className={({ active }) =>
+                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                    active ? "bg-orange-500 text-white" : "text-gray-900"
+                  }`
+                }
+              >
+                {" "}
+                {description}
+              </Combobox.Option>
+            ))}
+        </Combobox.Options>
+      </div>
+      <p className="mt-2 text-sm text-gray-500">
+        Provide a street address for your event.
+      </p>
+    </Combobox>
+  );
+};
