@@ -88,17 +88,6 @@ function App() {
                 />
               }
             />
-            <Route
-              path="/example"
-              element={
-                <Example
-                  API={API}
-                  session={session}
-                  currentUser={currentUser}
-                  setCurrentUser={setCurrentUser}
-                />
-              }
-            />
           </Routes>
         </main>
       </Router>

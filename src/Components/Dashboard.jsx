@@ -103,6 +103,8 @@ export default function Dashboard({
   const [slideoverOpen, setSlideoverOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState([]);
 
+  const [comments, setComments] = useState([]);
+
   const pinnedEvents = events.filter((event) => event.pinned);
 
   const stytchClient = useStytch();
@@ -118,6 +120,7 @@ export default function Dashboard({
     axios.get(`${API}/usersevents/totalrsvps`).then((res) => {
       setTotalRSVPS(res.data);
     });
+
   }, []);
 
   useEffect(() => {
@@ -833,6 +836,8 @@ export default function Dashboard({
               slideoverOpen={slideoverOpen}
               setSlideoverOpen={setSlideoverOpen}
               currentEvent={currentEvent}
+              comments={comments}
+              setComments={setComments}
             />
 
             {/* events table (small breakpoint and up) */}

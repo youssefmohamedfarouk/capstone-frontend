@@ -12,7 +12,12 @@ export default function EventSlideover({
   slideoverOpen,
   setSlideoverOpen,
   currentEvent,
+  comments,
+  setComments
 }) {
+
+  console.log(currentEvent)
+
   return (
     <Transition.Root show={slideoverOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setSlideoverOpen}>
@@ -194,7 +199,7 @@ export default function EventSlideover({
                           </div>
                           <div>
                             <h1 className="mb-1 text-lg font-bold text-gray-900">Comments</h1>
-                            <Comments/>
+                            <Comments currentEvent={currentEvent}/>
                           </div>
                         </dl>
                       </div>
