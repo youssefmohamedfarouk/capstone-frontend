@@ -2,6 +2,8 @@ import { Fragment, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
+import ConfirmationModal from "./ConfirmationModal";
+import axios from "axios";
 import Comments from "./Comments";
 
 function classNames(...classes) {
@@ -9,20 +11,23 @@ function classNames(...classes) {
 }
 
 export default function EventSlideover({
+  API,
   slideoverOpen,
   setSlideoverOpen,
   currentEvent,
+  currentUsersRSVPS,
+  setCurrentUsersRSVPS,
+  confirmationModalOpen,
+  setConfirmationModalOpen,
   comments,
   setComments
 }) {
-
-  console.log(currentEvent)
+  const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
 
   return (
     <Transition.Root show={slideoverOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setSlideoverOpen}>
         <div className="fixed inset-0" />
-
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
             <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
@@ -86,9 +91,43 @@ export default function EventSlideover({
                               <div className="mt-5 flex flex-wrap space-y-3 sm:space-x-3 sm:space-y-0">
                                 <button
                                   type="button"
-                                  className="inline-flex w-full flex-shrink-0 items-center justify-center rounded-md bg-orange-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:flex-1"
+                                  className={
+                                    currentUsersRSVPS.some(
+                                      (entry) =>
+                                        entry.event_id === currentEvent.id
+                                    )
+                                      ? "inline-flex w-full flex-shrink-0 items-center justify-center rounded-md bg-gray-400 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:flex-1"
+                                      : "inline-flex w-full flex-shrink-0 items-center justify-center rounded-md bg-orange-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:flex-1"
+                                  }
+                                  onClick={() => {
+                                    currentUsersRSVPS.some(
+                                      (entry) =>
+                                        entry.event_id === currentEvent.id
+                                    )
+                                      ? setConfirmationModalOpen(true)
+                                      : axios
+                                          .post(`${API}/usersevents/`, {
+                                            user_id: currentUserId,
+                                            event_id: currentEvent.id,
+                                            rsvp: true,
+                                          })
+                                          .then((res) => {
+                                            axios
+                                              .get(
+                                                `${API}/usersevents/${currentUserId}`
+                                              )
+                                              .then((res) =>
+                                                setCurrentUsersRSVPS(res.data)
+                                              );
+                                          });
+                                  }}
                                 >
-                                  RSVP
+                                  {currentUsersRSVPS.some(
+                                    (entry) =>
+                                      entry.event_id === currentEvent.id
+                                  )
+                                    ? `RSVP'D`
+                                    : `RSVP`}
                                 </button>
                                 <button
                                   type="button"
