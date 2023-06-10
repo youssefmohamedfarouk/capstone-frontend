@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.orange-bg {
+    background-color: #ececec
+  }
