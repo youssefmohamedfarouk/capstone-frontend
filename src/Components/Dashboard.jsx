@@ -108,8 +108,6 @@ export default function Dashboard({
   const [currentUsersRSVPS, setCurrentUsersRSVPS] = useState([]);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
 
-  const [comments, setComments] = useState([]);
-
   const pinnedEvents = events.filter((event) => event.pinned);
 
   const stytchClient = useStytch();
@@ -135,7 +133,6 @@ export default function Dashboard({
     axios
       .get(`${API}/usersevents/${currentUserId}`)
       .then((res) => setCurrentUsersRSVPS(res.data));
-
   }, []);
 
   useEffect(() => {
@@ -146,7 +143,6 @@ export default function Dashboard({
 
   useEffect(() => {
     if (searchTerm) {
-      console.log(events);
       setListingEvents(
         events.filter((event) => {
           return (
@@ -165,11 +161,13 @@ export default function Dashboard({
     navigate("/login");
   };
 
-  console.log(currentUser);
-
   const updateEvents = (newEvent) => {
-    setEvents([...events, newEvent])
-  }
+    console.log("asdf", newEvent);
+
+    setEvents([...events, newEvent]);
+    setListingEvents([...listingEvents, newEvent]);
+    console.log("YOOOOOO", events);
+  };
 
   return (
     <>
@@ -721,9 +719,9 @@ export default function Dashboard({
               </div>
             </div>
             <CreateEventSlideOver
+              API={API}
               createEventSlideOverOpen={createEventSlideOverOpen}
               setCreateEventSlideOverOpen={setCreateEventSlideOverOpen}
-              API={API}
               isLoaded={isLoaded}
               updateEvents={updateEvents}
             />
@@ -886,8 +884,6 @@ export default function Dashboard({
               setCurrentUsersRSVPS={setCurrentUsersRSVPS}
               confirmationModalOpen={confirmationModalOpen}
               setConfirmationModalOpen={setConfirmationModalOpen}
-              comments={comments}
-              setComments={setComments}
             />
 
             {/* events table (small breakpoint and up) */}
@@ -928,7 +924,7 @@ export default function Dashboard({
                     setConfirmationModalOpen={setConfirmationModalOpen}
                   />
                 ) : (
-                  <MapView isLoaded={isLoaded} />
+                  <MapView isLoaded={isLoaded} events={events} />
                 )}
               </div>
             </div>
