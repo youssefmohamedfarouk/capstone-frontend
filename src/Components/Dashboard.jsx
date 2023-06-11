@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 import ListingView from "./ListingView";
 import MapView from "./MapView";
+import CreateEventSlideOver from "./CreateEventSlideOver";
 import axios from "axios";
 import { useEffect } from "react";
 
@@ -28,12 +29,13 @@ import { useEffect } from "react";
 //   ChevronUpDownIcon,
 //   EllipsisVerticalIcon,
 //   MagnifyingGlassIcon,
-// } from "@heroicons/react/20/solid"; 
+// } from "@heroicons/react/20/solid";
 
 import LogoSVG from "../socialCircleLogo.svg";
 import EventSlideover from "./EventSlideover";
 import IconCarousel from "./IconCarousel";
 import Sidebar from "./Sidebar";
+import ConfirmationModal from "./ConfirmationModal";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
@@ -46,34 +48,44 @@ const teams = [
   { name: "Pursuit Brunch", href: "/#", bgColorClass: "bg-yellow-500" },
 ];
 
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Dashboard({
-  currentUser,
-  API,
-  session,
-}) {
+export default function Dashboard({ currentUser, API, session, isLoaded }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isListingView, setIsListingView] = useState(true);
   const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);
   const [eventDateSortOrder, setEventDateSortOrder] = useState(0);
+  const [createEventSlideOverOpen, setCreateEventSlideOverOpen] =
+    useState(false);
   const [events, setEvents] = useState([]);
+  const [listingEvents, setListingEvents] = useState([]);
   const [rsvpdUsers, setRSVPDUsers] = useState([]);
   const [totalRSVPS, setTotalRSVPS] = useState([]);
   const [slideoverOpen, setSlideoverOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentUsersRSVPS, setCurrentUsersRSVPS] = useState([]);
+  const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+
+  const [comments, setComments] = useState([]);
 
   const pinnedEvents = events.filter((event) => event.pinned);
 
   const stytchClient = useStytch();
   const navigate = useNavigate();
 
+  const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
+  const currentUserName = JSON.parse(localStorage.getItem("currentUserName"));
+  const currentUserUsername = JSON.parse(
+    localStorage.getItem("currentUserUsername")
+  );
+
   useEffect(() => {
     axios.get(`${API}/events`).then((res) => {
       setEvents(res.data);
+      setListingEvents(res.data);
     });
     axios.get(`${API}/usersevents/firstfour`).then((res) => {
       setRSVPDUsers(res.data);
@@ -81,9 +93,10 @@ export default function Dashboard({
     axios.get(`${API}/usersevents/totalrsvps`).then((res) => {
       setTotalRSVPS(res.data);
     });
+    axios
+      .get(`${API}/usersevents/${currentUserId}`)
+      .then((res) => setCurrentUsersRSVPS(res.data));
   }, [API]);
-
-
 
   useEffect(() => {
     if (!session || !session.session_id) {
@@ -96,8 +109,22 @@ export default function Dashboard({
     navigate("/login");
   };
 
+  console.log(currentUser);
+
+  const updateEvents = (newEvent) => {
+    setEvents([...events, newEvent]);
+  };
+
   return (
     <>
+      <ConfirmationModal
+        API={API}
+        currentEvent={currentEvent}
+        confirmationModalOpen={confirmationModalOpen}
+        setConfirmationModalOpen={setConfirmationModalOpen}
+        setCurrentUsersRSVPS={setCurrentUsersRSVPS}
+        currentUsersRSVPS={currentUsersRSVPS}
+      />
       {/*
         This example requires updating your template:
 
@@ -236,7 +263,14 @@ export default function Dashboard({
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-     <Sidebar classNames={classNames} teams={teams} logout={logout} navigation={navigation} currentUser={currentUser} session={session}/>
+        <Sidebar
+          classNames={classNames}
+          teams={teams}
+          logout={logout}
+          navigation={navigation}
+          currentUser={currentUser}
+          session={session}
+        />
         {/* Main column */}
         <div className="flex flex-col lg:pl-64">
           {/* Search header */}
@@ -377,7 +411,8 @@ export default function Dashboard({
                       <div className="py-1">
                         <Menu.Item>
                           {({ active }) => (
-                            <a href="/#"
+                            <a
+                              href="/#"
                               className={classNames(
                                 active
                                   ? "bg-orange-500 text-white"
@@ -415,20 +450,27 @@ export default function Dashboard({
                 <button
                   type="button"
                   className="order-0 inline-flex items-center rounded-md bg-orange-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600 sm:order-1 sm:ml-3"
+                  onClick={() =>
+                    setCreateEventSlideOverOpen(!createEventSlideOverOpen)
+                  }
                 >
                   Create
                 </button>
               </div>
             </div>
-            {/* Pinned events */}
+            <CreateEventSlideOver
+              createEventSlideOverOpen={createEventSlideOverOpen}
+              setCreateEventSlideOverOpen={setCreateEventSlideOverOpen}
+              API={API}
+              isLoaded={isLoaded}
+              updateEvents={updateEvents}
+            />
             <div className="mt-6 px-4 sm:px-6 lg:px-8">
               {/* <h2 className="text-sm font-medium text-gray-900">
                 RSVP'd Events
               </h2> */}
               <IconCarousel className="self-center" />
-              <ul
-                className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4"
-              >
+              <ul className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4">
                 {pinnedEvents.map((event) => (
                   <li
                     key={event.id}
@@ -535,11 +577,8 @@ export default function Dashboard({
               <div className="px-4 sm:px-6">
                 <h2 className="text-sm font-medium text-gray-900">Events</h2>
               </div>
-              <ul
-                
-                className="mt-3 divide-y divide-gray-100 border-t border-gray-200"
-              >
-                {events.map((event) => (
+              <ul className="mt-3 divide-y divide-gray-100 border-t border-gray-200">
+                {listingEvents.map((event) => (
                   <li key={event.id}>
                     <a
                       href="/#"
@@ -571,9 +610,16 @@ export default function Dashboard({
             </div>
 
             <EventSlideover
+              API={API}
               slideoverOpen={slideoverOpen}
               setSlideoverOpen={setSlideoverOpen}
               currentEvent={currentEvent}
+              currentUsersRSVPS={currentUsersRSVPS}
+              setCurrentUsersRSVPS={setCurrentUsersRSVPS}
+              confirmationModalOpen={confirmationModalOpen}
+              setConfirmationModalOpen={setConfirmationModalOpen}
+              comments={comments}
+              setComments={setComments}
             />
 
             {/* events table (small breakpoint and up) */}
@@ -592,8 +638,12 @@ export default function Dashboard({
 
                 {isListingView ? (
                   <ListingView
+                    API={API}
+                    currentUser={currentUser}
                     events={events}
                     setEvents={setEvents}
+                    listingEvents={listingEvents}
+                    setListingEvents={setListingEvents}
                     classNames={classNames}
                     attendeesSortOrder={attendeesSortOrder}
                     setAttendeesSortOrder={setAttendeesSortOrder}
@@ -604,9 +654,13 @@ export default function Dashboard({
                     setSlideoverOpen={setSlideoverOpen}
                     currentEvent={currentEvent}
                     setCurrentEvent={setCurrentEvent}
+                    currentUsersRSVPS={currentUsersRSVPS}
+                    setCurrentUsersRSVPS={setCurrentUsersRSVPS}
+                    confirmationModalOpen={confirmationModalOpen}
+                    setConfirmationModalOpen={setConfirmationModalOpen}
                   />
                 ) : (
-                  <MapView />
+                  <MapView isLoaded={isLoaded} />
                 )}
               </div>
             </div>

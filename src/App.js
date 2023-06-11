@@ -13,6 +13,8 @@ import EditProfile from "./Components/profile/EditProfile";
 import "./App.css";
 
 import axios from "axios";
+import Example from "./Components/CreateEventSlideOver";
+import { GoogleMap, useLoadScript, MarkerF } from "@react-google-maps/api";
 
 
 function App() {
@@ -34,11 +36,27 @@ function App() {
 
 
 
+  const { isLoaded } = useLoadScript({
+    id: "google-map-script",
+    googleMapsApiKey: process.env.REACT_APP_API_KEY,
+    libraries: ["places"],
+  });
+
   useEffect(() => {
     // const currentUserID = session.user_id;
     if (session && session.authentication_factors.length >= 1) {
       axios.get(`${API}/users/${session.user_id}`).then((res) => {
+        console.log(res.data);
         setCurrentUser(res.data);
+        localStorage.setItem("currentUserId", JSON.stringify(res.data.id));
+        localStorage.setItem(
+          "currentUserName",
+          JSON.stringify(res.data.first_name + " " + res.data.last_name)
+        );
+        localStorage.setItem(
+          "currentUserUsername",
+          JSON.stringify(res.data.username)
+        );
       });
     }
   }, [session, API]);
@@ -60,6 +78,7 @@ function App() {
                   session={session}
                   currentUser={currentUser}
                   setCurrentUser={setCurrentUser}
+                  isLoaded={isLoaded}
                 />
               }
             />

@@ -3,7 +3,7 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.js", "./public/index.html"],
+  content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.js", "./public/index.html", "./node_modules/flowbite/**/*.js"],
   theme: {
     extend: {
       colors: {
@@ -115,5 +115,6 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/forms")],
+  plugins: [require("@tailwindcss/forms"),require('flowbite/plugin')
+],
 };
