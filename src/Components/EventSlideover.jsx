@@ -19,10 +19,9 @@ export default function EventSlideover({
   setCurrentUsersRSVPS,
   confirmationModalOpen,
   setConfirmationModalOpen,
-  comments,
-  setComments
 }) {
   const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
+
 
   return (
     <Transition.Root show={slideoverOpen} as={Fragment}>
@@ -238,7 +237,7 @@ export default function EventSlideover({
                           </div>
                           <div>
                             <h1 className="mb-1 text-lg font-bold text-gray-900">Comments</h1>
-                            <Comments currentEvent={currentEvent}/>
+                            <Comments currentEvent={currentEvent} currentUserId={currentUserId} API={API}/>
                           </div>
                         </dl>
                       </div>

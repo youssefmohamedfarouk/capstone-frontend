@@ -6,15 +6,26 @@ import usePlacesAutocomplete, {
 } from "use-places-autocomplete";
 import { Combobox } from "@headlessui/react";
 
-export default function MapView({isLoaded}) {
-  
-  const [selected, setSelected] = useState({ lat: 40.7127753, lng: -74.0059728 });
-  const center = useMemo(() => (selected ), []);
+export default function MapView({ isLoaded, events }) {
+  const [selected, setSelected] = useState({
+    lat: 40.7127753,
+    lng: -74.0059728,
+  });
+  const [eventMarkers, setEventMarkers] = useState(events);
+  const first = eventMarkers[0];
+  const newCenter = {
+    lat: parseInt(first.latitude),
+    lng: parseInt(first.longitude),
+  };
+
+  const center = useMemo(() => selected, []);
 
   const containerStyle = {
     width: "100%",
     height: "550px",
   };
+
+  console.log("eventMarkers", eventMarkers);
 
   // const { isLoaded } = useLoadScript({
   //   id: "google-map-script",
@@ -22,9 +33,7 @@ export default function MapView({isLoaded}) {
   //   libraries: ["places"],
   // });
 
-
   if (!isLoaded) return <div>Loading... </div>;
-
 
   return (
     <table className="min-w-full">
@@ -44,6 +53,16 @@ export default function MapView({isLoaded}) {
         </div>
         <GoogleMap zoom={10} center={center} mapContainerStyle={containerStyle}>
           {selected && <MarkerF position={selected} />}
+          {eventMarkers &&
+            eventMarkers.map((marker, key) => (
+              <MarkerF
+                key={key}
+                position={{
+                  lat: Number(marker.latitude),
+                  lng: Number(marker.longitude),
+                }}
+              />
+            ))}
         </GoogleMap>
       </tbody>
     </table>

@@ -28,9 +28,9 @@ export default function ListingView({
   confirmationModalOpen,
   setConfirmationModalOpen,
 }) {
-  console.log(currentUsersRSVPS);
   const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
 
+  console.log("events", events);
   return (
     <table className="min-w-full">
       <thead>
@@ -141,7 +141,7 @@ export default function ListingView({
         </tr>
       </thead>
       <tbody className="divide-y divide-gray-100 bg-white">
-        {listingEvents?.map((event) => (
+        {listingEvents?.map((event, key) => (
           <tr key={event.id}>
             <td className="w-full max-w-0 whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900">
               <div className="flex items-center space-x-3 lg:pl-2">
@@ -175,9 +175,9 @@ export default function ListingView({
                   {rsvpdUsers
                     ?.filter((member) => member.event_id === event.id)
                     ?.slice(0, 4)
-                    .map((member) => (
+                    .map((member, key) => (
                       <img
-                        key={member.username + event.id}
+                        key={member.username + key}
                         className="h-6 w-6 max-w-none rounded-full ring-2 ring-white"
                         src={member.profile_pic}
                         alt={member.username}
