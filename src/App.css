@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-.datePicker{
+.datePicker {
   width: 100%;
+}
+
+.orange-bg {
+  background-color: #ececec;
 }

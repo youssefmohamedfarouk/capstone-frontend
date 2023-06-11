@@ -2,17 +2,20 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  useNavigate,
 } from "react-router-dom";
+import { useStytchSession } from "@stytch/react";
 import { useEffect, useState } from "react";
 import Dashboard from "./Components/Dashboard";
 import Login from "./Components/Login";
 import SignUp from "./Components/SignUp";
+import Profile from "./Components/profile/Profile";
+import EditProfile from "./Components/profile/EditProfile";
 import "./App.css";
-import { useStytchSession } from "@stytch/react";
+
 import axios from "axios";
 import Example from "./Components/CreateEventSlideOver";
 import { GoogleMap, useLoadScript, MarkerF } from "@react-google-maps/api";
+
 
 function App() {
   const { session } = useStytchSession();
@@ -28,9 +31,10 @@ function App() {
     interests: [],
     intra_extraversion: 50,
     phone_number: "0000000000",
+    profile_pic: "",
   });
 
-  console.log(session);
+
 
   const { isLoaded } = useLoadScript({
     id: "google-map-script",
@@ -55,7 +59,7 @@ function App() {
         );
       });
     }
-  }, [session]);
+  }, [session, API]);
 
   // if (!session || session.authentication_factors.length) {
   //   return null;
@@ -98,6 +102,8 @@ function App() {
                 />
               }
             />
+            <Route path="/profile/:id" element={<Profile currentUser={currentUser} session={session}/>}/>
+            <Route path="/profile/:id/edit" element={<EditProfile setCurrentUser={setCurrentUser} session={session} currentUser={currentUser}/>}/>
           </Routes>
         </main>
       </Router>
