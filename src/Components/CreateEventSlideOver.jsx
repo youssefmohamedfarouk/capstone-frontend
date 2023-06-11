@@ -41,7 +41,6 @@ export default function CreateEventSlideOver({
   });
 
   const handleValueChange = (newValue) => {
-    console.log("newValue:", newValue);
     setCreateEvent({ ...createEvent, event_date: newValue });
   };
 
@@ -49,10 +48,11 @@ export default function CreateEventSlideOver({
     e.preventDefault();
     let date = createEvent.event_date.startDate.split("-");
     date = `${date[1]}/${date[2]}/${date[0]}`;
-
+    console.log("New Event", createEvent);
     axios
       .post(`${API}/events`, { ...createEvent, event_date: date })
       .then((res) => {
+        console.log("Axios", res.data);
         updateEvents(res.data);
       });
   };
@@ -216,7 +216,7 @@ export default function CreateEventSlideOver({
 
                     <div className="border-b border-gray-900/10 pb-12 w-full">
                       <button
-                        className=" ml-6 mr-6 bg-pink-600 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded"
+                        className=" ml-6 mr-6 bg-pink-600 hover:bg-pink-500 text-white font-bold py-2 px-4 rounded"
                         onClick={handleSubmit}
                       >
                         Create

@@ -69,8 +69,6 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
   const [currentUsersRSVPS, setCurrentUsersRSVPS] = useState([]);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
 
-  const [comments, setComments] = useState([]);
-
   const pinnedEvents = events.filter((event) => event.pinned);
 
   const stytchClient = useStytch();
@@ -98,21 +96,39 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
       .then((res) => setCurrentUsersRSVPS(res.data));
   }, [API]);
 
+
   useEffect(() => {
     if (!session || !session.session_id) {
       navigate("/login");
     }
   }, [session, navigate]);
 
+  useEffect(() => {
+    if (searchTerm) {
+      setListingEvents(
+        events.filter((event) => {
+          return (
+            event.event_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            event.event_address.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        })
+      );
+    } else {
+      setListingEvents(events);
+    }
+  }, [searchTerm]);
+
   const logout = () => {
     stytchClient.session.revoke();
     navigate("/login");
   };
 
-  console.log(currentUser);
-
   const updateEvents = (newEvent) => {
+    console.log("asdf", newEvent);
+
     setEvents([...events, newEvent]);
+    setListingEvents([...listingEvents, newEvent]);
+    console.log("YOOOOOO", events);
   };
 
   return (
@@ -459,9 +475,9 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
               </div>
             </div>
             <CreateEventSlideOver
+              API={API}
               createEventSlideOverOpen={createEventSlideOverOpen}
               setCreateEventSlideOverOpen={setCreateEventSlideOverOpen}
-              API={API}
               isLoaded={isLoaded}
               updateEvents={updateEvents}
             />
@@ -618,8 +634,6 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
               setCurrentUsersRSVPS={setCurrentUsersRSVPS}
               confirmationModalOpen={confirmationModalOpen}
               setConfirmationModalOpen={setConfirmationModalOpen}
-              comments={comments}
-              setComments={setComments}
             />
 
             {/* events table (small breakpoint and up) */}
@@ -660,7 +674,7 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                     setConfirmationModalOpen={setConfirmationModalOpen}
                   />
                 ) : (
-                  <MapView isLoaded={isLoaded} />
+                  <MapView isLoaded={isLoaded} events={events} />
                 )}
               </div>
             </div>
