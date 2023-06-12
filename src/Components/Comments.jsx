@@ -1,18 +1,4 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import {
   FaceSmileIcon as FaceSmileIconOutline,
   PaperClipIcon,
@@ -77,17 +63,35 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Comments({ currentUserId, currentEvent, API }) {
+export default function Comments({
+  currentUser,
+  currentUserId,
+  currentEvent,
+  API,
+}) {
   const [selected, setSelected] = useState(moods[5]);
-
   const [comments, setComments] = useState([]);
   const [text, setText] = useState("");
+
+  const commentRef = useRef();
+
+  const commentsDiv = document.getElementById("comments-section");
 
   useEffect(() => {
     axios.get(`${API}/events/${currentEvent.id}/comments`).then((res) => {
       setComments(res.data);
     });
   }, []);
+
+  useEffect(() => {
+    if (commentRef.current) {
+      commentRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+        inline: "nearest",
+      });
+    }
+  }, [comments]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -98,6 +102,7 @@ export default function Comments({ currentUserId, currentEvent, API }) {
       })
       .then((res) => {
         setComments([...comments, res.data]);
+        setText("");
       });
   };
 
@@ -106,15 +111,13 @@ export default function Comments({ currentUserId, currentEvent, API }) {
     setText(e.target.value);
   };
 
-  
-
   return (
     <div>
       <div className="flex items-start space-x-4 ">
         <div className="flex-shrink-0">
           <img
             className="inline-block h-10 w-10 rounded-full"
-            src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+            src={currentUser.profile_pic}
             alt=""
           />
         </div>
@@ -191,7 +194,10 @@ export default function Comments({ currentUserId, currentEvent, API }) {
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                           >
-                            <Listbox.Options className="absolute z-10 -ml-6 w-60 rounded-lg bg-white py-3 text-base shadow ring-1 ring-black ring-opacity-5 focus:outline-none sm:ml-auto sm:w-64 sm:text-sm">
+                            <Listbox.Options
+                              id="comments-section"
+                              className="absolute z-10 -ml-6 w-60 rounded-lg bg-white py-3 text-base shadow ring-1 ring-black ring-opacity-5 focus:outline-none sm:ml-auto sm:w-64 sm:text-sm"
+                            >
                               {moods.map((mood) => (
                                 <Listbox.Option
                                   key={mood.value}
@@ -235,7 +241,7 @@ export default function Comments({ currentUserId, currentEvent, API }) {
               <div className="flex-shrink-0">
                 <button
                   type="submit"
-                  className="inline-flex items-center rounded-md bg-pink-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+                  className="inline-flex items-center rounded-md bg-orange-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
                   onClick={handleSubmit}
                 >
                   Post
@@ -247,13 +253,11 @@ export default function Comments({ currentUserId, currentEvent, API }) {
       </div>
       {comments.map(({ username, user_comment }) => {
         return (
-          <div className="mt-4">
+          <div className="mt-4" ref={commentRef}>
             <div class="flex flex-col space-y-2">
               <div class="bg-white p-2 rounded-lg shadow-md">
                 <h3 class="text-sm font-bold">{username}</h3>
-                <p class=" mt-1 text-sm text-gray-700">
-                  {user_comment}
-                </p>
+                <p class=" mt-1 text-sm text-gray-700">{user_comment}</p>
               </div>
             </div>
           </div>

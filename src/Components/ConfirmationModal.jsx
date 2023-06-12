@@ -8,13 +8,15 @@ import axios from "axios";
 
 export default function ConfirmationModal({
   API,
+  currentUser,
   currentEvent,
   confirmationModalOpen,
   setConfirmationModalOpen,
   setCurrentUsersRSVPS,
   currentUsersRSVPS,
 }) {
-  const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
+  const currentUserId = currentUser.id;
+  //   JSON.parse(localStorage.getItem("currentUserId"));
 
   return (
     <Transition.Root show={confirmationModalOpen} as={Fragment}>
@@ -50,7 +52,7 @@ export default function ConfirmationModal({
                 <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                   <button
                     type="button"
-                    className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                     onClick={() => setConfirmationModalOpen(false)}
                   >
                     <span className="sr-only">Close</span>
@@ -83,7 +85,7 @@ export default function ConfirmationModal({
                 <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                    className="inline-flex w-full justify-center rounded-md bg-orange-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 sm:ml-3 sm:w-auto"
                     onClick={() => {
                       axios
                         .delete(
@@ -99,7 +101,6 @@ export default function ConfirmationModal({
                         });
                     }}
                   >
-                    {console.log(currentUsersRSVPS)}
                     Cancel RSVP
                   </button>
                   <button

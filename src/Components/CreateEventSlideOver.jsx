@@ -130,7 +130,7 @@ export default function CreateEventSlideOver({
                           type="text"
                           name="event_name"
                           id="event_name"
-                          className="block w-96 ml-6 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          className="block w-96 ml-6 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
                           aria-describedby="eventName-description"
                           onChange={onChange}
                         />
@@ -155,7 +155,7 @@ export default function CreateEventSlideOver({
                           id="event_description"
                           name="event_description"
                           rows={3}
-                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
                           defaultValue={""}
                           onChange={onChange}
                         />
@@ -179,7 +179,7 @@ export default function CreateEventSlideOver({
                           onChange={handleValueChange}
                           useRange={false}
                           wrapperClassName="w-full"
-                          className="block w-96 ml-6 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          className="block w-96 ml-6 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
                           tog
                           asSingle={true}
                           minDate={new Date()}
@@ -202,7 +202,7 @@ export default function CreateEventSlideOver({
                               name="event_address"
                               id="event_address"
                               autoComplete="street-address"
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
                               onChange={onChange}
                             /> */}
                           {isLoaded ? (
@@ -216,7 +216,7 @@ export default function CreateEventSlideOver({
 
                     <div className="border-b border-gray-900/10 pb-12 w-full">
                       <button
-                        className=" ml-6 mr-6 bg-pink-600 hover:bg-pink-500 text-white font-bold py-2 px-4 rounded"
+                        className=" ml-6 mr-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded"
                         onClick={handleSubmit}
                       >
                         Create
@@ -258,7 +258,7 @@ const PlacesAutocomplete = ({ setSelected }) => {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           disabled={!ready}
-          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
           placeholder="Search an address"
         />
         <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
