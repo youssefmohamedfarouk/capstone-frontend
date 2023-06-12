@@ -11,6 +11,7 @@ function classNames(...classes) {
 }
 
 export default function EventSlideover({
+  currentUser,
   API,
   slideoverOpen,
   setSlideoverOpen,
@@ -20,8 +21,7 @@ export default function EventSlideover({
   confirmationModalOpen,
   setConfirmationModalOpen,
 }) {
-  const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
-
+  const currentUserId = currentUser.id;
 
   return (
     <Transition.Root show={slideoverOpen} as={Fragment}>
@@ -95,8 +95,8 @@ export default function EventSlideover({
                                       (entry) =>
                                         entry.event_id === currentEvent.id
                                     )
-                                      ? "inline-flex w-full flex-shrink-0 items-center justify-center rounded-md bg-gray-400 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:flex-1"
-                                      : "inline-flex w-full flex-shrink-0 items-center justify-center rounded-md bg-orange-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:flex-1"
+                                      ? "inline-flex w-full flex-shrink-0 items-center justify-center rounded-md bg-orange-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:flex-1"
+                                      : "inline-flex w-full flex-shrink-0 items-center justify-center rounded-md bg-white outline outline-orange-500 px-3 py-2 text-sm font-semibold text-orange-500 shadow-sm hover:bg-orange-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:flex-1"
                                   }
                                   onClick={() => {
                                     currentUsersRSVPS.some(
@@ -236,8 +236,15 @@ export default function EventSlideover({
                             </dd>
                           </div>
                           <div>
-                            <h1 className="mb-1 text-lg font-bold text-gray-900">Comments</h1>
-                            <Comments currentEvent={currentEvent} currentUserId={currentUserId} API={API}/>
+                            <h1 className="mb-1 text-lg font-bold text-gray-900">
+                              Comments
+                            </h1>
+                            <Comments
+                              currentUser={currentUser}
+                              currentEvent={currentEvent}
+                              currentUserId={currentUserId}
+                              API={API}
+                            />
                           </div>
                         </dl>
                       </div>

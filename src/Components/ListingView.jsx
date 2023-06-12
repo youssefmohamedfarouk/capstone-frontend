@@ -28,9 +28,10 @@ export default function ListingView({
   confirmationModalOpen,
   setConfirmationModalOpen,
 }) {
-  const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
+  const currentUserId = currentUser.id;
 
   console.log("events", events);
+  console.log("RSVPD USERS: ", rsvpdUsers);
   return (
     <table className="min-w-full">
       <thead>
@@ -50,27 +51,27 @@ export default function ListingView({
               if (attendeesSortOrder === 1) {
                 setListingEvents([
                   ...listingEvents.sort((a, b) =>
-                    totalRSVPS.filter((event) => event.event_id === a.id)[0]
+                    totalRSVPS.find((event) => event.event_id === a.id)
                       .total_rsvps >
-                    totalRSVPS.filter((event) => event.event_id === b.id)[0]
-                      .total_rsvps
-                      ? -1
-                      : 1
-                  ),
-                ]);
-              } else if (eventDateSortOrder === 2) {
-                setListingEvents([
-                  ...listingEvents.sort((a, b) =>
-                    totalRSVPS.filter((event) => event.event_id === a.id)[0]
-                      .total_rsvps >
-                    totalRSVPS.filter((event) => event.event_id === b.id)[0]
+                    totalRSVPS.find((event) => event.event_id === b.id)
                       .total_rsvps
                       ? 1
                       : -1
                   ),
                 ]);
+              } else if (eventDateSortOrder === 2) {
+                setListingEvents([
+                  ...listingEvents.sort((a, b) =>
+                    totalRSVPS.find((event) => event.event_id === a.id)
+                      .total_rsvps >
+                    totalRSVPS.find((event) => event.event_id === b.id)
+                      .total_rsvps
+                      ? -1
+                      : 1
+                  ),
+                ]);
               } else {
-                setListingEvents(events);
+                setListingEvents([...events]);
               }
             }}
           >
@@ -112,7 +113,7 @@ export default function ListingView({
                   ),
                 ]);
               } else {
-                setListingEvents(events);
+                setListingEvents([...events]);
               }
             }}
           >
@@ -142,8 +143,8 @@ export default function ListingView({
       </thead>
       <tbody className="divide-y divide-gray-100 bg-white">
         {listingEvents?.map((event, key) => (
-          <tr key={event.id}>
-            <td className="w-full max-w-0 whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900">
+          <tr key={event.id} className="hover:bg-orange-500 group">
+            <td className="w-full max-w-0 whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900 group-hover:text-white">
               <div className="flex items-center space-x-3 lg:pl-2">
                 <div
                   className={classNames(
@@ -153,23 +154,23 @@ export default function ListingView({
                   aria-hidden="true"
                 />
                 <div
-                  className="truncate hover:text-gray-600"
+                  className="truncate group-hover:text-white"
                   onClick={() => {
                     console.log(event);
                     setCurrentEvent(event);
                     setSlideoverOpen(true);
                   }}
                 >
-                  <span>
+                  <span className="group-hover:text-white">
                     {event.event_name}{" "}
-                    <span className="font-normal text-gray-500">
+                    <span className="font-normal text-gray-500 group-hover:text-white">
                       at {event.event_address}
                     </span>
                   </span>
                 </div>
               </div>
             </td>
-            <td className="px-6 py-3 text-sm font-medium text-gray-500">
+            <td className="px-6 py-3 text-sm font-medium text-gray-500 group-hover:text-white">
               <div className="flex items-center space-x-2">
                 <div className="flex flex-shrink-0 -space-x-1">
                   {rsvpdUsers
@@ -197,7 +198,7 @@ export default function ListingView({
                 ) : null}
               </div>
             </td>
-            <td className="hidden whitespace-nowrap px-6 py-3 text-right text-sm text-gray-500 md:table-cell">
+            <td className="hidden whitespace-nowrap px-6 py-3 text-right text-sm text-gray-500 md:table-cell group-hover:text-white">
               {event.event_date}
             </td>
             <td className="whitespace-nowrap px-6 py-3 text-right text-sm font-medium">
@@ -205,8 +206,8 @@ export default function ListingView({
                 type="button"
                 className={
                   currentUsersRSVPS.some((entry) => entry.event_id === event.id)
-                    ? "rounded bg-orange-500 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    : "rounded bg-white outline outline-orange-500 px-2 py-1 text-sm font-semibold text-orange-500 shadow-sm hover:bg-orange-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    ? "rounded bg-orange-500 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 group-hover:outline group-hover:outline-white"
+                    : "rounded bg-white px-2 py-1 text-sm font-semibold outline outline-orange-500 text-orange-500 shadow-sm hover:bg-orange-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
                 }
                 onClick={() => {
                   setCurrentEvent(event);

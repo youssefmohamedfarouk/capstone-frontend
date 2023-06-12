@@ -1,8 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useStytchSession } from "@stytch/react";
 import { useEffect, useState } from "react";
 import Dashboard from "./Components/Dashboard";
@@ -15,7 +11,6 @@ import "./App.css";
 import axios from "axios";
 import Example from "./Components/CreateEventSlideOver";
 import { GoogleMap, useLoadScript, MarkerF } from "@react-google-maps/api";
-
 
 function App() {
   const { session } = useStytchSession();
@@ -33,8 +28,6 @@ function App() {
     phone_number: "0000000000",
     profile_pic: "",
   });
-
-
 
   const { isLoaded } = useLoadScript({
     id: "google-map-script",
@@ -59,7 +52,7 @@ function App() {
         );
       });
     }
-  }, [session, API]);
+  }, [session?.session_id]);
 
   // if (!session || session.authentication_factors.length) {
   //   return null;
@@ -102,8 +95,20 @@ function App() {
                 />
               }
             />
-            <Route path="/profile/:id" element={<Profile currentUser={currentUser} session={session}/>}/>
-            <Route path="/profile/:id/edit" element={<EditProfile setCurrentUser={setCurrentUser} session={session} currentUser={currentUser}/>}/>
+            <Route
+              path="/profile/:id"
+              element={<Profile currentUser={currentUser} session={session} />}
+            />
+            <Route
+              path="/profile/:id/edit"
+              element={
+                <EditProfile
+                  setCurrentUser={setCurrentUser}
+                  session={session}
+                  currentUser={currentUser}
+                />
+              }
+            />
           </Routes>
         </main>
       </Router>
