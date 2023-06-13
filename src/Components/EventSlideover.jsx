@@ -68,7 +68,10 @@ export default function EventSlideover({
                           <div className="relative h-40 sm:h-56">
                             <img
                               className="absolute h-full w-full object-cover"
-                              src="https://as2.ftcdn.net/v2/jpg/01/20/28/25/1000_F_120282530_gMCruc8XX2mwf5YtODLV2O1TGHzu4CAb.jpg"
+                              src={
+                                currentEvent.event_photos ||
+                                "https://as2.ftcdn.net/v2/jpg/01/20/28/25/1000_F_120282530_gMCruc8XX2mwf5YtODLV2O1TGHzu4CAb.jpg"
+                              }
                               alt=""
                             />
                           </div>
