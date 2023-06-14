@@ -2,10 +2,12 @@ import { StytchLogin, Products, useStytch } from "@stytch/react";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-export default function Login() {
+export default function Login({ setCurrentUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+const API = process.env.REACT_APP_API_URL;
 
   let navigate = useNavigate();
   const signUpRedirect = () => {
@@ -23,7 +25,12 @@ export default function Login() {
       })
       .then((res) => {
         if (res.status_code === 200 && res.session_token) {
-          navigate("/dashboard");
+          axios.get(`${API}/users/${res.user_id}`).then((res) => {
+            setCurrentUser(res.data);
+            navigate("/dashboard");
+          });
+        
+
         }
       });
   };

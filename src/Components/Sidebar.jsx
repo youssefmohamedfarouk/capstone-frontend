@@ -30,7 +30,7 @@ function Sidebar({currentUser, session}) {
         { name: "Pursuit Brunch", href: "#", bgColorClass: "bg-yellow-500" },
       ];
       
-    console.log(currentUser)
+    
 
     const stytchClient = useStytch();
 
@@ -46,7 +46,7 @@ function Sidebar({currentUser, session}) {
 const navigate = useNavigate()
 
     const viewProfile = () => {
-      const userID = session ? session.user_id : currentUser.stytch_id
+      const userID = currentUser.id
         navigate(`/profile/${userID}`)
       }
 

@@ -32,9 +32,10 @@ function App() {
     intra_extraversion: 50,
     phone_number: "0000000000",
     profile_pic: "",
+    cover_photo: "",
   });
 
-
+console.log(currentUser)
 
   const { isLoaded } = useLoadScript({
     id: "google-map-script",
@@ -45,7 +46,7 @@ function App() {
   useEffect(() => {
     // const currentUserID = session.user_id;
     if (session && session.authentication_factors.length >= 1) {
-      axios.get(`${API}/users/${session.user_id}`).then((res) => {
+      axios.get(`${API}/users/${session.user_id}/stytch`).then((res) => {
         console.log(res.data);
         setCurrentUser(res.data);
         localStorage.setItem("currentUserId", JSON.stringify(res.data.id));

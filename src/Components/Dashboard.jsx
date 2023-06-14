@@ -634,6 +634,7 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
               setCurrentUsersRSVPS={setCurrentUsersRSVPS}
               confirmationModalOpen={confirmationModalOpen}
               setConfirmationModalOpen={setConfirmationModalOpen}
+              currentUser={currentUser}
             />
 
             {/* events table (small breakpoint and up) */}

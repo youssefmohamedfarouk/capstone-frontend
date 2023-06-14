@@ -3,7 +3,7 @@ import Sidebar from '../Sidebar';
 
 const UserProfile = ({currentUser, session,}) => {
 
-  // This component is for the user profile, all the data comes from currentUser
+  // This component is for
 
   const handleSendMessage = () => {
     // Logic to send a message or email
@@ -59,16 +59,16 @@ const UserProfile = ({currentUser, session,}) => {
             <div className="container px-4 mx-auto">
               <div className="p-6 mb-8 bg-gray-50 rounded-xl header-bg-orange">
                 <div className="relative">
-                  <img className="block w-full h-72 object-cover" src="trizzle-assets/images/banner-do-something.png" alt="" />
+                  <img className="block w-full h-72 object-cover" src={currentUser.cover_photo} alt="" />
                   <div className="absolute bottom-0 left-0 w-full flex flex-wrap p-6 items-center justify-between">
                     <div className="flex items-center w-full md:w-auto mb-5 md:mb-0">
                       <img className="w-12 sm:w-16 h-12 sm:h-16 mr-2 md:mr-6 rounded-full" src={currentUser.profile_pic} alt="" />
                       <div>
                         <h5 className="text-xl  font-bold">{currentUser.first_name} {currentUser.last_name}</h5>
-                        <span className="text-gray-300">{currentUser.username}</span>
+                        <span className="">{currentUser.username}</span>
                       </div>
                     </div>
-                    <a className="inline-block w-64 py-3 px-6 text-center text-sm leading-6 font-bold transition duration-200 rounded-xl hover:bg-gray-800" href={`/profile/${session.user_id}/edit`}>Edit </a>
+                    <a className="inline-block w-64 py-3 px-6 text-center text-sm leading-6 font-bold transition duration-200 rounded-xl hover:bg-gray-800" href={`/profile/${currentUser.id}/edit`}>Edit </a>
                   </div>
                 </div>
               </div>
