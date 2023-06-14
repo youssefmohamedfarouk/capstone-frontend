@@ -2,7 +2,13 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.js", "./public/index.html", "./node_modules/flowbite/**/*.js"],
+  darkMode: "className",
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./index.js",
+    "./public/index.html",
+    "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js",
+  ],
   theme: {
     extend: {
       
@@ -11,6 +17,11 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/forms"),require('flowbite/plugin')
-],
+  plugins: [
+    require("@tailwindcss/forms"),
+    function ({ addVariant }) {
+      addVariant("child", "& > *");
+      addVariant("child-hover", "& > *:hover");
+    },
+  ],
 };

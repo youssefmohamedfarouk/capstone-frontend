@@ -11,6 +11,7 @@ import {
   ChevronRightIcon,
   EllipsisVerticalIcon,
   MagnifyingGlassIcon,
+  ChevronUpDownIcon,
 } from "@heroicons/react/20/solid";
 import { useStytch } from "@stytch/react";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +27,6 @@ import { useEffect } from "react";
 //   Bars4Icon as Bars4,
 //   BarsArrowDownIcon,
 //   BarsArrowUpIcon,
-//   ChevronUpDownIcon,
 //   EllipsisVerticalIcon,
 //   MagnifyingGlassIcon,
 // } from "@heroicons/react/20/solid";
@@ -36,12 +36,8 @@ import EventSlideover from "./EventSlideover";
 import IconCarousel from "./IconCarousel";
 import Sidebar from "./Sidebar";
 import ConfirmationModal from "./ConfirmationModal";
+import ProfileSlideover from "./ProfileSlideover";
 
-const navigation = [
-  { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
-  { name: "My Events", href: "/#", icon: Bars4Icon, current: false },
-  { name: "Recently Viewed", href: "/#", icon: ClockIcon, current: false },
-];
 const teams = [
   { name: "Rock Climbing", href: "/#", bgColorClass: "bg-indigo-500" },
   { name: "Comic Book Club", href: "/#", bgColorClass: "bg-green-500" },
@@ -52,11 +48,15 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Dashboard({ currentUser, API, session, isLoaded }) {
+export default function Dashboard({
+  currentUser,
+  API,
+  session,
+  isLoaded,
+  toast,
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isListingView, setIsListingView] = useState(true);
-  const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);
-  const [eventDateSortOrder, setEventDateSortOrder] = useState(0);
   const [createEventSlideOverOpen, setCreateEventSlideOverOpen] =
     useState(false);
   const [events, setEvents] = useState([]);
@@ -64,21 +64,32 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
   const [rsvpdUsers, setRSVPDUsers] = useState([]);
   const [totalRSVPS, setTotalRSVPS] = useState([]);
   const [slideoverOpen, setSlideoverOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentUsersRSVPS, setCurrentUsersRSVPS] = useState([]);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+
+  const [navigation, setNavigation] = useState([
+    { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
+    { name: "My Events", href: "#", icon: Bars4Icon, current: false },
+    { name: "Recently Viewed", href: "#", icon: ClockIcon, current: false },
+  ]);
 
   const pinnedEvents = events.filter((event) => event.pinned);
 
   const stytchClient = useStytch();
   const navigate = useNavigate();
 
-  const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
-  const currentUserName = JSON.parse(localStorage.getItem("currentUserName"));
-  const currentUserUsername = JSON.parse(
-    localStorage.getItem("currentUserUsername")
-  );
+  const currentUserId = currentUser.id;
+  // JSON.parse(localStorage.getItem("currentUserId")) || currentUser.id;
+  const currentUserName = currentUser.first_name + " " + currentUser.last_name;
+  // JSON.parse(localStorage.getItem("currentUserName")) ||
+
+  const currentUserUsername = currentUser.username;
+  // JSON.parse(
+  //   localStorage.getItem("currentUserUsername")
+  // );
 
   useEffect(() => {
     axios.get(`${API}/events`).then((res) => {
@@ -91,17 +102,16 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
     axios.get(`${API}/usersevents/totalrsvps`).then((res) => {
       setTotalRSVPS(res.data);
     });
-    axios
-      .get(`${API}/usersevents/${currentUserId}`)
-      .then((res) => setCurrentUsersRSVPS(res.data));
-  }, [API]);
-
+    axios.get(`${API}/usersevents/${currentUser.id}`).then((res) => {
+      setCurrentUsersRSVPS(res.data);
+    });
+  }, [currentUser]);
 
   useEffect(() => {
     if (!session || !session.session_id) {
       navigate("/login");
     }
-  }, [session, navigate]);
+  }, [session]);
 
   useEffect(() => {
     if (searchTerm) {
@@ -124,17 +134,15 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
   };
 
   const updateEvents = (newEvent) => {
-    console.log("asdf", newEvent);
-
     setEvents([...events, newEvent]);
     setListingEvents([...listingEvents, newEvent]);
-    console.log("YOOOOOO", events);
   };
 
   return (
     <>
       <ConfirmationModal
         API={API}
+        currentUser={currentUser}
         currentEvent={currentEvent}
         confirmationModalOpen={confirmationModalOpen}
         setConfirmationModalOpen={setConfirmationModalOpen}
@@ -223,6 +231,14 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                               "group flex items-center rounded-md px-2 py-2 text-base font-medium leading-5"
                             )}
                             aria-current={item.current ? "page" : undefined}
+                            onClick={() => {
+                              const indexOfCurrent = navigation.findIndex(
+                                (item) => item.current
+                              );
+                              navigation[indexOfCurrent].current = false;
+                              item.current = true;
+                              setNavigation(...[navigation]);
+                            }}
                           >
                             <item.icon
                               className={classNames(
@@ -279,14 +295,226 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-        <Sidebar
-          classNames={classNames}
-          teams={teams}
-          logout={logout}
-          navigation={navigation}
-          currentUser={currentUser}
-          session={session}
-        />
+        <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-gray-200 lg:bg-gray-100 lg:pb-4 lg:pt-5">
+          <div className="flex flex-shrink-0 items-center px-6">
+            <img className="h-8 w-auto" src={LogoSVG} alt="Social CIRCLE" />
+          </div>
+          {/* Sidebar component, swap this element with another sidebar if you like */}
+          <div className="mt-5 flex h-0 flex-1 flex-col overflow-y-auto pt-1">
+            {/* User account dropdown */}
+            <Menu as="div" className="relative inline-block px-3 text-left">
+              <div>
+                <Menu.Button className="group w-full rounded-md bg-gray-100 px-3.5 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-100">
+                  <span className="flex w-full items-center justify-between">
+                    <span className="flex min-w-0 items-center justify-between space-x-3">
+                      <img
+                        className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"
+                        src={currentUser.profile_pic}
+                        alt=""
+                      />
+                      <span className="flex min-w-0 flex-1 flex-col">
+                        <span className="truncate text-sm font-medium text-gray-900">
+                          {currentUserName}
+                        </span>
+                        <span className="truncate text-sm text-gray-500">
+                          @{currentUserUsername}
+                        </span>
+                      </span>
+                    </span>
+                    <ChevronUpDownIcon
+                      className="h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </Menu.Button>
+              </div>
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95"
+              >
+                <Menu.Items className="absolute left-0 right-0 z-10 mx-3 mt-1 origin-top divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <div className="py-1">
+                    <Menu.Item>
+                      {({ active }) => (
+                        <div
+                          className={classNames(
+                            active
+                              ? "bg-orange-500 text-white"
+                              : "text-gray-700",
+                            "block px-4 py-2 text-sm"
+                          )}
+                          onClick={() => setProfileOpen(true)}
+                        >
+                          View profile
+                        </div>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <div
+                          className={classNames(
+                            active
+                              ? "bg-orange-500 text-white"
+                              : "text-gray-700",
+                            "block px-4 py-2 text-sm"
+                          )}
+                        >
+                          Settings
+                        </div>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <a
+                          href="#"
+                          className={classNames(
+                            active
+                              ? "bg-orange-500 text-white"
+                              : "text-gray-700",
+                            "block px-4 py-2 text-sm"
+                          )}
+                        >
+                          Notifications
+                        </a>
+                      )}
+                    </Menu.Item>
+                  </div>
+                  <div className="py-1">
+                    <Menu.Item>
+                      {({ active }) => (
+                        <a
+                          href="#"
+                          className={classNames(
+                            active
+                              ? "bg-orange-500 text-white"
+                              : "text-gray-700",
+                            "block px-4 py-2 text-sm"
+                          )}
+                        >
+                          About
+                        </a>
+                      )}
+                    </Menu.Item>
+                  </div>
+                  <div className="py-1">
+                    <Menu.Item>
+                      {({ active }) => (
+                        <a
+                          // href="javascript:;"
+                          className={classNames(
+                            active
+                              ? "bg-orange-500 text-white"
+                              : "text-gray-700",
+                            "block px-4 py-2 text-sm"
+                          )}
+                          onClick={logout}
+                        >
+                          Logout
+                        </a>
+                      )}
+                    </Menu.Item>
+                  </div>
+                </Menu.Items>
+              </Transition>
+            </Menu>
+            {/* Sidebar Search */}
+            <div className="mt-5 px-3">
+              <label htmlFor="search" className="sr-only">
+                Search Events
+              </label>
+              <div className="relative mt-1 rounded-md shadow-sm focus-within:text-orange-500 focus-within:caret-orange-500">
+                <div
+                  className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+                  aria-hidden="true"
+                >
+                  <MagnifyingGlassIcon className="h-4 w-4" aria-hidden="true" />
+                </div>
+                <input
+                  type="text"
+                  name="search"
+                  id="search"
+                  className="block w-full rounded-md border-0 py-1.5 pl-9 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 text-black focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
+                  placeholder="Search Events"
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            {/* Navigation */}
+            <nav className="mt-6 px-3">
+              <div className="space-y-1">
+                {navigation.map((item) => (
+                  <div
+                    key={item.name}
+                    // href={item.href}
+                    className={classNames(
+                      item.current
+                        ? "bg-orange-500 text-white"
+                        : "text-gray-700 hover:bg-gray-50 hover:text-gray-900",
+                      "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+                    )}
+                    aria-current={item.current ? "page" : undefined}
+                    onClick={() => {
+                      const indexOfCurrent = navigation.findIndex(
+                        (item) => item.current
+                      );
+                      navigation[indexOfCurrent].current = false;
+                      item.current = true;
+                    }}
+                  >
+                    <item.icon
+                      className={classNames(
+                        item.current
+                          ? "text-white"
+                          : "text-gray-400 group-hover:text-gray-500",
+                        "mr-3 h-6 w-6 flex-shrink-0"
+                      )}
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-8">
+                {/* Secondary navigation */}
+                <h3
+                  className="px-3 text-sm font-medium text-gray-500"
+                  id="desktop-teams-headline"
+                >
+                  Event Groups
+                </h3>
+                <div
+                  className="mt-1 space-y-1"
+                  role="group"
+                  aria-labelledby="desktop-teams-headline"
+                >
+                  {teams.map((team) => (
+                    <a
+                      key={team.name}
+                      href={team.href}
+                      className="group flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                    >
+                      <span
+                        className={classNames(
+                          team.bgColorClass,
+                          "mr-4 h-2.5 w-2.5 rounded-full"
+                        )}
+                        aria-hidden="true"
+                      />
+                      <span className="truncate">{team.name}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </nav>
+          </div>
+        </div>
         {/* Main column */}
         <div className="flex flex-col lg:pl-64">
           {/* Search header */}
@@ -348,23 +576,22 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                       <div className="py-1">
                         <Menu.Item>
                           {({ active }) => (
-                            <a
-                              href={`/profile/${session.user_id}`}
+                            <div
                               className={classNames(
                                 active
                                   ? "bg-orange-500 text-white"
                                   : "text-gray-700",
                                 "block px-4 py-2 text-sm"
                               )}
+                              onClick={() => setProfileOpen(true)}
                             >
                               View profile
-                            </a>
+                            </div>
                           )}
                         </Menu.Item>
                         <Menu.Item>
                           {({ active }) => (
-                            <a
-                              href="/#"
+                            <div
                               className={classNames(
                                 active
                                   ? "bg-orange-500 text-white"
@@ -373,7 +600,7 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                               )}
                             >
                               Settings
-                            </a>
+                            </div>
                           )}
                         </Menu.Item>
                         <Menu.Item>
@@ -411,7 +638,6 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              href="/#"
                               className={classNames(
                                 active
                                   ? "bg-orange-500 text-white"
@@ -428,7 +654,6 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              href="/#"
                               className={classNames(
                                 active
                                   ? "bg-orange-500 text-white"
@@ -456,7 +681,7 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                   Home
                 </h1>
               </div>
-              <div className="mt-4 flex sm:ml-4 sm:mt-0">
+              <div className="mt-4 flex sm:ml-4 sm:mt-0 mr-1">
                 <button
                   type="button"
                   className="sm:order-0 order-1 ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:ml-0"
@@ -481,7 +706,7 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
               isLoaded={isLoaded}
               updateEvents={updateEvents}
             />
-            <div className="mt-6 px-4 sm:px-6 lg:px-8">
+            <div className="mt-4 px-4 sm:px-6 lg:px-2">
               {/* <h2 className="text-sm font-medium text-gray-900">
                 RSVP'd Events
               </h2> */}
@@ -626,6 +851,7 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
             </div>
 
             <EventSlideover
+              currentUser={currentUser}
               API={API}
               slideoverOpen={slideoverOpen}
               setSlideoverOpen={setSlideoverOpen}
@@ -637,14 +863,20 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
               currentUser={currentUser}
             />
 
+            <ProfileSlideover
+              profileOpen={profileOpen}
+              setProfileOpen={setProfileOpen}
+              currentUser={currentUser}
+            />
+
             {/* events table (small breakpoint and up) */}
-            <div className="mt-8 hidden sm:block">
+            <div className="mt-4 hidden sm:block">
               <div className="inline-block min-w-full border-b border-gray-200 align-middle">
                 {/* Button to switch from event listings to map view*/}
                 <div className="text-right pb-2 pr-2">
                   <button
                     type="button"
-                    className="rounded bg-orange-500 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="rounded bg-orange-500 mr-4 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     onClick={() => setIsListingView(!isListingView)}
                   >
                     {isListingView ? "View Map" : "View Listings"}
@@ -660,10 +892,6 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                     listingEvents={listingEvents}
                     setListingEvents={setListingEvents}
                     classNames={classNames}
-                    attendeesSortOrder={attendeesSortOrder}
-                    setAttendeesSortOrder={setAttendeesSortOrder}
-                    eventDateSortOrder={eventDateSortOrder}
-                    setEventDateSortOrder={setEventDateSortOrder}
                     rsvpdUsers={rsvpdUsers}
                     totalRSVPS={totalRSVPS}
                     setSlideoverOpen={setSlideoverOpen}
@@ -673,6 +901,7 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                     setCurrentUsersRSVPS={setCurrentUsersRSVPS}
                     confirmationModalOpen={confirmationModalOpen}
                     setConfirmationModalOpen={setConfirmationModalOpen}
+                    toast={toast}
                   />
                 ) : (
                   <MapView isLoaded={isLoaded} events={events} />

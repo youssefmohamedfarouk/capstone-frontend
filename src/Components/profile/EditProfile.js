@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import Sidebar from '../Sidebar'
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
-
+import React, { useEffect, useState } from "react";
+import Sidebar from "../Sidebar";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 function EditProfile({ setCurrentUser, session, currentUser }) {
 
@@ -13,7 +12,15 @@ function EditProfile({ setCurrentUser, session, currentUser }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API_URL;
-  
+
+  console.log(profileUser);
+
+  useEffect(() => {
+    if (!session || !session.session_id) {
+      navigate("/login");
+    }
+  }, [session]);
+
   // Function to update the 'profileUser' state with input field values
   const updateProfileUser = (e) => {
     setProfileUser({ ...profileUser, [e.target.id]: e.target.value });
@@ -27,8 +34,8 @@ function EditProfile({ setCurrentUser, session, currentUser }) {
         setProfileUser(res.data);
       })
       .catch((error) => {
-        navigate('/404');
-        console.error('Error fetching user:', error);
+        navigate("/404");
+        console.error("Error fetching user:", error);
       });
   }, [id, API]);
   
@@ -123,17 +130,30 @@ function EditProfile({ setCurrentUser, session, currentUser }) {
     } catch (error) {
       console.error("Error updating profile:", error);
     }
+
+    axios
+      .put(`${API}/users/${session?.user_id || currentUser.id}`, updatedUser)
+      .then((res) => {
+        console.log(res.data);
+        setCurrentUser(res.data);
+        navigate(`/profile/${session.user_id || currentUser.id}`);
+      });
   };
   
 
+  //     // Make the PUT request using Axios
+  //     const response = await axios.put(
+  //       `${API}/users/${session?.user_id || currentUser.id}`,
+  //       updatedUser
+  //     );
 
 
 
   return (
-
-    <div><div>
-      <br />
-      <br />
+    <div>
+      <div>
+        <br />
+        <br />
 
       <title>Profile</title>
       <meta charSet="utf-8" />
@@ -208,14 +228,20 @@ function EditProfile({ setCurrentUser, session, currentUser }) {
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex flex-wrap items-center -mx-4 pb-8 mb-8 border-b border-gray-400 border-opacity-20">
-                  <div className="w-full sm:w-1/3 px-4 mb-4 sm:mb-0">
-                    <span className="text-sm font-medium">Username</span>
-                  </div>
-                  <div className="w-full sm:w-2/3 px-4">
-                    <div className="max-w-xl">
-                      <input className="block py-4 px-3 w-full text-sm font-medium outline-none bg-transparent border border-gray-400 hover:border-white focus:border-green-500 rounded-lg" id="username" type="text" value={profileUser.username} onChange={updateProfileUser} />
+                  <div className="flex flex-wrap items-center -mx-4 pb-8 mb-8 border-b border-gray-400 border-opacity-20">
+                    <div className="w-full sm:w-1/3 px-4 mb-4 sm:mb-0">
+                      <span className="text-sm font-medium">Username</span>
+                    </div>
+                    <div className="w-full sm:w-2/3 px-4">
+                      <div className="max-w-xl">
+                        <input
+                          className="block py-4 px-3 w-full text-sm font-medium outline-none bg-transparent border border-gray-400 hover:border-white focus:border-green-500 rounded-lg"
+                          id="username"
+                          type="text"
+                          value={profileUser.username}
+                          onChange={updateProfileUser}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -344,15 +370,14 @@ function EditProfile({ setCurrentUser, session, currentUser }) {
                       onChange={updateProfileUser}// Add the event handler
                     /></div>
                   </div>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
     </div>
-    </div>
-  )
+  );
 }
 
-export default EditProfile
+export default EditProfile;
