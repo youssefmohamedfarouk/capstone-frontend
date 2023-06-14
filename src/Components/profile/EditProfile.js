@@ -66,7 +66,7 @@ function EditProfile({ setCurrentUser, session, currentUser }) {
       .then((response) => {
         // Handle successful upload
         const fileUrl = response.data.staticUrl;
-        setCurrentUser(response.data);
+        // setCurrentUser(response.data);
         setProfileUser({
           ...profileUser,
           profile_pic: response.data.profile_pic,
