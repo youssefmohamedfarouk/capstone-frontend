@@ -35,6 +35,10 @@ export default function MapView({ isLoaded, events }) {
 
   if (!isLoaded) return <div>Loading... </div>;
 
+  const handleOnClick = (marker) => {
+    console.log("Marker:", marker);
+  };
+
   return (
     <table className="min-w-full">
       <thead>
@@ -52,7 +56,6 @@ export default function MapView({ isLoaded, events }) {
           {/* <PlacesAutocomplete setSelected={setSelected} /> */}
         </div>
         <GoogleMap zoom={10} center={center} mapContainerStyle={containerStyle}>
-          {selected && <MarkerF position={selected} />}
           {eventMarkers &&
             eventMarkers.map((marker, key) => (
               <MarkerF
@@ -60,6 +63,9 @@ export default function MapView({ isLoaded, events }) {
                 position={{
                   lat: Number(marker.latitude),
                   lng: Number(marker.longitude),
+                }}
+                onClick={() => {
+                  handleOnClick(marker);
                 }}
               />
             ))}
