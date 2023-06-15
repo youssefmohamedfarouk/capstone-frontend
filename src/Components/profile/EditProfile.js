@@ -105,9 +105,9 @@ function EditProfile({ setCurrentUser, session, currentUser }) {
   
   const handleSaveOfPage = async (e) => {
     e.preventDefault();
-  
+    let updatedUser = { ...profileUser };
     try {
-      let updatedUser = { ...profileUser };
+      
   
       if (selectedProfileFile) {
         const formData = new FormData();
@@ -370,9 +370,11 @@ function EditProfile({ setCurrentUser, session, currentUser }) {
                       onChange={updateProfileUser}// Add the event handler
                     /></div>
                   </div>
+                  </div>
                 </form>
               </div>
             </div>
+            
           </section>
         </div>
       </div>

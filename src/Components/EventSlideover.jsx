@@ -69,7 +69,7 @@ export default function EventSlideover({
                             <img
                               className="absolute h-full w-full object-cover"
                               src={
-                                currentEvent.event_photos ||
+                                (currentEvent.event_photos || [])[0] ||
                                 "https://as2.ftcdn.net/v2/jpg/01/20/28/25/1000_F_120282530_gMCruc8XX2mwf5YtODLV2O1TGHzu4CAb.jpg"
                               }
                               alt=""
