@@ -860,6 +860,7 @@ export default function Dashboard({
               setCurrentUsersRSVPS={setCurrentUsersRSVPS}
               confirmationModalOpen={confirmationModalOpen}
               setConfirmationModalOpen={setConfirmationModalOpen}
+              currentUser={currentUser}
             />
 
             <ProfileSlideover
