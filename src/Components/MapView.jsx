@@ -25,6 +25,8 @@ export default function MapView({ isLoaded, events }) {
     height: "550px",
   };
 
+  console.log("eventMarkers", eventMarkers);
+
   // const { isLoaded } = useLoadScript({
   //   id: "google-map-script",
   //   googleMapsApiKey: process.env.REACT_APP_API_KEY,
@@ -41,7 +43,7 @@ export default function MapView({ isLoaded, events }) {
             className="border-b border-gray-200 bg-gray-50 px-6 py-3 text-left text-sm font-semibold text-gray-900"
             scope="col"
           >
-            <span className="lg:pl-2"></span>
+            <span className="lg:pl-2">Map</span>
           </th>
         </tr>
       </thead>
@@ -49,25 +51,19 @@ export default function MapView({ isLoaded, events }) {
         <div className="places-container">
           {/* <PlacesAutocomplete setSelected={setSelected} /> */}
         </div>
-        <tr>
-          <GoogleMap
-            zoom={10}
-            center={center}
-            mapContainerStyle={containerStyle}
-          >
-            {selected && <MarkerF position={selected} />}
-            {eventMarkers &&
-              eventMarkers.map((marker, key) => (
-                <MarkerF
-                  key={key}
-                  position={{
-                    lat: Number(marker.latitude),
-                    lng: Number(marker.longitude),
-                  }}
-                />
-              ))}
-          </GoogleMap>
-        </tr>
+        <GoogleMap zoom={10} center={center} mapContainerStyle={containerStyle}>
+          {selected && <MarkerF position={selected} />}
+          {eventMarkers &&
+            eventMarkers.map((marker, key) => (
+              <MarkerF
+                key={key}
+                position={{
+                  lat: Number(marker.latitude),
+                  lng: Number(marker.longitude),
+                }}
+              />
+            ))}
+        </GoogleMap>
       </tbody>
     </table>
   );

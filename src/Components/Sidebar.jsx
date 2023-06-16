@@ -28,6 +28,8 @@ function Sidebar({ currentUser, session }) {
     { name: "Pursuit Brunch", href: "#", bgColorClass: "bg-yellow-500" },
   ];
 
+  console.log(currentUser);
+
   const stytchClient = useStytch();
 
   const logout = () => {

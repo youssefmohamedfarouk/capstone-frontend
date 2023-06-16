@@ -4,7 +4,6 @@ import {
   BarsArrowUpIcon,
 } from "@heroicons/react/20/solid";
 import axios from "axios";
-import { useEffect } from "react";
 import { useState } from "react";
 
 export default function ListingView({
@@ -15,6 +14,10 @@ export default function ListingView({
   listingEvents,
   setListingEvents,
   classNames,
+  attendeesSortOrder,
+  setAttendeesSortOrder,
+  eventDateSortOrder,
+  setEventDateSortOrder,
   rsvpdUsers,
   totalRSVPS,
   setSlideoverOpen,
@@ -24,76 +27,11 @@ export default function ListingView({
   setCurrentUsersRSVPS,
   confirmationModalOpen,
   setConfirmationModalOpen,
-  toast,
 }) {
   const currentUserId = currentUser.id;
-  const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);
-  const [eventDateSortOrder, setEventDateSortOrder] = useState(0);
 
-  const toastSettings = {
-    position: "bottom-right",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-  };
-
-  const rsvpSuccess = () => toast.success("Successfully RSVP'D", toastSettings);
-
-  console.log("TOTAL - - - ", totalRSVPS);
-  useEffect(() => {
-    if (attendeesSortOrder === 2) {
-      setListingEvents([
-        ...listingEvents.sort((a, b) => {
-          const aTotalRSVPS = totalRSVPS.find(
-            (event) => event.event_id === a.id
-          ).total_rsvps;
-          const bTotalRSVPS = totalRSVPS.find(
-            (event) => event.event_id === b.id
-          ).total_rsvps;
-
-          console.log(aTotalRSVPS, bTotalRSVPS);
-
-          return aTotalRSVPS - bTotalRSVPS;
-        }),
-      ]);
-    } else if (attendeesSortOrder === 1) {
-      setListingEvents([
-        ...listingEvents.sort((a, b) => {
-          const aTotalRSVPS = totalRSVPS.find(
-            (event) => event.event_id === a.id
-          ).total_rsvps;
-          const bTotalRSVPS = totalRSVPS.find(
-            (event) => event.event_id === b.id
-          ).total_rsvps;
-
-          return bTotalRSVPS - aTotalRSVPS;
-        }),
-      ]);
-    } else {
-      setListingEvents([...events]);
-    }
-
-    if (eventDateSortOrder === 2) {
-      setListingEvents([
-        ...listingEvents.sort(
-          (a, b) => new Date(b.event_date) - new Date(a.event_date)
-        ),
-      ]);
-    } else if (eventDateSortOrder === 1) {
-      setListingEvents([
-        ...listingEvents.sort(
-          (a, b) => new Date(a.event_date) - new Date(b.event_date)
-        ),
-      ]);
-    } else {
-      setListingEvents([...events]);
-    }
-  }, [attendeesSortOrder, eventDateSortOrder]);
-
+  console.log("events", events);
+  console.log("RSVPD USERS: ", rsvpdUsers);
   return (
     <table className="min-w-full">
       <thead>
@@ -110,32 +48,31 @@ export default function ListingView({
             onClick={() => {
               setAttendeesSortOrder((attendeesSortOrder + 1) % 3);
               setEventDateSortOrder(0);
-
-              // if (attendeesSortOrder === 2) {
-              //   setListingEvents([
-              //     ...listingEvents.sort((a, b) =>
-              //       totalRSVPS.find((event) => event.event_id === a.id)
-              //         .total_rsvps >
-              //       totalRSVPS.find((event) => event.event_id === b.id)
-              //         .total_rsvps
-              //         ? 1
-              //         : -1
-              //     ),
-              //   ]);
-              // } else if (attendeesSortOrder === 1) {
-              //   setListingEvents([
-              //     ...listingEvents.sort((a, b) =>
-              //       totalRSVPS.find((event) => event.event_id === a.id)
-              //         .total_rsvps >
-              //       totalRSVPS.find((event) => event.event_id === b.id)
-              //         .total_rsvps
-              //         ? -1
-              //         : 1
-              //     ),
-              //   ]);
-              // } else {
-              //   setListingEvents([...events]);
-              // }
+              if (attendeesSortOrder === 1) {
+                setListingEvents([
+                  ...listingEvents.sort((a, b) =>
+                    totalRSVPS.find((event) => event.event_id === a.id)
+                      .total_rsvps >
+                    totalRSVPS.find((event) => event.event_id === b.id)
+                      .total_rsvps
+                      ? 1
+                      : -1
+                  ),
+                ]);
+              } else if (eventDateSortOrder === 2) {
+                setListingEvents([
+                  ...listingEvents.sort((a, b) =>
+                    totalRSVPS.find((event) => event.event_id === a.id)
+                      .total_rsvps >
+                    totalRSVPS.find((event) => event.event_id === b.id)
+                      .total_rsvps
+                      ? -1
+                      : 1
+                  ),
+                ]);
+              } else {
+                setListingEvents([...events]);
+              }
             }}
           >
             {/* Attendees Sort Icon Logic */}
@@ -163,21 +100,21 @@ export default function ListingView({
             onClick={() => {
               setEventDateSortOrder((eventDateSortOrder + 1) % 3);
               setAttendeesSortOrder(0);
-              // if (eventDateSortOrder === 2) {
-              //   setListingEvents([
-              //     ...listingEvents.sort(
-              //       (a, b) => new Date(b.event_date) - new Date(a.event_date)
-              //     ),
-              //   ]);
-              // } else if (eventDateSortOrder === 1) {
-              //   setListingEvents([
-              //     ...listingEvents.sort(
-              //       (a, b) => new Date(a.event_date) - new Date(b.event_date)
-              //     ),
-              //   ]);
-              // } else {
-              //   setListingEvents([...events]);
-              // }
+              if (eventDateSortOrder === 1) {
+                setListingEvents([
+                  ...listingEvents.sort(
+                    (a, b) => new Date(b.event_date) - new Date(a.event_date)
+                  ),
+                ]);
+              } else if (eventDateSortOrder === 2) {
+                setListingEvents([
+                  ...listingEvents.sort(
+                    (a, b) => new Date(a.event_date) - new Date(b.event_date)
+                  ),
+                ]);
+              } else {
+                setListingEvents([...events]);
+              }
             }}
           >
             Event Date
@@ -207,7 +144,7 @@ export default function ListingView({
       <tbody className="divide-y divide-gray-100 bg-white">
         {listingEvents?.map((event, key) => (
           <tr key={event.id} className="hover:bg-orange-500 group">
-            <td className="w-full max-w-0 whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900 group-hover:text-white cursor-pointer">
+            <td className="w-full max-w-0 whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900 group-hover:text-white">
               <div className="flex items-center space-x-3 lg:pl-2">
                 <div
                   className={classNames(
@@ -219,6 +156,7 @@ export default function ListingView({
                 <div
                   className="truncate group-hover:text-white"
                   onClick={() => {
+                    console.log(event);
                     setCurrentEvent(event);
                     setSlideoverOpen(true);
                   }}
@@ -247,6 +185,7 @@ export default function ListingView({
                       />
                     ))}
                 </div>
+                {console.log(listingEvents)}
                 {totalRSVPS?.filter(
                   (listing) => listing.event_id === event.id
                 )[0]?.total_rsvps > 4 ? (
@@ -281,10 +220,10 @@ export default function ListingView({
                           rsvp: true,
                         })
                         .then((res) => {
+                          console.log(res);
                           const tempUsersRSVPS = [...currentUsersRSVPS];
                           tempUsersRSVPS.push({ ...res.data });
                           setCurrentUsersRSVPS(tempUsersRSVPS);
-                          rsvpSuccess();
                         });
                 }}
               >

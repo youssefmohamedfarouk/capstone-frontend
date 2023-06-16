@@ -35,6 +35,8 @@ export default function SignUp({ currentUser, setCurrentUser }) {
 
   const updateUser = async ({ name, untrusted_metadata }) => {
     await stytchClient.user.update({ name, untrusted_metadata }).then((res) => {
+      console.log(res);
+
       const stytchUserObject = res.user;
 
       axios
@@ -55,6 +57,7 @@ export default function SignUp({ currentUser, setCurrentUser }) {
             ),
         })
         .then((res) => {
+          console.log(res);
           setCurrentUser(res.data);
         });
     });
@@ -69,6 +72,8 @@ export default function SignUp({ currentUser, setCurrentUser }) {
     await stytchClient.passwords
       .create({ email, password, session_duration_minutes })
       .then((res) => {
+        console.log(res);
+
         updateUser(stytchParams);
       });
   };

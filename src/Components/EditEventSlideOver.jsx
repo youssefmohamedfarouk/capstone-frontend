@@ -57,13 +57,14 @@ export default function EditEventSlideOver({
     e.preventDefault();
     let date = createEvent.event_date.startDate.split("-");
     date = `${date[1]}/${date[2]}/${date[0]}`;
-
+    console.log("New Event", createEvent);
     axios
       .put(`${API}/events/${currentEvent.id}`, {
         ...createEvent,
         event_date: date,
       })
       .then((res) => {
+        console.log("Axios", res.data);
         updateEvents(res.data);
       });
   };
@@ -84,6 +85,7 @@ export default function EditEventSlideOver({
   // const onAddressChange = (e) => {
   //   setAddress({...address, [e.target.id]: e.target.value})
   // }
+  console.log("current event", currentEvent);
 
   return (
     <Transition.Root show={editSlideOver} as={Fragment}>

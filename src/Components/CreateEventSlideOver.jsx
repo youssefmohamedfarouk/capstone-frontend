@@ -57,13 +57,15 @@ export default function CreateEventSlideOver({
     let date = createEvent.event_date.startDate.split("-");
     date = `${date[1]}/${date[2]}/${date[0]}`;
 
+    console.log("New Event", createEvent);
     axios
       .post(`${API}/events`, { ...createEvent, event_date: date })
       .then((res) => {
+        console.log("Axios", res.data);
         if (eventPhoto) {
           const formData = new FormData();
           formData.append("event_photo", eventPhoto);
-
+          console.log(formData);
           axios
             .post(`${API}/events/${res.data.id}/photo`, formData)
             .then((res) => {
@@ -148,7 +150,7 @@ export default function CreateEventSlideOver({
   // const onAddressChange = (e) => {
   //   setAddress({...address, [e.target.id]: e.target.value})
   // }
-
+  console.log(createEvent);
   return (
     <Transition.Root show={createEventSlideOverOpen} as={Fragment}>
       <Dialog
@@ -310,6 +312,7 @@ export default function CreateEventSlideOver({
                           useRange={false}
                           wrapperClassName="w-full"
                           className="bg-white block w-96 ml-6 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
+                          tog
                           asSingle={true}
                           minDate={new Date()}
                           displayFormat={"MM/DD/YYYY"}

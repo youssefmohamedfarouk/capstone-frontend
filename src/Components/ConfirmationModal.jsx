@@ -92,6 +92,7 @@ export default function ConfirmationModal({
                           `${API}/usersevents/${currentUserId}/${currentEvent.id}`
                         )
                         .then((res) => {
+                          console.log(res);
                           const tempUsersRSVPS = currentUsersRSVPS.filter(
                             (rsvp) => rsvp.event_id !== res.data.event_id
                           );
