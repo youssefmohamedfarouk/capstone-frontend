@@ -18,8 +18,6 @@ const UserProfile = ({currentUser, session,}) => {
     }
   }, [session]);
 
-  console.log(currentUser);
-
   return (
     <div className="min-h-full">
       {/* First Section */}

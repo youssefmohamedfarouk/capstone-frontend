@@ -36,10 +36,12 @@ export default function IconCarousel() {
 
   return (
     <Carousel
+      className="h-20 child:hover:scale-125 bg-orange-500 rounded-md"
       responsive={responsive}
-      //   centerMode={true}
+      centerMode={true}
+      emulateTouch={true}
       swipeable={true}
-      draggable={false}
+      draggable={true}
       showDots={false}
       focusOnSelect={false}
       ssr={true} // means to render carousel on server-side.
@@ -51,52 +53,74 @@ export default function IconCarousel() {
       transitionDuration={500}
       containerClass="carousel-container"
       removeArrowOnDeviceType={["tablet", "mobile"]}
-      // dotListClass="custom-dot-list-style"
-      // itemClass="carousel-item-padding-40-px"
+      arrows={false}
+      //   partialVisbile={true}
     >
-      <FitnessCenterIcon
-        style={{ color: "rgb(249 115 22)" }}
-        className="flex items-center justify-center"
-      />
+      <div>
+        <FitnessCenterIcon
+          style={{ color: "rgb(255 255 255)" }}
+          className="flex items-center justify-center hover:scale-125"
+          data-te-toggle="tooltip"
+          data-te-placement="bottom"
+          data-te-ripple-init
+          data-te-ripple-color="light"
+          title="Tooltip on top"
+        />
+        <span
+          class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2 
+    -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto"
+        >
+          Tooltip
+        </span>
+      </div>
+
       <DirectionsBikeIcon
-        style={{ color: "rgb(249 115 22)" }}
-        className="flex items-center justify-center"
+        style={{ color: "rgb(255 255 255)" }}
+        className="flex items-center justify-center hover:scale-125"
       />
       <HikingIcon
-        style={{ color: "rgb(249 115 22)" }}
-        className="flex items-center justify-center"
+        style={{ color: "rgb(255 255 255)" }}
+        className="flex items-center justify-center hover:scale-125"
       />
       <CelebrationIcon
-        style={{ color: "rgb(249 115 22)" }}
-        className="flex items-center justify-center"
+        style={{ color: "rgb(255 255 255)" }}
+        className="flex items-center justify-center hover:scale-125"
       />
       <NightlifeIcon
-        style={{ color: "rgb(249 115 22)" }}
-        className="flex items-center justify-center"
+        style={{ color: "rgb(255 255 255)" }}
+        className="flex items-center justify-center hover:scale-125"
       />
       <DiscFullIcon
-        style={{ color: "rgb(249 115 22)" }}
-        className="flex items-center justify-center"
+        style={{ color: "rgb(255 255 255)" }}
+        className="flex items-center justify-center hover:scale-125"
       />
       <EmojiFoodBeverageIcon
-        style={{ color: "rgb(249 115 22)" }}
-        className="flex items-center justify-center"
+        style={{ color: "rgb(255 255 255)" }}
+        className="flex items-center justify-center hover:scale-125"
       />
       <FastfoodIcon
-        style={{ color: "rgb(249 115 22)" }}
-        className="flex items-center justify-center"
+        style={{
+          color: "rgb(255 255 255)",
+          hover: {
+            "&:hover": {
+              color: "rgb(0 0 0)",
+            },
+          },
+        }}
+        className="flex items-center justify-center hover:scale-125"
       />
       <BrunchDiningIcon
-        style={{ color: "rgb(249 115 22)" }}
-        className="flex items-center justify-center"
+        style={{ color: "rgb(255 255 255)" }}
+        className="flex items-center justify-center hover:scale-125"
       />
       <AutoStoriesIcon
-        style={{ color: "rgb(249 115 22)" }}
-        className="flex items-center justify-center"
+        style={{ color: "rgb(255 255 255)" }}
+        className="flex items-center justify-center hover:scale-125"
       />
       <TheaterComedyIcon
-        style={{ color: "rgb(249 115 22)" }}
-        className="flex items-center justify-center"
+        // style={{ color: "rgb(249 115 22)" }}
+        style={{ color: "rgb(255 255 255)" }}
+        className="flex items-center justify-center hover:scale-125 shadow-orange-500"
       />
     </Carousel>
   );

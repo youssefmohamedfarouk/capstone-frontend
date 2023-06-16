@@ -75,13 +75,11 @@ export default function Comments({
 
   const commentRef = useRef();
 
-  const commentsDiv = document.getElementById("comments-section");
-
   useEffect(() => {
     axios.get(`${API}/events/${currentEvent.id}/comments`).then((res) => {
       setComments(res.data);
     });
-  }, []);
+  }, [currentEvent]);
 
   useEffect(() => {
     if (commentRef.current) {
@@ -97,11 +95,13 @@ export default function Comments({
     e.preventDefault();
     axios
       .post(`${API}/events/${currentEvent.id}/comments`, {
-        user_id: currentUserId,
+        user_id: currentUser.id,
         user_comment: text,
+        mood: selected.value,
       })
       .then((res) => {
         setComments([...comments, res.data]);
+        setSelected(moods[5]);
         setText("");
       });
   };
@@ -116,7 +116,7 @@ export default function Comments({
       <div className="flex items-start space-x-4 ">
         <div className="flex-shrink-0">
           <img
-            className="inline-block h-10 w-10 rounded-full"
+            className="inline-block h-10 w-10 rounded-full outline outline-1 outline-orange-500"
             src={currentUser.profile_pic}
             alt=""
           />
@@ -251,13 +251,19 @@ export default function Comments({
           </form>
         </div>
       </div>
-      {comments.map(({ username, user_comment }) => {
+      {comments.map(({ username, user_comment, profile_pic }) => {
         return (
           <div className="mt-4" ref={commentRef}>
             <div class="flex flex-col space-y-2">
-              <div class="bg-white p-2 rounded-lg shadow-md">
-                <h3 class="text-sm font-bold">{username}</h3>
-                <p class=" mt-1 text-sm text-gray-700">{user_comment}</p>
+              <div class="bg-white p-2 rounded-lg shadow-md flex">
+                <img
+                  src={profile_pic}
+                  className="rounded-full h-6 w-6 outline outline-orange-500 outline-1"
+                ></img>
+                <div className="pl-3">
+                  <h3 class="text-sm font-bold">{username}</h3>
+                  <p class=" mt-1 text-sm text-gray-700">{user_comment}</p>
+                </div>
               </div>
             </div>
           </div>

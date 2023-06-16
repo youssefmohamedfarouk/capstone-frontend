@@ -1,13 +1,15 @@
 import { StytchLogin, Products, useStytch } from "@stytch/react";
+import { useEffect } from "react";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export default function Login() {
+export default function Login({ toast }) {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const API = process.env.REACT_APP_API_URL;
+const API = process.env.REACT_APP_API_URL;
 
   let navigate = useNavigate();
   const signUpRedirect = () => {
@@ -15,6 +17,18 @@ export default function Login() {
   };
 
   const stytchClient = useStytch();
+
+  const toastSettings = {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  };
+  const errorNotification = (error) => toast.error(error, toastSettings);
 
   const signIn = (email, password) => {
     stytchClient.passwords
@@ -27,8 +41,15 @@ export default function Login() {
         console.log("RESPONSE ---- ", res);
         if (res.status_code === 200 && res.session_token) {
           navigate("/dashboard");
-        } else if (res.status_code === 404) {
-          console.log("BROKEN");
+        }
+      })
+      .catch((error) => {
+        if (error.error_type === "password_not_found") {
+          errorNotification("Invalid login credentials.");
+        } else if ("email_not_found") {
+          errorNotification("Invalid login credentials.");
+        } else if ("too_many_requests") {
+          errorNotification("Too many requests have been made.");
         }
       });
   };

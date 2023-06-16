@@ -25,7 +25,7 @@ export default function EventSlideover({
 
   return (
     <Transition.Root show={slideoverOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={setSlideoverOpen}>
+      <Dialog as="div" className="relative z-999" onClose={setSlideoverOpen}>
         <div className="fixed inset-0" />
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">

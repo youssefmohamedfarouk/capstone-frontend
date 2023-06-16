@@ -48,11 +48,15 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Dashboard({ currentUser, API, session, isLoaded }) {
+export default function Dashboard({
+  currentUser,
+  API,
+  session,
+  isLoaded,
+  toast,
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isListingView, setIsListingView] = useState(true);
-  const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);
-  const [eventDateSortOrder, setEventDateSortOrder] = useState(0);
   const [createEventSlideOverOpen, setCreateEventSlideOverOpen] =
     useState(false);
   const [events, setEvents] = useState([]);
@@ -99,8 +103,6 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
       setTotalRSVPS(res.data);
     });
     axios.get(`${API}/usersevents/${currentUser.id}`).then((res) => {
-      console.log(currentUser);
-      console.log(res.data);
       setCurrentUsersRSVPS(res.data);
     });
   }, [currentUser]);
@@ -132,11 +134,8 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
   };
 
   const updateEvents = (newEvent) => {
-    console.log("asdf", newEvent);
-
     setEvents([...events, newEvent]);
     setListingEvents([...listingEvents, newEvent]);
-    console.log("YOOOOOO", events);
   };
 
   return (
@@ -442,7 +441,6 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                   className="block w-full rounded-md border-0 py-1.5 pl-9 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 text-black focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
                   placeholder="Search Events"
                   onChange={(e) => {
-                    console.log(e.target.value);
                     setSearchTerm(e.target.value);
                   }}
                 />
@@ -466,7 +464,6 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                       const indexOfCurrent = navigation.findIndex(
                         (item) => item.current
                       );
-                      console.log(indexOfCurrent);
                       navigation[indexOfCurrent].current = false;
                       item.current = true;
                     }}
@@ -641,7 +638,6 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              href="/#"
                               className={classNames(
                                 active
                                   ? "bg-orange-500 text-white"
@@ -658,7 +654,6 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              href="/#"
                               className={classNames(
                                 active
                                   ? "bg-orange-500 text-white"
@@ -686,7 +681,7 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                   Home
                 </h1>
               </div>
-              <div className="mt-4 flex sm:ml-4 sm:mt-0">
+              <div className="mt-4 flex sm:ml-4 sm:mt-0 mr-1">
                 <button
                   type="button"
                   className="sm:order-0 order-1 ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:ml-0"
@@ -711,7 +706,7 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
               isLoaded={isLoaded}
               updateEvents={updateEvents}
             />
-            <div className="mt-6 px-4 sm:px-6 lg:px-8">
+            <div className="mt-4 px-4 sm:px-6 lg:px-2">
               {/* <h2 className="text-sm font-medium text-gray-900">
                 RSVP'd Events
               </h2> */}
@@ -875,13 +870,13 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
             />
 
             {/* events table (small breakpoint and up) */}
-            <div className="mt-8 hidden sm:block">
+            <div className="mt-4 hidden sm:block">
               <div className="inline-block min-w-full border-b border-gray-200 align-middle">
                 {/* Button to switch from event listings to map view*/}
                 <div className="text-right pb-2 pr-2">
                   <button
                     type="button"
-                    className="rounded bg-orange-500 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="rounded bg-orange-500 mr-4 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     onClick={() => setIsListingView(!isListingView)}
                   >
                     {isListingView ? "View Map" : "View Listings"}
@@ -897,10 +892,6 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                     listingEvents={listingEvents}
                     setListingEvents={setListingEvents}
                     classNames={classNames}
-                    attendeesSortOrder={attendeesSortOrder}
-                    setAttendeesSortOrder={setAttendeesSortOrder}
-                    eventDateSortOrder={eventDateSortOrder}
-                    setEventDateSortOrder={setEventDateSortOrder}
                     rsvpdUsers={rsvpdUsers}
                     totalRSVPS={totalRSVPS}
                     setSlideoverOpen={setSlideoverOpen}
@@ -910,6 +901,7 @@ export default function Dashboard({ currentUser, API, session, isLoaded }) {
                     setCurrentUsersRSVPS={setCurrentUsersRSVPS}
                     confirmationModalOpen={confirmationModalOpen}
                     setConfirmationModalOpen={setConfirmationModalOpen}
+                    toast={toast}
                   />
                 ) : (
                   <MapView isLoaded={isLoaded} events={events} />

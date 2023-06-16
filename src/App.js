@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useStytchSession } from "@stytch/react";
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Dashboard from "./Components/Dashboard";
 import Login from "./Components/Login";
 import SignUp from "./Components/SignUp";
@@ -30,17 +32,17 @@ function App() {
     cover_photo: "",
   });
 
+  const libraries = ["places"];
   const { isLoaded } = useLoadScript({
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
-    libraries: ["places"],
+    libraries,
   });
 
   useEffect(() => {
     // const currentUserID = session.user_id;
     if (session && session.authentication_factors.length >= 1) {
-      axios.get(`${API}/users/${session.user_id}`).then((res) => {
-        console.log(res.data);
+      axios.get(`${API}/users/${session.user_id}/stytch`).then((res) => {
         setCurrentUser(res.data);
         localStorage.setItem("currentUserId", JSON.stringify(res.data.id));
         localStorage.setItem(
@@ -73,6 +75,7 @@ function App() {
                   currentUser={currentUser}
                   setCurrentUser={setCurrentUser}
                   isLoaded={isLoaded}
+                  toast={toast}
                 />
               }
             />
@@ -83,6 +86,7 @@ function App() {
                   session={session}
                   currentUser={currentUser}
                   setCurrentUser={setCurrentUser}
+                  toast={toast}
                 />
               }
             />
@@ -93,6 +97,7 @@ function App() {
                   session={session}
                   currentUser={currentUser}
                   setCurrentUser={setCurrentUser}
+                  toast={toast}
                 />
               }
             />
@@ -113,6 +118,18 @@ function App() {
           </Routes>
         </main>
       </Router>
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 }
