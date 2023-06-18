@@ -127,7 +127,7 @@ export default function MapView({
                 return (
                   <Card
                     key={key}
-                    className="mt-3 w-100 border-solid border-2 hover:shadow-orange-500 hover:bg-gray-100"
+                    className="mt-3 w-100 border-solid border-2 hover:shadow-orange-500 hover:scale-105"
                   >
                     <CardBody className=" flex flex-row">
                       <div className="min-w-32 min-h-32 max-w-32 max-h-32 border-solid border-2 shrink-0 rounded-md">

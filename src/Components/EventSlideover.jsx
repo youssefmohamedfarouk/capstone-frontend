@@ -20,6 +20,9 @@ export default function EventSlideover({
   setCurrentUsersRSVPS,
   confirmationModalOpen,
   setConfirmationModalOpen,
+  setChatVisible,
+  setChatTargetID,
+  setProfileOpen,
 }) {
   const currentUserId = currentUser.id;
 
@@ -250,6 +253,9 @@ export default function EventSlideover({
                               currentEvent={currentEvent}
                               currentUserId={currentUserId}
                               API={API}
+                              setChatVisible={setChatVisible}
+                              setChatTargetID={setChatTargetID}
+                              setProfileOpen={setProfileOpen}
                             />
                           </div>
                         </dl>
