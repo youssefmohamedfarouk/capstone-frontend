@@ -14,6 +14,7 @@ export default function ConfirmationModal({
   setConfirmationModalOpen,
   setCurrentUsersRSVPS,
   currentUsersRSVPS,
+  unRSVPSuccess,
 }) {
   const currentUserId = currentUser.id;
   //   JSON.parse(localStorage.getItem("currentUserId"));
@@ -97,6 +98,7 @@ export default function ConfirmationModal({
                           );
                           setCurrentUsersRSVPS([...tempUsersRSVPS]);
                           setConfirmationModalOpen(false);
+                          unRSVPSuccess();
                         });
                     }}
                   >
