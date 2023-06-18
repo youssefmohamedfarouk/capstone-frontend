@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import ListingView from "./ListingView";
 import MapView from "./MapView";
 import CreateEventSlideOver from "./CreateEventSlideOver";
+import Chat from "./Chat";
 import axios from "axios";
 import { useEffect } from "react";
 
@@ -69,6 +70,21 @@ export default function Dashboard({
   const [searchTerm, setSearchTerm] = useState("");
   const [currentUsersRSVPS, setCurrentUsersRSVPS] = useState([]);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const [chatVisible, setChatVisible] = useState(false);
+  const [chatTargetID, setChatTargetID] = useState("");
+  const [chatTarget, setChatTarget] = useState({
+    stytch_id: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    username: "",
+    about_me: "",
+    interests: [],
+    intra_extraversion: 50,
+    phone_number: "0000000000",
+    profile_pic: "",
+  });
+  const [chatOpen, setChatOpen] = useState(false);
 
   const [navigation, setNavigation] = useState([
     { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
@@ -124,6 +140,16 @@ export default function Dashboard({
   }, [currentUser]);
 
   useEffect(() => {
+    if (chatTargetID) {
+      axios.get(`${API}/users/${chatTargetID}`).then((res) => {
+        setChatTarget(res.data);
+        // console.log(chatTarget);
+        console.log(res.data);
+      });
+    }
+  }, [chatTargetID]);
+
+  useEffect(() => {
     if (!session || !session.session_id) {
       navigate("/login");
     }
@@ -155,7 +181,17 @@ export default function Dashboard({
   };
 
   return (
-    <>
+    <div>
+      <Chat
+        // className="absolute bottom-0 right-0 h-1/2 w-1/3"
+        currentUser={currentUser}
+        chatVisible={chatVisible}
+        setChatVisible={setChatVisible}
+        chatTarget={chatTarget}
+        API={API}
+        chatOpen={chatOpen}
+        setChatOpen={setChatOpen}
+      />
       <ConfirmationModal
         API={API}
         currentUser={currentUser}
@@ -178,7 +214,7 @@ export default function Dashboard({
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
-            className="relative z-40 lg:hidden"
+            className="relative z-40 lg:hidden chil"
             onClose={setSidebarOpen}
           >
             <Transition.Child
@@ -877,12 +913,20 @@ export default function Dashboard({
               setCurrentUsersRSVPS={setCurrentUsersRSVPS}
               confirmationModalOpen={confirmationModalOpen}
               setConfirmationModalOpen={setConfirmationModalOpen}
+              setChatVisible={setChatVisible}
+              setChatTargetID={setChatTargetID}
+              setProfileOpen={setProfileOpen}
             />
 
             <ProfileSlideover
               profileOpen={profileOpen}
               setProfileOpen={setProfileOpen}
               currentUser={currentUser}
+              chatTargetID={chatTargetID}
+              setChatTargetID={setChatTargetID}
+              chatTarget={chatTarget}
+              setChatTarget={setChatTarget}
+              setChatOpen={setChatOpen}
             />
 
             {/* events table (small breakpoint and up) */}
@@ -921,6 +965,8 @@ export default function Dashboard({
                     toastSettings={toastSettings}
                     rsvpSuccess={rsvpSuccess}
                     unRSVPSuccess={unRSVPSuccess}
+                    setChatVisible={setChatVisible}
+                    setChatTargetID={setChatTargetID}
                   />
                 ) : (
                   <MapView
@@ -944,6 +990,6 @@ export default function Dashboard({
           </main>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -15,6 +15,11 @@ export default function ProfileSlideover({
   profileOpen,
   setProfileOpen,
   currentUser,
+  chatTargetID,
+  setChatTargetID,
+  chatTarget,
+  setChatTarget,
+  setChatOpen,
 }) {
   const navigate = useNavigate();
 
@@ -37,7 +42,7 @@ export default function ProfileSlideover({
               >
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
                   <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
-                    <div className="px-4 py-6 sm:px-6">
+                    <div className="px-4 py-7 sm:px-6">
                       <div className="flex items-start justify-between">
                         <Dialog.Title className="text-base font-semibold leading-6 text-gray-900">
                           Profile
@@ -46,7 +51,22 @@ export default function ProfileSlideover({
                           <button
                             type="button"
                             className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
-                            onClick={() => setProfileOpen(false)}
+                            onClick={() => {
+                              setProfileOpen(false);
+                              setChatTargetID("");
+                              setChatTarget({
+                                stytch_id: "",
+                                first_name: "",
+                                middle_name: "",
+                                last_name: "",
+                                username: "",
+                                about_me: "",
+                                interests: [],
+                                intra_extraversion: 50,
+                                phone_number: "0000000000",
+                                profile_pic: "",
+                              });
+                            }}
                           >
                             <span className="sr-only">Close panel</span>
                             <XMarkIcon className="h-6 w-6" aria-hidden="true" />
@@ -57,14 +77,18 @@ export default function ProfileSlideover({
                     {/* Main */}
                     <div className="divide-y divide-gray-200">
                       <div className="pb-6">
-                        <div className="h-24 bg-orange-500 sm:h-20 lg:h-28" />
+                        <div className="h-24 bg-orange-500 sm:h-20 lg:h-22" />
                         <div className="-mt-12 flow-root px-4 sm:-mt-8 sm:flex sm:items-end sm:px-6 lg:-mt-16">
                           <div>
                             <div className="-m-1 flex">
                               <div className="inline-flex overflow-hidden rounded-lg border-4 border-orange-500 bg-white">
                                 <img
                                   className="h-24 w-24 flex-shrink-0 sm:h-40 sm:w-40 lg:h-48 lg:w-48"
-                                  src={currentUser.profile_pic}
+                                  src={
+                                    chatTargetID
+                                      ? chatTarget.profile_pic
+                                      : currentUser.profile_pic
+                                  }
                                   alt="Profile Picture"
                                 />
                               </div>
@@ -74,16 +98,23 @@ export default function ProfileSlideover({
                             <div>
                               <div className="flex items-center">
                                 <h3 className="text-xl font-bold text-gray-900 sm:text-2xl">
-                                  {currentUser.first_name +
-                                    " " +
-                                    currentUser.last_name}
+                                  {chatTargetID
+                                    ? chatTarget.first_name +
+                                      " " +
+                                      chatTarget.last_name
+                                    : currentUser.first_name +
+                                      " " +
+                                      currentUser.last_name}
                                 </h3>
                                 <span className="ml-2.5 inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-400">
                                   <span className="sr-only">Online</span>
                                 </span>
                               </div>
                               <p className="text-sm text-gray-500">
-                                @{currentUser.username}
+                                @
+                                {chatTargetID
+                                  ? chatTarget.username
+                                  : currentUser.username}
                               </p>
                             </div>
                             <div className="mt-5 flex flex-wrap space-y-3 sm:space-x-3 sm:space-y-0">
@@ -96,13 +127,17 @@ export default function ProfileSlideover({
                               <button
                                 type="button"
                                 className="inline-flex w-full flex-1 items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                onClick={() =>
-                                  navigate(
-                                    `/profile/${currentUser.stytch_id}/edit`
-                                  )
-                                }
+                                onClick={() => {
+                                  if (!chatTargetID) {
+                                    navigate(
+                                      `/profile/${currentUser.stytch_id}/edit`
+                                    );
+                                  } else {
+                                    setChatOpen(true);
+                                  }
+                                }}
                               >
-                                Edit
+                                {chatTargetID ? "Message" : "Edit"}
                               </button>
                               <div className="ml-3 inline-flex sm:ml-0">
                                 <Menu
@@ -192,7 +227,11 @@ export default function ProfileSlideover({
                               Bio
                             </dt>
                             <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:ml-6 sm:mt-0">
-                              <p>{currentUser.about_me}</p>
+                              <p>
+                                {chatTargetID
+                                  ? chatTarget.about_me
+                                  : currentUser.about_me}
+                              </p>
                             </dd>
                           </div>
                           <div className="sm:flex sm:px-6 sm:py-5">
