@@ -903,7 +903,18 @@ export default function Dashboard({
                     toast={toast}
                   />
                 ) : (
-                  <MapView isLoaded={isLoaded} events={events} />
+                  <MapView
+                    isLoaded={isLoaded}
+                    events={events}
+                    setCurrentEvent={setCurrentEvent}
+                    setSlideoverOpen={setSlideoverOpen}
+                    currentUsersRSVPS={currentUsersRSVPS}
+                    setConfirmationModalOpen={confirmationModalOpen}
+                    currentUserId={currentUserId}
+                    API={API}
+                    setCurrentUsersRSVPS={setCurrentUsersRSVPS}
+                    toast={toast}
+                  />
                 )}
               </div>
             </div>

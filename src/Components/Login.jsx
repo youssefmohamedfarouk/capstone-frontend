@@ -6,10 +6,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Login({ toast }) {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-const API = process.env.REACT_APP_API_URL;
+  const API = process.env.REACT_APP_API_URL;
 
   let navigate = useNavigate();
   const signUpRedirect = () => {

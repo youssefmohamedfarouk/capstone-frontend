@@ -55,7 +55,13 @@ export default function CreateEventSlideOver({
   const handleSubmit = (e) => {
     e.preventDefault();
     let date = createEvent.event_date.startDate.split("-");
-    date = `${date[1]}/${date[2]}/${date[0]}`;
+    let month = date[1][0] === "0" ? date[1][1] : date[1];
+    let day = date[2];
+    let year = date[0];
+
+    console.log(month);
+
+    date = `${month}/${day}/${year}`;
 
     axios
       .post(`${API}/events`, { ...createEvent, event_date: date })
@@ -160,7 +166,7 @@ export default function CreateEventSlideOver({
 
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
-            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16 ">
               <Transition.Child
                 as={Fragment}
                 enter="transform transition ease-in-out duration-500 sm:duration-700"
@@ -172,7 +178,7 @@ export default function CreateEventSlideOver({
               >
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
                   <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
-                    <div className="px-4 py-6 sm:px-6">
+                    <div className="px-4 py-6 sm:px-6 rounded-full">
                       <div className="flex items-start justify-between">
                         <h2
                           id="slide-over-heading"
