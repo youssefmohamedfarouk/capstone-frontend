@@ -25,23 +25,13 @@ export default function ListingView({
   confirmationModalOpen,
   setConfirmationModalOpen,
   toast,
+  toastSettings,
+  rsvpSuccess,
+  unRSVPSuccess,
 }) {
   const currentUserId = currentUser.id;
   const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);
   const [eventDateSortOrder, setEventDateSortOrder] = useState(0);
-
-  const toastSettings = {
-    position: "bottom-right",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-  };
-
-  const rsvpSuccess = () => toast.success("Successfully RSVP'D", toastSettings);
 
   console.log("TOTAL - - - ", totalRSVPS);
   useEffect(() => {

@@ -91,6 +91,22 @@ export default function Dashboard({
   //   localStorage.getItem("currentUserUsername")
   // );
 
+  const toastSettings = {
+    position: "bottom-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  };
+
+  const rsvpSuccess = () => toast.success("Successfully RSVP'D", toastSettings);
+  const unRSVPSuccess = () => {
+    toast.success("Successfully cancelled RSVP", toastSettings);
+  };
+
   useEffect(() => {
     axios.get(`${API}/events`).then((res) => {
       setEvents(res.data);
@@ -148,6 +164,7 @@ export default function Dashboard({
         setConfirmationModalOpen={setConfirmationModalOpen}
         setCurrentUsersRSVPS={setCurrentUsersRSVPS}
         currentUsersRSVPS={currentUsersRSVPS}
+        unRSVPSuccess={unRSVPSuccess}
       />
       {/*
         This example requires updating your template:
@@ -860,7 +877,6 @@ export default function Dashboard({
               setCurrentUsersRSVPS={setCurrentUsersRSVPS}
               confirmationModalOpen={confirmationModalOpen}
               setConfirmationModalOpen={setConfirmationModalOpen}
-              currentUser={currentUser}
             />
 
             <ProfileSlideover
@@ -902,9 +918,26 @@ export default function Dashboard({
                     confirmationModalOpen={confirmationModalOpen}
                     setConfirmationModalOpen={setConfirmationModalOpen}
                     toast={toast}
+                    toastSettings={toastSettings}
+                    rsvpSuccess={rsvpSuccess}
+                    unRSVPSuccess={unRSVPSuccess}
                   />
                 ) : (
-                  <MapView isLoaded={isLoaded} events={events} />
+                  <MapView
+                    isLoaded={isLoaded}
+                    events={events}
+                    setCurrentEvent={setCurrentEvent}
+                    setSlideoverOpen={setSlideoverOpen}
+                    currentUsersRSVPS={currentUsersRSVPS}
+                    setConfirmationModalOpen={setConfirmationModalOpen}
+                    currentUserId={currentUserId}
+                    API={API}
+                    setCurrentUsersRSVPS={setCurrentUsersRSVPS}
+                    toast={toast}
+                    toastSettings={toastSettings}
+                    rsvpSuccess={rsvpSuccess}
+                    unRSVPSuccess={unRSVPSuccess}
+                  />
                 )}
               </div>
             </div>
