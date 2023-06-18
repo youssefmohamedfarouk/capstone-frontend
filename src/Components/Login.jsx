@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export default function Login({ toast }) {
+export default function Login({ toast, userLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const API = process.env.REACT_APP_API_URL;
@@ -39,7 +39,10 @@ export default function Login({ toast }) {
       .then((res) => {
         console.log("RESPONSE ---- ", res);
         if (res.status_code === 200 && res.session_token) {
-          navigate("/dashboard");
+          console.log(res);
+          userLogin(res.user_id).then(() => {
+            navigate("/dashboard");
+          });
         }
       })
       .catch((error) => {
