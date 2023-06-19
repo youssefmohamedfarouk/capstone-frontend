@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import {
   GoogleMap,
   useLoadScript,
@@ -25,6 +25,7 @@ export default function MapView({
   isLoaded,
   events,
   setCurrentEvent,
+  slideoverOpen,
   setSlideoverOpen,
   currentUsersRSVPS,
   setConfirmationModalOpen,
@@ -35,6 +36,7 @@ export default function MapView({
   toastSettings,
   rsvpSuccess,
   unRSVPSuccess,
+  currentEvent,
 }) {
   const [selected, setSelected] = useState({
     lat: 40.7127753,
@@ -43,6 +45,8 @@ export default function MapView({
   const [eventMarkers, setEventMarkers] = useState(events);
 
   const center = useMemo(() => selected, []);
+
+  const [selectedMarker, setSelectedMarker] = useState(null);
 
   const containerStyle = {
     width: "100%",
@@ -57,13 +61,67 @@ export default function MapView({
   //   libraries: ["places"],
   // });
 
+  useEffect(() => {
+    setEventMarkers(events);
+  }, [events]);
+
+  const markRef = useRef([]);
+
+  // const markRef = eventMarkers.map((marker) => {
+  //   return useRef(null);
+  // });
+
+  const reColorSelectedMarker = () => {
+    const matchingIndex = eventMarkers.findIndex(
+      (eventMarker) => eventMarker === currentEvent
+    );
+
+    if (matchingIndex > -1 && markRef.current[matchingIndex]) {
+      markRef.current[matchingIndex].setIcon({
+        path: "M7.8,1.3L7.8,1.3C6-0.4,3.1-0.4,1.3,1.3c-1.8,1.7-1.8,4.6-0.1,6.3c0,0,0,0,0.1,0.1 l3.2,3.2l3.2-3.2C9.6,6,9.6,3.2,7.8,1.3C7.9,1.4,7.9,1.4,7.8,1.3z M4.6,5.8c-0.7,0-1.3-0.6-1.3-1.4c0-0.7,0.6-1.3,1.4-1.3 c0.7,0,1.3,0.6,1.3,1.3 C5.9,5.3,5.3,5.9,4.6,5.8z",
+        fillColor: "orange",
+        fillOpacity: 0.9,
+        scale: 2,
+        strokeColor: "dark",
+        strokeWeight: 2,
+      });
+    }
+  };
+
+  useEffect(() => {
+    reColorSelectedMarker();
+  }, [currentEvent]);
+
+  useEffect(() => {
+    if (!slideoverOpen) {
+      markRef.current.forEach((ref) => {
+        if (ref) {
+          ref.setIcon({
+            path: "M7.8,1.3L7.8,1.3C6-0.4,3.1-0.4,1.3,1.3c-1.8,1.7-1.8,4.6-0.1,6.3c0,0,0,0,0.1,0.1 l3.2,3.2l3.2-3.2C9.6,6,9.6,3.2,7.8,1.3C7.9,1.4,7.9,1.4,7.8,1.3z M4.6,5.8c-0.7,0-1.3-0.6-1.3-1.4c0-0.7,0.6-1.3,1.4-1.3 c0.7,0,1.3,0.6,1.3,1.3 C5.9,5.3,5.3,5.9,4.6,5.8z",
+            fillColor: "white",
+            fillOpacity: 0.9,
+            scale: 2,
+            strokeColor: "dark",
+            strokeWeight: 2,
+          });
+        }
+      });
+    } else {
+      reColorSelectedMarker();
+    }
+  }, [slideoverOpen]);
+
   if (!isLoaded) return <div>Loading... </div>;
 
   const handleOnClick = (event) => {
     setCurrentEvent(event);
     setSlideoverOpen(true);
   };
-
+  console.log(
+    eventMarkers.map((marker) => {
+      return marker.id === currentEvent.id;
+    })
+  );
   return (
     <table className="min-w-full">
       <thead>
@@ -94,26 +152,32 @@ export default function MapView({
               eventMarkers.map((marker, key) => (
                 <MarkerF
                   key={key}
+                  onLoad={(instance) => (markRef.current[key] = instance)}
+                  animation={Animation.BOUNCE}
                   position={{
                     lat: Number(marker.latitude),
                     lng: Number(marker.longitude),
                   }}
-                  onClick={() => {
+                  onClick={(e) => {
+                    // console.log(e.domEvent.srcElement);
+                    // e.domEvent.srcElement.classList.add("test");
                     handleOnClick(marker);
                   }}
-                  // options={{
+                  icon={{
+                    path: "M7.8,1.3L7.8,1.3C6-0.4,3.1-0.4,1.3,1.3c-1.8,1.7-1.8,4.6-0.1,6.3c0,0,0,0,0.1,0.1 l3.2,3.2l3.2-3.2C9.6,6,9.6,3.2,7.8,1.3C7.9,1.4,7.9,1.4,7.8,1.3z M4.6,5.8c-0.7,0-1.3-0.6-1.3-1.4c0-0.7,0.6-1.3,1.4-1.3 c0.7,0,1.3,0.6,1.3,1.3 C5.9,5.3,5.3,5.9,4.6,5.8z",
+                    fillColor: "red",
+                    fillOpacity: 0.9,
+                    scale: 2,
+                    strokeColor: "gold",
+                    strokeWeight: 2,
+                  }}
+                  // options={
                   //   // Apply different style to the selected marker
-                  //   icon: {
-                  //     url: "marker-icon.png",
-                  //     scaledSize: {
-                  //       width: 30,
-                  //       height: 30,
-                  //     },
-                  //     // selectedMarker === marker
-                  //     //   ? new window.google.maps.Size(50, 50)
-                  //     //   : new window.google.maps.Size(30, 30),
-                  //   },
-                  // }}
+                  //     selectedMarker === marker
+                  //       ? new window.google.maps.Size(50, 50)
+                  //       : new window.google.maps.Size(30, 30),
+
+                  // }
                 />
               ))}
           </GoogleMap>
@@ -127,7 +191,7 @@ export default function MapView({
                 return (
                   <Card
                     key={key}
-                    className="mt-3 w-100 border-solid border-2 hover:shadow-orange-500 hover:scale-105"
+                    className="mt-3 w-100 border-solid border-2 hover:shadow-orange-500 hover:bg-gray-100 hover:scale-105"
                   >
                     <CardBody className=" flex flex-row">
                       <div className="min-w-32 min-h-32 max-w-32 max-h-32 border-solid border-2 shrink-0 rounded-md">

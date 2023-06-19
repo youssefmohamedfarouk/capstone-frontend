@@ -113,6 +113,8 @@ export default function Comments({
     e.preventDefault();
     setText(e.target.value);
   };
+  console.log("com", comments);
+  console.log("curr", currentEvent);
 
   return (
     <div>
