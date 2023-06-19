@@ -220,6 +220,7 @@ export default function EditEventSlideOver({
                             <PlacesAutocomplete
                               setSelected={onAddressSelected}
                               currentEvent={currentEvent}
+                              editEvent={editEvent}
                             />
                           ) : null}
                         </div>
@@ -245,7 +246,7 @@ export default function EditEventSlideOver({
   );
 }
 
-const PlacesAutocomplete = ({ setSelected, currentEvent }) => {
+const PlacesAutocomplete = ({ setSelected, currentEvent, editEvent }) => {
   const {
     ready, //whether is ready to go having load the google script
     value, // what the users typed into the userbox
@@ -278,7 +279,7 @@ const PlacesAutocomplete = ({ setSelected, currentEvent }) => {
             data.map(({ place_id, description }) => (
               <Combobox.Option
                 key={place_id}
-                value={description}
+                value={editEvent}
                 className={({ active }) =>
                   `relative cursor-default select-none py-2 pl-10 pr-4 ${
                     active ? "bg-orange-500 text-white" : "text-gray-900"

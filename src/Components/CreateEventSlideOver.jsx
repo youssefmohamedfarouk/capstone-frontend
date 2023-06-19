@@ -320,7 +320,11 @@ export default function CreateEventSlideOver({
                           wrapperClassName="w-full"
                           className="bg-white block w-96 ml-6 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
                           asSingle={true}
-                          minDate={new Date()}
+                          minDate={
+                            new Date(
+                              new Date().setDate(new Date().getDate() - 1)
+                            )
+                          }
                           displayFormat={"MM/DD/YYYY"}
                           popoverDirection="down"
                         />

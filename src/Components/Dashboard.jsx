@@ -38,6 +38,7 @@ import IconCarousel from "./IconCarousel";
 import Sidebar from "./Sidebar";
 import ConfirmationModal from "./ConfirmationModal";
 import ProfileSlideover from "./ProfileSlideover";
+import EditEventSlideOver from "./EditEventSlideOver";
 
 const teams = [
   { name: "Rock Climbing", href: "/#", bgColorClass: "bg-indigo-500" },
@@ -60,6 +61,7 @@ export default function Dashboard({
   const [isListingView, setIsListingView] = useState(true);
   const [createEventSlideOverOpen, setCreateEventSlideOverOpen] =
     useState(false);
+  const [editEventSlideoverOpen, setEventSlideOverOpen] = useState(false);
   const [events, setEvents] = useState([]);
   const [listingEvents, setListingEvents] = useState([]);
   const [rsvpdUsers, setRSVPDUsers] = useState([]);
@@ -752,6 +754,7 @@ export default function Dashboard({
                 </button>
               </div>
             </div>
+
             <CreateEventSlideOver
               API={API}
               createEventSlideOverOpen={createEventSlideOverOpen}
@@ -759,6 +762,7 @@ export default function Dashboard({
               isLoaded={isLoaded}
               updateEvents={updateEvents}
             />
+
             <div className="mt-4 px-4 sm:px-6 lg:px-2">
               {/* <h2 className="text-sm font-medium text-gray-900">
                 RSVP'd Events
@@ -927,6 +931,13 @@ export default function Dashboard({
               chatTarget={chatTarget}
               setChatTarget={setChatTarget}
               setChatOpen={setChatOpen}
+            />
+
+            <EditEventSlideOver
+              createEventSlideOverOpen={createEventSlideOverOpen}
+              setCreateEventSlideOverOpen={setCreateEventSlideOverOpen}
+              isLoaded={isLoaded}
+              updateEvents={updateEvents}
             />
 
             {/* events table (small breakpoint and up) */}
