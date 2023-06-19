@@ -23,8 +23,13 @@ export default function EventSlideover({
   setChatVisible,
   setChatTargetID,
   setProfileOpen,
+  setEditEventSlideOverOpen,
 }) {
   const currentUserId = currentUser.id;
+
+  const handleOnClickEditSliderOver = () => {
+    setEditEventSlideOverOpen(true);
+  };
 
   return (
     <Transition.Root show={slideoverOpen} as={Fragment}>
@@ -195,6 +200,24 @@ export default function EventSlideover({
                                                 )}
                                               >
                                                 Copy profile link
+                                              </a>
+                                            )}
+                                          </Menu.Item>
+                                          <Menu.Item>
+                                            {({ active }) => (
+                                              <a
+                                                href="#"
+                                                className={classNames(
+                                                  active
+                                                    ? "bg-gray-100 text-gray-900"
+                                                    : "text-gray-700",
+                                                  "block px-4 py-2 text-sm"
+                                                )}
+                                                onClick={
+                                                  handleOnClickEditSliderOver
+                                                }
+                                              >
+                                                Edit Event
                                               </a>
                                             )}
                                           </Menu.Item>

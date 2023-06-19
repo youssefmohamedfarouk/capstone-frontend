@@ -61,7 +61,7 @@ export default function Dashboard({
   const [isListingView, setIsListingView] = useState(true);
   const [createEventSlideOverOpen, setCreateEventSlideOverOpen] =
     useState(false);
-  const [editEventSlideoverOpen, setEventSlideOverOpen] = useState(false);
+  const [editEventSlideOverOpen, setEditEventSlideOverOpen] = useState(false);
   const [events, setEvents] = useState([]);
   const [listingEvents, setListingEvents] = useState([]);
   const [rsvpdUsers, setRSVPDUsers] = useState([]);
@@ -178,6 +178,7 @@ export default function Dashboard({
   };
 
   const updateEvents = (newEvent) => {
+    setCurrentEvent(newEvent);
     setEvents([...events, newEvent]);
     setListingEvents([...listingEvents, newEvent]);
   };
@@ -920,6 +921,7 @@ export default function Dashboard({
               setChatVisible={setChatVisible}
               setChatTargetID={setChatTargetID}
               setProfileOpen={setProfileOpen}
+              setEditEventSlideOverOpen={setEditEventSlideOverOpen}
             />
 
             <ProfileSlideover
@@ -934,9 +936,11 @@ export default function Dashboard({
             />
 
             <EditEventSlideOver
-              createEventSlideOverOpen={createEventSlideOverOpen}
-              setCreateEventSlideOverOpen={setCreateEventSlideOverOpen}
+              API={API}
+              editEventSlideOverOpen={editEventSlideOverOpen}
+              setEditEventSlideOverOpen={setEditEventSlideOverOpen}
               isLoaded={isLoaded}
+              currentEvent={currentEvent}
               updateEvents={updateEvents}
             />
 
