@@ -18,6 +18,7 @@ export default function EditEventSlideOver({
   isLoaded,
   updateEvents,
   currentEvent,
+  changeEvent,
 }) {
   const [editEvent, setEditEvent] = useState({});
 
@@ -38,7 +39,10 @@ export default function EditEventSlideOver({
   }, [currentEvent]);
 
   useEffect(() => {
-    setValue(editEvent.event_date);
+    setValue({
+      startDate: editEvent.event_date,
+      endDate: editEvent.event_date,
+    });
     console.log(value);
   }, [editEvent]);
 
@@ -48,21 +52,26 @@ export default function EditEventSlideOver({
   // const navigate = useNavigate();
 
   const handleValueChange = (newValue) => {
-    setEditEvent({ ...editEvent, event_date: newValue });
+    setEditEvent({ ...editEvent, event_date: newValue.startDate });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     let date;
-    if (editEvent.event_date.startDate.includes("/")) {
-      date = editEvent.event_date;
-    } else {
-      date = editEvent.event_date.startDate.split("-");
-      let month = date[1][0] === "0" ? date[1][1] : date[1];
-      let day = date[2];
-      let year = date[0];
+    console.log(editEvent.event_date);
 
-      date = `${month}/${day}/${year}`;
+    // This works, but if the user does not put a date then I get an error stating editEvent.event_date is undefined
+    if (value.startDate) {
+      if (value.startDate.includes("/")) {
+        date = editEvent.event_date;
+      } else {
+        date = value.startDate.split("-");
+        let month = date[1][0] === "0" ? date[1][1] : date[1];
+        let day = date[2];
+        let year = date[0];
+
+        date = `${month}/${day}/${year}`;
+      }
     }
 
     console.log("editEvent", editEvent);
@@ -72,13 +81,14 @@ export default function EditEventSlideOver({
       .then((res) => {
         console.log("edit resonse", res);
         if (eventPhoto) {
-          const formData = new FormData();
+          const formData = new FormData(); // creates your input
           formData.append("event_photo", eventPhoto);
 
           axios
             .post(`${API}/events/${res.data.id}/photo`, formData)
             .then((res) => {
-              updateEvents(res.data);
+              console.log(res);
+              changeEvent(res.data);
               setEditEvent({
                 event_name: "",
                 event_description: "",
@@ -91,7 +101,7 @@ export default function EditEventSlideOver({
               setEditEventSlideOverOpen(false);
             });
         } else {
-          updateEvents(res.data);
+          changeEvent(res.data);
           setEditEvent({
             event_name: "",
             event_description: "",

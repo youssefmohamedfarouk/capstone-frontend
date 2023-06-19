@@ -183,6 +183,20 @@ export default function Dashboard({
     setListingEvents([...listingEvents, newEvent]);
   };
 
+  const editEvent = (updatedEvent) => {
+    setCurrentEvent(updatedEvent);
+    const eventIndex = events.findIndex(
+      (event) => event.id === updatedEvent.id
+    );
+    events[eventIndex] = updatedEvent;
+    setEvents([...events]);
+    const listingEventIndex = listingEvents.findIndex(
+      (event) => event.id === updatedEvent.id
+    );
+    listingEvents[listingEventIndex] = updatedEvent;
+    setListingEvents([...listingEvents]);
+  };
+
   return (
     <div>
       <Chat
@@ -942,6 +956,7 @@ export default function Dashboard({
               isLoaded={isLoaded}
               currentEvent={currentEvent}
               updateEvents={updateEvents}
+              changeEvent={editEvent}
             />
 
             {/* events table (small breakpoint and up) */}
@@ -988,6 +1003,7 @@ export default function Dashboard({
                     isLoaded={isLoaded}
                     events={events}
                     setCurrentEvent={setCurrentEvent}
+                    slideoverOpen={slideoverOpen}
                     setSlideoverOpen={setSlideoverOpen}
                     currentUsersRSVPS={currentUsersRSVPS}
                     setConfirmationModalOpen={setConfirmationModalOpen}
@@ -998,6 +1014,7 @@ export default function Dashboard({
                     toastSettings={toastSettings}
                     rsvpSuccess={rsvpSuccess}
                     unRSVPSuccess={unRSVPSuccess}
+                    currentEvent={currentEvent}
                   />
                 )}
               </div>

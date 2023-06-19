@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
@@ -48,12 +48,12 @@ export default function EventSlideover({
                 leaveTo="translate-x-full"
               >
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                  <div className="flex h-full flex-col overflow-y-scroll bg-white">
-                    <div className="bg-orange-500 px-4 py-6 sm:px-6 !shadow-2xl">
+                  <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-2xl">
+                    <div className="bg-orange-500 px-4 py-7 sm:px-6">
                       <div className="flex items-start justify-between">
                         <h2
                           id="slide-over-heading"
-                          className="py-1.5 text-base font-semibold leading-6 text-white"
+                          className="py-1 text-base font-semibold leading-6 text-white"
                         >
                           Event
                         </h2>
