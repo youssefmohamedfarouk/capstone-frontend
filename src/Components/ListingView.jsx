@@ -25,6 +25,10 @@ export default function ListingView({
   confirmationModalOpen,
   setConfirmationModalOpen,
   toast,
+  toastSettings,
+  rsvpSuccess,
+  unRSVPSuccess,
+  setChatTargetID,
 }) {
   const currentUserId = currentUser.id;
   const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);
@@ -296,7 +300,11 @@ console.log(listingEvents)
                           const tempUsersRSVPS = [...currentUsersRSVPS];
                           tempUsersRSVPS.push({ ...res.data });
                           setCurrentUsersRSVPS(tempUsersRSVPS);
-                          rsvpSuccess();
+                          currentUsersRSVPS.some(
+                            (entry) => entry.event_id === event.id
+                          )
+                            ? rsvpSuccess()
+                            : unRSVPSuccess();
                         });
                 }}
               >

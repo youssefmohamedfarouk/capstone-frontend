@@ -68,6 +68,9 @@ export default function Comments({
   currentUserId,
   currentEvent,
   API,
+  setChatVisible,
+  setChatTargetID,
+  setProfileOpen,
 }) {
   const [selected, setSelected] = useState(moods[5]);
   const [comments, setComments] = useState([]);
@@ -110,6 +113,8 @@ export default function Comments({
     e.preventDefault();
     setText(e.target.value);
   };
+  console.log("com", comments);
+  console.log("curr", currentEvent);
 
   return (
     <div>
@@ -251,17 +256,26 @@ export default function Comments({
           </form>
         </div>
       </div>
-      {comments.map(({ username, user_comment, profile_pic }) => {
+      {comments.map(({ username, user_comment, profile_pic, user_id }) => {
         return (
           <div className="mt-4" ref={commentRef}>
             <div class="flex flex-col space-y-2">
               <div class="bg-white p-2 rounded-lg shadow-md flex">
                 <img
                   src={profile_pic}
-                  className="rounded-full h-6 w-6 outline outline-orange-500 outline-1"
+                  className="rounded-full h-6 w-6 outline outline-orange-500 outline-1 cursor-pointer"
+                  onClick={() => {
+                    setProfileOpen(true);
+                    setChatTargetID(user_id);
+                  }}
                 ></img>
                 <div className="pl-3">
-                  <h3 class="text-sm font-bold">{username}</h3>
+                  <h3
+                    class="text-sm font-bold cursor-pointer"
+                    onClick={() => setProfileOpen(true)}
+                  >
+                    {username}
+                  </h3>
                   <p class=" mt-1 text-sm text-gray-700">{user_comment}</p>
                 </div>
               </div>

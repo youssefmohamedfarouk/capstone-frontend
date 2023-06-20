@@ -32,6 +32,7 @@ function App() {
     cover_photo: "",
   });
 
+  console.log(currentUser);
   const libraries = ["places"];
   const { isLoaded } = useLoadScript({
     id: "google-map-script",
@@ -42,20 +43,24 @@ function App() {
   useEffect(() => {
     // const currentUserID = session.user_id;
     if (session && session.authentication_factors.length >= 1) {
-      axios.get(`${API}/users/${session.user_id}/stytch`).then((res) => {
-        setCurrentUser(res.data);
-        localStorage.setItem("currentUserId", JSON.stringify(res.data.id));
-        localStorage.setItem(
-          "currentUserName",
-          JSON.stringify(res.data.first_name + " " + res.data.last_name)
-        );
-        localStorage.setItem(
-          "currentUserUsername",
-          JSON.stringify(res.data.username)
-        );
-      });
+      userLogin(session.user_id);
     }
-  }, [session?.session_id]);
+  }, [session, session?.session_id]);
+
+  const userLogin = (stytch_id) => {
+    return axios.get(`${API}/users/${stytch_id}`).then((res) => {
+      setCurrentUser(res.data);
+      localStorage.setItem("currentUserId", JSON.stringify(res.data.id));
+      localStorage.setItem(
+        "currentUserName",
+        JSON.stringify(res.data.first_name + " " + res.data.last_name)
+      );
+      localStorage.setItem(
+        "currentUserUsername",
+        JSON.stringify(res.data.username)
+      );
+    });
+  };
 
   // if (!session || session.authentication_factors.length) {
   //   return null;
@@ -87,6 +92,7 @@ function App() {
                   currentUser={currentUser}
                   setCurrentUser={setCurrentUser}
                   toast={toast}
+                  userLogin={userLogin}
                 />
               }
             />

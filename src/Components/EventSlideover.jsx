@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
@@ -20,8 +20,16 @@ export default function EventSlideover({
   setCurrentUsersRSVPS,
   confirmationModalOpen,
   setConfirmationModalOpen,
+  setChatVisible,
+  setChatTargetID,
+  setProfileOpen,
+  setEditEventSlideOverOpen,
 }) {
   const currentUserId = currentUser.id;
+
+  const handleOnClickEditSliderOver = () => {
+    setEditEventSlideOverOpen(true);
+  };
 
   return (
     <Transition.Root show={slideoverOpen} as={Fragment}>
@@ -40,23 +48,26 @@ export default function EventSlideover({
                 leaveTo="translate-x-full"
               >
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                  <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
-                    <div className="px-4 py-6 sm:px-6">
+                  <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-2xl">
+                    <div className="bg-orange-500 px-4 py-7 sm:px-6">
                       <div className="flex items-start justify-between">
                         <h2
                           id="slide-over-heading"
-                          className="text-base font-semibold leading-6 text-gray-900"
+                          className="py-1 text-base font-semibold leading-6 text-white"
                         >
                           Event
                         </h2>
-                        <div className="ml-3 flex h-7 items-center">
+                        <div className="bg-orange-500 child:bg-orange-500 ml-3 flex h-7 items-center">
                           <button
                             type="button"
-                            className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-orange-500"
+                            className="rounded-md bg-white text-gray-400 hover:text-gray-500 hover:outline hover:outline-white focus:ring-2 focus:ring-white"
                             onClick={() => setSlideoverOpen(false)}
                           >
                             <span className="sr-only">Close panel</span>
-                            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                            <XMarkIcon
+                              className="text-white h-6 w-6"
+                              aria-hidden="true"
+                            />
                           </button>
                         </div>
                       </div>
@@ -67,7 +78,7 @@ export default function EventSlideover({
                         <div>
                           <div className="relative h-40 sm:h-56">
                             <img
-                              className="absolute h-full w-full object-cover"
+                              className="absolute h-full w-full object-cover rounded-b-xl"
                               src={
                                 (currentEvent.event_photos || [])[0] ||
                                 "https://as2.ftcdn.net/v2/jpg/01/20/28/25/1000_F_120282530_gMCruc8XX2mwf5YtODLV2O1TGHzu4CAb.jpg"
@@ -192,6 +203,24 @@ export default function EventSlideover({
                                               </a>
                                             )}
                                           </Menu.Item>
+                                          <Menu.Item>
+                                            {({ active }) => (
+                                              <a
+                                                href="#"
+                                                className={classNames(
+                                                  active
+                                                    ? "bg-gray-100 text-gray-900"
+                                                    : "text-gray-700",
+                                                  "block px-4 py-2 text-sm"
+                                                )}
+                                                onClick={
+                                                  handleOnClickEditSliderOver
+                                                }
+                                              >
+                                                Edit Event
+                                              </a>
+                                            )}
+                                          </Menu.Item>
                                         </div>
                                       </Menu.Items>
                                     </Transition>
@@ -247,6 +276,9 @@ export default function EventSlideover({
                               currentEvent={currentEvent}
                               currentUserId={currentUserId}
                               API={API}
+                              setChatVisible={setChatVisible}
+                              setChatTargetID={setChatTargetID}
+                              setProfileOpen={setProfileOpen}
                             />
                           </div>
                         </dl>
