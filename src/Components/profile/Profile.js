@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../Sidebar";
+import BadgesContent from "./BadgesContent";
+import AboutMeContent from "./AboutMeContent";
+import { Badge } from "@mui/material";
 
 const UserProfile = ({currentUser, session,}) => {
 
@@ -12,11 +15,20 @@ const UserProfile = ({currentUser, session,}) => {
     // Logic to send a message or email
   };
 
+
+  
   useEffect(() => {
     if (!session || !session.session_id) {
       navigate("/login");
     }
   }, [session]);
+
+  // conditionally rendering the page contents on click
+  const [activeContent, setActiveContent] = useState(null);
+
+  const handleButtonClick = (content) => {
+    setActiveContent(content);
+  };
 
   return (
     <div className="min-h-full">
@@ -56,7 +68,7 @@ const UserProfile = ({currentUser, session,}) => {
                     <img src="trizzle-assets/logos/trizzle-logo.svg" alt="" />
                   </a>
                   <div className="xl:hidden">
-                    <button className="navbar-burger text-gray-400 hover:text-gray-300 focus:outline-none">
+                    <button className="navbar-burger text-gray-400 hover focus:outline-none">
                       <svg
                         width="20"
                         height="12"
@@ -84,7 +96,7 @@ const UserProfile = ({currentUser, session,}) => {
             <div className="container px-4 mx-auto">
               <div className="p-6 mb-8 bg-gray-50 rounded-xl header-bg-orange">
                 <div className="relative">
-                  <img className="block w-full h-72 object-cover" src={currentUser.cover_photo} alt="" />
+                  <img className="block w-full h-72 object-cover" src={currentUser.coverPhoto ? currentUser.coverPhoto : "https://i.imgur.com/Pwx7wV3.png"} alt="" />
                   <div className="absolute bottom-0 left-0 w-full flex flex-wrap p-6 items-center justify-between">
                     <div className="flex items-center w-full md:w-auto mb-5 md:mb-0">
                       <img
@@ -97,7 +109,11 @@ const UserProfile = ({currentUser, session,}) => {
                         <span className="">{currentUser.username}</span>
                       </div>
                     </div>
-                    <a className="inline-block w-64 py-3 px-6 text-center text-sm leading-6 font-bold transition duration-200 rounded-xl hover:bg-gray-800" href={`/profile/${currentUser.id}/edit`}>Edit </a>
+                    <a className="inline-block w-64 py-3 px-6 text-center text-sm leading-6 font-bold transition duration-200 rounded-xl hover:bg-gray-800"  onClick={() =>
+                                  navigate(
+                                    `/profile/${currentUser.stytch_id}/edit`
+                                  )
+                                }>Edit </a>
                   </div>
                 </div>
               </div>
@@ -107,23 +123,23 @@ const UserProfile = ({currentUser, session,}) => {
                     <ul>
                       <li>
                         <a
-                          className="block py-2 px-3 text-sm leading-6 text-gray-300 hover:text-white font-medium rounded-lg transition duration-100 hover:bg-gray-800"
-                          href="#"
+                          className="block py-2 px-3 text-sm leading-6 hover:text-white font-medium rounded-lg transition duration-100 hover:bg-gray-800"
+                          href="#" onClick={() => handleButtonClick("content1")}
                         >
                           About Me
                         </a>
                       </li>
                       <li>
                         <a
-                          className="block py-2 px-3 text-sm leading-6 text-gray-300 hover:text-white font-medium rounded-lg transition duration-100 hover:bg-gray-800"
-                          href="#"
+                          className="block py-2 px-3 text-sm leading-6 hover:text-white font-medium rounded-lg transition duration-100 hover:bg-gray-800"
+                          href="#" onClick={() => handleButtonClick("content2")}
                         >
                           Badges
                         </a>
                       </li>
                       <li>
                         <a
-                          className="block py-2 px-3 text-sm leading-6 text-gray-300 hover:text-white font-medium rounded-lg transition duration-100 hover:bg-gray-800"
+                          className="block py-2 px-3 text-sm leading-6 hover:text-white font-medium rounded-lg transition duration-100 hover:bg-gray-800"
                           href="#"
                         >
                           Event History
@@ -141,7 +157,7 @@ const UserProfile = ({currentUser, session,}) => {
                       <li>
                         <li>
                           <a
-                            className="block py-2 px-3 text-sm leading-6 text-gray-300 hover:text-white font-medium rounded-lg transition duration-100 hover:bg-gray-800"
+                            className="block py-2 px-3 text-sm leading-6 hover:text-white font-medium rounded-lg transition duration-100 hover:bg-gray-800"
                             href="#"
                           >
                             Interests
@@ -149,7 +165,7 @@ const UserProfile = ({currentUser, session,}) => {
                         </li>
                         <li>
                           <a
-                            className="block py-2 px-3 text-sm leading-6 text-gray-300 hover:text-white font-medium rounded-lg transition duration-100 hover:bg-gray-800"
+                            className="block py-2 px-3 text-sm leading-6 hover:text-white font-medium rounded-lg transition duration-100 hover:bg-gray-800"
                             href="#"
                           >
                             Recommendations
@@ -160,31 +176,10 @@ const UserProfile = ({currentUser, session,}) => {
                   </div>
                 </div>
                 <div className="w-full lg:w-2/3 px-4">
-                  <div className="p-8 bg-gray-50 rounded-xl ">
-                    <div className="pb-6 mb-8 border-b border-gray-400">
-                      <h3 className="text-lg font-semibold mb-6">About Me</h3>
-                      <p className="leading-normal font-medium mb-4">
-                        {currentUser.about_me}
-                      </p>
-                    </div>
-
-                    <div>
-                      <h3 className="text-lg font-semibold mb-6">
-                        Pinned Interests
-                      </h3>
-                      <div className="-mb-3">
-                        <span className="inline-block py-2 px-4 mb-3 mr-3 leading-6 rounded-full bg-gray-200">
-                          Anime
-                        </span>
-                        <span className="inline-block py-2 px-4 mb-3 mr-3 leading-6 rounded-full bg-gray-200">
-                          Gaming
-                        </span>
-                        <span className="inline-block py-2 px-4 mb-3 leading-6 rounded-full bg-gray-200">
-                          Movies
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                
+                {activeContent === "content1" && <AboutMeContent currentUser={currentUser} />}
+                {activeContent === "content2" && <BadgesContent />}
+        
                 </div>
               </div>
             </div>

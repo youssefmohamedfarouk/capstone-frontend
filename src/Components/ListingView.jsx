@@ -25,14 +25,27 @@ export default function ListingView({
   confirmationModalOpen,
   setConfirmationModalOpen,
   toast,
-  toastSettings,
-  rsvpSuccess,
   unRSVPSuccess,
   setChatTargetID,
 }) {
   const currentUserId = currentUser.id;
   const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);
   const [eventDateSortOrder, setEventDateSortOrder] = useState(0);
+
+  const toastSettings = {
+    position: "bottom-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  };
+
+  const rsvpSuccess = () => toast.success("Successfully RSVP'D", toastSettings);
+
+console.log(listingEvents)
 
   console.log("TOTAL - - - ", totalRSVPS);
   useEffect(() => {
@@ -197,29 +210,39 @@ export default function ListingView({
       </thead>
       <tbody className="divide-y divide-gray-100 bg-white">
         {listingEvents?.map((event, key) => (
+          
           <tr key={event.id} className="hover:bg-orange-500 group">
+            
             <td className="w-full max-w-0 whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900 group-hover:text-white cursor-pointer">
               <div className="flex items-center space-x-3 lg:pl-2">
+                
+        
+              
                 <div
-                  className={classNames(
-                    event.bgColorClass,
-                    "bg-pink-600 h-2.5 w-2.5 flex-shrink-0 rounded-full"
-                  )}
-                  aria-hidden="true"
-                />
-                <div
-                  className="truncate group-hover:text-white"
+                  className="truncate"
                   onClick={() => {
                     setCurrentEvent(event);
                     setSlideoverOpen(true);
                   }}
                 >
+                  
                   <span className="group-hover:text-white">
                     {event.event_name}{" "}
-                    <span className="font-normal text-gray-500 group-hover:text-white">
+                    <span className="font-normal text-gray-500 group-hover:text-white mr-2">
                       at {event.event_address}
                     </span>
                   </span>
+                  
+                  {event.category && event.category.map((categoryItem, index) => (
+              <span
+                key={index}
+                className="bg-gray-200 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+              >
+                {categoryItem.charAt(0).toUpperCase() + categoryItem.slice(1)}
+              </span>
+            ))}
+          
+                  
                 </div>
               </div>
             </td>
@@ -250,7 +273,7 @@ export default function ListingView({
                 ) : null}
               </div>
             </td>
-            <td className="hidden whitespace-nowrap px-6 py-3 text-right text-sm text-gray-500 md:table-cell group-hover:text-white">
+            <td className="hidden whitespace-nowrap px-6 py-3 text-right text-sm text-gray-500 md:table-cell group-hover:text-white mr-2">
               {event.event_date}
             </td>
             <td className="whitespace-nowrap px-6 py-3 text-right text-sm font-medium">

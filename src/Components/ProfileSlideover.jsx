@@ -210,13 +210,13 @@ export default function ProfileSlideover({
                             </dt>
                             <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:ml-6 sm:mt-0">
                               <img
-                                src={commentsBadge}
+                                src="https://i.imgur.com/Hgpa3y6.png"
                                 alt="Comment Badge"
                                 className="object-scale-down h-10 w-10 inline"
                               />
 
                               <img
-                                src={eventsBadge}
+                                src="https://i.imgur.com/sM3Oe1R.png"
                                 alt="Event Attendance Badge"
                                 className="object-scale-down h-10 w-10 inline pb-1"
                               />

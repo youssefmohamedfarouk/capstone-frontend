@@ -59,7 +59,7 @@ export default function IconCarousel() {
       <div>
         <FitnessCenterIcon
           style={{ color: "rgb(255 255 255)" }}
-          className="flex items-center justify-center hover:scale-125"
+          className="flex items-center justify-center hover:scale-125 cursor-pointer"
           data-te-toggle="tooltip"
           data-te-placement="bottom"
           data-te-ripple-init
@@ -76,27 +76,27 @@ export default function IconCarousel() {
 
       <DirectionsBikeIcon
         style={{ color: "rgb(255 255 255)" }}
-        className="flex items-center justify-center hover:scale-125"
+        className="flex items-center justify-center hover:scale-125 cursor-pointer"
       />
       <HikingIcon
         style={{ color: "rgb(255 255 255)" }}
-        className="flex items-center justify-center hover:scale-125"
+        className="flex items-center justify-center hover:scale-125 cursor-pointer"
       />
       <CelebrationIcon
         style={{ color: "rgb(255 255 255)" }}
-        className="flex items-center justify-center hover:scale-125"
+        className="flex items-center justify-center hover:scale-125 cursor-pointer"
       />
       <NightlifeIcon
         style={{ color: "rgb(255 255 255)" }}
-        className="flex items-center justify-center hover:scale-125"
+        className="flex items-center justify-center hover:scale-125 cursor-pointer"
       />
       <DiscFullIcon
         style={{ color: "rgb(255 255 255)" }}
-        className="flex items-center justify-center hover:scale-125"
+        className="flex items-center justify-center hover:scale-125 cursor-pointer"
       />
       <EmojiFoodBeverageIcon
         style={{ color: "rgb(255 255 255)" }}
-        className="flex items-center justify-center hover:scale-125"
+        className="flex items-center justify-center hover:scale-125 cursor-pointer"
       />
       <FastfoodIcon
         style={{
@@ -107,20 +107,20 @@ export default function IconCarousel() {
             },
           },
         }}
-        className="flex items-center justify-center hover:scale-125"
+        className="flex items-center justify-center hover:scale-125 cursor-pointer"
       />
       <BrunchDiningIcon
         style={{ color: "rgb(255 255 255)" }}
-        className="flex items-center justify-center hover:scale-125"
+        className="flex items-center justify-center hover:scale-125 cursor-pointer"
       />
       <AutoStoriesIcon
         style={{ color: "rgb(255 255 255)" }}
-        className="flex items-center justify-center hover:scale-125"
+        className="flex items-center justify-center hover:scale-125 cursor-pointer"
       />
       <TheaterComedyIcon
         // style={{ color: "rgb(249 115 22)" }}
         style={{ color: "rgb(255 255 255)" }}
-        className="flex items-center justify-center hover:scale-125 shadow-orange-500"
+        className="flex items-center justify-center hover:scale-125 shadow-orange-500 cursor-pointer"
       />
     </Carousel>
   );
