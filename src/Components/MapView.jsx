@@ -165,10 +165,10 @@ export default function MapView({
                   }}
                   icon={{
                     path: "M7.8,1.3L7.8,1.3C6-0.4,3.1-0.4,1.3,1.3c-1.8,1.7-1.8,4.6-0.1,6.3c0,0,0,0,0.1,0.1 l3.2,3.2l3.2-3.2C9.6,6,9.6,3.2,7.8,1.3C7.9,1.4,7.9,1.4,7.8,1.3z M4.6,5.8c-0.7,0-1.3-0.6-1.3-1.4c0-0.7,0.6-1.3,1.4-1.3 c0.7,0,1.3,0.6,1.3,1.3 C5.9,5.3,5.3,5.9,4.6,5.8z",
-                    fillColor: "red",
+                    fillColor: "white",
                     fillOpacity: 0.9,
                     scale: 2,
-                    strokeColor: "gold",
+                    strokeColor: "dark",
                     strokeWeight: 2,
                   }}
                   // options={
