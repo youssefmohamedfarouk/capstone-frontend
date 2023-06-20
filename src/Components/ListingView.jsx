@@ -25,8 +25,6 @@ export default function ListingView({
   confirmationModalOpen,
   setConfirmationModalOpen,
   toast,
-  toastSettings,
-  rsvpSuccess,
   unRSVPSuccess,
   setChatTargetID,
 }) {
@@ -221,7 +219,7 @@ console.log(listingEvents)
         
               
                 <div
-                  className="truncate group-hover:text-white"
+                  className="truncate"
                   onClick={() => {
                     setCurrentEvent(event);
                     setSlideoverOpen(true);
@@ -238,7 +236,7 @@ console.log(listingEvents)
                   {event.category && event.category.map((categoryItem, index) => (
               <span
                 key={index}
-                className="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+                className="bg-gray-200 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
               >
                 {categoryItem.charAt(0).toUpperCase() + categoryItem.slice(1)}
               </span>
