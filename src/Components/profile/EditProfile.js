@@ -228,8 +228,11 @@ function EditProfile({ setCurrentUser, session, currentUser }) {
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center -mx-4 pb-8 mb-8 border-b border-gray-400 border-opacity-20">
-                    <div className="w-full sm:w-1/3 px-4 mb-4 sm:mb-0">
+               
+                  </div>
+                    
+                <div class="flex flex-wrap items-start -mx-4 pb-8 mb-8 border-b border-gray-400 border-opacity-20">
+                  <div className="w-full sm:w-1/3 px-4 mb-4 sm:mb-0">
                       <span className="text-sm font-medium">Username</span>
                     </div>
                     <div className="w-full sm:w-2/3 px-4">
@@ -244,7 +247,6 @@ function EditProfile({ setCurrentUser, session, currentUser }) {
                       </div>
                     </div>
                   </div>
-                </div>
                 <div className="flex flex-wrap items-start -mx-4 pb-8 mb-8 border-b border-gray-400 border-opacity-20">
                   <div className="w-full sm:w-1/3 px-4 mb-6 sm:mb-0">
                     <span className="block text-sm font-medium">Photo</span>
