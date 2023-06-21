@@ -268,6 +268,7 @@ const isCheckboxDisabled = (option) => {
                       </label>
                       <div className="mt-2">
                         <input
+                          value={createEvent.event_name}
                           type="text"
                           name="event_name"
                           id="event_name"

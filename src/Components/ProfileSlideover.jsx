@@ -6,15 +6,18 @@ import { useNavigate } from "react-router-dom";
 
 import commentsBadge from "../badges/comment-badge.png";
 import eventsBadge from "../badges/event-badge.png";
+import axios from "axios";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function ProfileSlideover({
+  API,
   profileOpen,
   setProfileOpen,
   currentUser,
+  setCurrentUser,
   chatTargetID,
   setChatTargetID,
   chatTarget,
@@ -25,7 +28,28 @@ export default function ProfileSlideover({
 
   return (
     <Transition.Root show={profileOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={setProfileOpen}>
+      <Dialog
+        as="div"
+        className="relative z-10"
+        onClose={() => {
+          setProfileOpen(false);
+          setTimeout(() => {
+            setChatTargetID("");
+            setChatTarget({
+              stytch_id: "",
+              first_name: "",
+              middle_name: "",
+              last_name: "",
+              username: "",
+              about_me: "",
+              interests: [],
+              intra_extraversion: 50,
+              phone_number: "0000000000",
+              profile_pic: "",
+            });
+          }, 1000);
+        }}
+      >
         <div className="fixed inset-0" />
 
         <div className="fixed inset-0 overflow-hidden">
@@ -50,22 +74,9 @@ export default function ProfileSlideover({
                         <div className="ml-3 flex h-7 items-center">
                           <button
                             type="button"
-                            className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
+                            className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-orange-500"
                             onClick={() => {
                               setProfileOpen(false);
-                              setChatTargetID("");
-                              setChatTarget({
-                                stytch_id: "",
-                                first_name: "",
-                                middle_name: "",
-                                last_name: "",
-                                username: "",
-                                about_me: "",
-                                interests: [],
-                                intra_extraversion: 50,
-                                phone_number: "0000000000",
-                                profile_pic: "",
-                              });
                             }}
                           >
                             <span className="sr-only">Close panel</span>
@@ -124,6 +135,60 @@ export default function ProfileSlideover({
                               >
                                 Message
                               </button> */}
+                              {chatTargetID ? (
+                                <button
+                                  type="button"
+                                  className="inline-flex w-full flex-1 items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                  onClick={() => {
+                                    if (
+                                      currentUser?.friends?.some(
+                                        (friend) => friend.id === chatTargetID
+                                      )
+                                    ) {
+                                      const indxOfFriend =
+                                        currentUser?.friends.indexOf(
+                                          (frnd) => frnd.id === chatTargetID
+                                        );
+                                      console.log(indxOfFriend);
+                                      currentUser?.friends.splice(
+                                        indxOfFriend,
+                                        1
+                                      );
+                                      setCurrentUser({ ...currentUser });
+                                      axios
+                                        .put(
+                                          `${API}/users/${currentUser.id}`,
+                                          currentUser
+                                        )
+                                        .then((res) => console.log(res));
+                                    } else {
+                                      currentUser.friends.push({
+                                        id: chatTargetID,
+                                        name:
+                                          chatTarget.first_name +
+                                          " " +
+                                          chatTarget.last_name,
+                                        username: chatTarget.username,
+                                        profile_pic: chatTarget.profile_pic,
+                                      });
+                                      setCurrentUser({ ...currentUser });
+                                      axios
+                                        .put(
+                                          `${API}/users/${currentUser.id}`,
+                                          currentUser
+                                        )
+                                        .then((res) => console.log(res));
+                                    }
+                                  }}
+                                >
+                                  {currentUser?.friends?.some(
+                                    (friend) => friend.id === chatTargetID
+                                  )
+                                    ? "Remove Friend"
+                                    : "Add Friend"}
+                                </button>
+                              ) : null}
+
                               <button
                                 type="button"
                                 className="inline-flex w-full flex-1 items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
@@ -139,65 +204,53 @@ export default function ProfileSlideover({
                               >
                                 {chatTargetID ? "Message" : "Edit"}
                               </button>
-                              <div className="ml-3 inline-flex sm:ml-0">
-                                <Menu
-                                  as="div"
-                                  className="relative inline-block text-left"
-                                >
-                                  <Menu.Button className="inline-flex items-center rounded-md bg-white p-2 text-gray-400 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                    <span className="sr-only">
-                                      Open options menu
-                                    </span>
-                                    <EllipsisVerticalIcon
-                                      className="h-5 w-5"
-                                      aria-hidden="true"
-                                    />
-                                  </Menu.Button>
-                                  <Transition
-                                    as={Fragment}
-                                    enter="transition ease-out duration-100"
-                                    enterFrom="transform opacity-0 scale-95"
-                                    enterTo="transform opacity-100 scale-100"
-                                    leave="transition ease-in duration-75"
-                                    leaveFrom="transform opacity-100 scale-100"
-                                    leaveTo="transform opacity-0 scale-95"
+
+                              {!chatTargetID ? (
+                                <div className="ml-3 inline-flex sm:ml-0">
+                                  <Menu
+                                    as="div"
+                                    className="relative inline-block text-left"
                                   >
-                                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hover:bg-orange-500">
-                                      <div className="py-1">
-                                        <Menu.Item>
-                                          {({ active }) => (
-                                            <div
-                                              className={classNames(
-                                                active
-                                                  ? "bg-gray-100 text-gray-900"
-                                                  : "text-gray-700",
-                                                "block px-4 py-2 text-sm hover:bg-orange-500 hover:text-white"
-                                              )}
-                                            >
-                                              Logout
-                                            </div>
-                                          )}
-                                        </Menu.Item>
-                                        {/* <Menu.Item>
-                                          {({ active }) => (
-                                            <a
-                                              href="#"
-                                              className={classNames(
-                                                active
-                                                  ? "bg-gray-100 text-gray-900"
-                                                  : "text-gray-700",
-                                                "block px-4 py-2 text-sm"
-                                              )}
-                                            >
-                                              Copy profile link
-                                            </a>
-                                          )}
-                                        </Menu.Item> */}
-                                      </div>
-                                    </Menu.Items>
-                                  </Transition>
-                                </Menu>
-                              </div>
+                                    <Menu.Button className="inline-flex items-center rounded-md bg-white p-2 text-gray-400 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                      <span className="sr-only">
+                                        Open options menu
+                                      </span>
+                                      <EllipsisVerticalIcon
+                                        className="h-5 w-5"
+                                        aria-hidden="true"
+                                      />
+                                    </Menu.Button>
+                                    <Transition
+                                      as={Fragment}
+                                      enter="transition ease-out duration-100"
+                                      enterFrom="transform opacity-0 scale-95"
+                                      enterTo="transform opacity-100 scale-100"
+                                      leave="transition ease-in duration-75"
+                                      leaveFrom="transform opacity-100 scale-100"
+                                      leaveTo="transform opacity-0 scale-95"
+                                    >
+                                      <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hover:bg-orange-500 cursor-pointer">
+                                        <div className="py-1">
+                                          <Menu.Item>
+                                            {({ active }) => (
+                                              <div
+                                                className={classNames(
+                                                  active
+                                                    ? "bg-gray-100 text-gray-900"
+                                                    : "text-gray-700",
+                                                  "block px-4 py-2 text-sm hover:bg-orange-500 hover:text-white"
+                                                )}
+                                              >
+                                                Logout
+                                              </div>
+                                            )}
+                                          </Menu.Item>
+                                        </div>
+                                      </Menu.Items>
+                                    </Transition>
+                                  </Menu>
+                                </div>
+                              ) : null}
                             </div>
                           </div>
                         </div>

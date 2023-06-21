@@ -52,6 +52,7 @@ function classNames(...classes) {
 
 export default function Dashboard({
   currentUser,
+  setCurrentUser,
   API,
   session,
   isLoaded,
@@ -87,6 +88,7 @@ export default function Dashboard({
     profile_pic: "",
   });
   const [chatOpen, setChatOpen] = useState(false);
+  const [editEvent, setEditEvent] = useState({});
 
   const [navigation, setNavigation] = useState([
     { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
@@ -120,7 +122,8 @@ export default function Dashboard({
     theme: "light",
   };
 
-  const rsvpSuccess = () => toast.success("Successfully RSVP'D", toastSettings);
+  const rsvpSuccess = () =>
+    toast.success("Successfully RSVP'D! 🥳", toastSettings);
   const unRSVPSuccess = () => {
     toast.success("Successfully cancelled RSVP", toastSettings);
   };
@@ -173,8 +176,7 @@ export default function Dashboard({
   }, [searchTerm]);
 
   const logout = () => {
-    stytchClient.session.revoke();
-    navigate("/login");
+    stytchClient.session.revoke().then(() => navigate("/login"));
   };
 
   const updateEvents = (newEvent) => {
@@ -183,7 +185,7 @@ export default function Dashboard({
     setListingEvents([...listingEvents, newEvent]);
   };
 
-  const editEvent = (updatedEvent) => {
+  const editEventMethod = (updatedEvent) => {
     setCurrentEvent(updatedEvent);
     const eventIndex = events.findIndex(
       (event) => event.id === updatedEvent.id
@@ -307,7 +309,7 @@ export default function Dashboard({
                               );
                               navigation[indexOfCurrent].current = false;
                               item.current = true;
-                              setNavigation(...[navigation]);
+                              setNavigation(structuredClone(navigation));
                             }}
                           >
                             <item.icon
@@ -335,20 +337,20 @@ export default function Dashboard({
                           role="group"
                           aria-labelledby="mobile-teams-headline"
                         >
-                          {teams.map((team) => (
+                          {teams.map((friend) => (
                             <a
-                              key={team.name}
-                              href={team.href}
+                              key={friend.name}
+                              href={friend.href}
                               className="group flex items-center rounded-md px-3 py-2 text-base font-medium leading-5 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                             >
                               <span
                                 className={classNames(
-                                  team.bgColorClass,
+                                  friend.bgColorClass,
                                   "mr-4 h-2.5 w-2.5 rounded-full"
                                 )}
                                 aria-hidden="true"
                               />
-                              <span className="truncate">{team.name}</span>
+                              <span className="truncate">{friend.name}</span>
                             </a>
                           ))}
                         </div>
@@ -366,8 +368,8 @@ export default function Dashboard({
 
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-gray-200 lg:bg-gray-100 lg:pb-4 lg:pt-5">
-          <div className="flex flex-shrink-0 items-center px-6">
-            <img className="h-8 w-auto" src={LogoSVG} alt="Social CIRCLE" />
+          <div className="flex flex-shrink-0 items-center px-4">
+            <img className="h-11 w-auto" src={LogoSVG} alt="Social CIRCLE" />
           </div>
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="mt-5 flex h-0 flex-1 flex-col overflow-y-auto pt-1">
@@ -416,7 +418,7 @@ export default function Dashboard({
                             active
                               ? "bg-orange-500 text-white"
                               : "text-gray-700",
-                            "block px-4 py-2 text-sm"
+                            "block px-4 py-2 text-sm cursor-pointer"
                           )}
                           onClick={() => setProfileOpen(true)}
                         >
@@ -431,7 +433,7 @@ export default function Dashboard({
                             active
                               ? "bg-orange-500 text-white"
                               : "text-gray-700",
-                            "block px-4 py-2 text-sm"
+                            "block px-4 py-2 text-sm cursor-pointer"
                           )}
                         >
                           Settings
@@ -446,7 +448,7 @@ export default function Dashboard({
                             active
                               ? "bg-orange-500 text-white"
                               : "text-gray-700",
-                            "block px-4 py-2 text-sm"
+                            "block px-4 py-2 text-sm cursor-pointer"
                           )}
                         >
                           Notifications
@@ -463,7 +465,7 @@ export default function Dashboard({
                             active
                               ? "bg-orange-500 text-white"
                               : "text-gray-700",
-                            "block px-4 py-2 text-sm"
+                            "block px-4 py-2 text-sm cursor-pointer"
                           )}
                         >
                           About
@@ -475,12 +477,11 @@ export default function Dashboard({
                     <Menu.Item>
                       {({ active }) => (
                         <a
-                          // href="javascript:;"
                           className={classNames(
                             active
                               ? "bg-orange-500 text-white"
                               : "text-gray-700",
-                            "block px-4 py-2 text-sm"
+                            "block px-4 py-2 text-sm cursor-pointer"
                           )}
                           onClick={logout}
                         >
@@ -527,7 +528,7 @@ export default function Dashboard({
                       item.current
                         ? "bg-orange-500 text-white"
                         : "text-gray-700 hover:bg-gray-50 hover:text-gray-900",
-                      "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+                      "group flex items-center rounded-md px-2 py-2 text-sm font-medium cursor-pointer"
                     )}
                     aria-current={item.current ? "page" : undefined}
                     onClick={() => {
@@ -557,29 +558,42 @@ export default function Dashboard({
                   className="px-3 text-sm font-medium text-gray-500"
                   id="desktop-teams-headline"
                 >
-                  Event Groups
+                  Friends
                 </h3>
                 <div
                   className="mt-1 space-y-1"
                   role="group"
                   aria-labelledby="desktop-teams-headline"
                 >
-                  {teams.map((team) => (
-                    <a
-                      key={team.name}
-                      href={team.href}
-                      className="group flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                    >
-                      <span
-                        className={classNames(
-                          team.bgColorClass,
-                          "mr-4 h-2.5 w-2.5 rounded-full"
-                        )}
-                        aria-hidden="true"
-                      />
-                      <span className="truncate">{team.name}</span>
-                    </a>
-                  ))}
+                  {currentUser?.friends?.map((friend) => {
+                    // let parsedFriend = JSON.parse(friend);
+                    // console.log(friend);
+                    let parsedFriend = friend;
+                    return (
+                      <div
+                        key={parsedFriend.name}
+                        className="cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                        onClick={() => {
+                          setChatTargetID(parsedFriend.id);
+                          setProfileOpen(true);
+                        }}
+                      >
+                        <img
+                          src={parsedFriend.profile_pic}
+                          alt={parsedFriend.name + "'s Profile Picture"}
+                          className="h-5 w-auto"
+                        />
+                        <span
+                          className={classNames(
+                            friend.bgColorClass,
+                            " h-2.5 w-2.5 rounded-full"
+                          )}
+                          aria-hidden="true"
+                        />
+                        <span className="truncate">{parsedFriend.name}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </nav>
@@ -908,7 +922,7 @@ export default function Dashboard({
                         <span className="truncate text-sm font-medium leading-6">
                           {event.title}{" "}
                           <span className="truncate font-normal text-gray-500">
-                            in {event.team}
+                            in {event.friend}
                           </span>
                         </span>
                       </span>
@@ -935,13 +949,18 @@ export default function Dashboard({
               setChatVisible={setChatVisible}
               setChatTargetID={setChatTargetID}
               setProfileOpen={setProfileOpen}
+              editEventSlideOverOpen={editEventSlideOverOpen}
               setEditEventSlideOverOpen={setEditEventSlideOverOpen}
+              editEvent={editEvent}
+              rsvpSuccess={rsvpSuccess}
             />
 
             <ProfileSlideover
+              API={API}
               profileOpen={profileOpen}
               setProfileOpen={setProfileOpen}
               currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
               chatTargetID={chatTargetID}
               setChatTargetID={setChatTargetID}
               chatTarget={chatTarget}
@@ -956,7 +975,9 @@ export default function Dashboard({
               isLoaded={isLoaded}
               currentEvent={currentEvent}
               updateEvents={updateEvents}
-              changeEvent={editEvent}
+              changeEvent={editEventMethod}
+              editEvent={editEvent}
+              setEditEvent={setEditEvent}
             />
 
             {/* events table (small breakpoint and up) */}
