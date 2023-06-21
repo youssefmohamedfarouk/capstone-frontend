@@ -45,7 +45,7 @@ export default function ListingView({
 
   const rsvpSuccess = () => toast.success("Successfully RSVP'D", toastSettings);
 
-console.log(listingEvents)
+  console.log(listingEvents);
 
   console.log("TOTAL - - - ", totalRSVPS);
   useEffect(() => {
@@ -222,9 +222,6 @@ console.log(listingEvents)
               }}
             >
               <div className="flex items-center space-x-3 lg:pl-2">
-                
-        
-              
                 <div
                   className={classNames(
                     event.bgColorClass,
@@ -239,17 +236,17 @@ console.log(listingEvents)
                       at {event.event_address}
                     </span>
                   </span>
-                  
-                  {event.category && event.category.map((categoryItem, index) => (
-              <span
-                key={index}
-                className="bg-gray-200 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-              >
-                {categoryItem.charAt(0).toUpperCase() + categoryItem.slice(1)}
-              </span>
-            ))}
-          
-                  
+
+                  {event.category &&
+                    event.category.map((categoryItem, index) => (
+                      <span
+                        key={index}
+                        className="bg-gray-200 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+                      >
+                        {categoryItem.charAt(0).toUpperCase() +
+                          categoryItem.slice(1)}
+                      </span>
+                    ))}
                 </div>
               </div>
             </td>
