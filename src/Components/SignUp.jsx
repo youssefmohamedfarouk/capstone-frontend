@@ -54,6 +54,7 @@ export default function SignUp({ currentUser, setCurrentUser }) {
             encodeURIComponent(
               minidenticon(stytchUserObject.untrusted_metadata.username)
             ),
+          friends: [],
         })
         .then((res) => {
           console.log(res);

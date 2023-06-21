@@ -110,14 +110,14 @@ const UserProfile = ({ currentUser, session }) => {
                         alt=""
                       />
                       <div>
-                        <h5 className="text-xl font-bold text-white">
+                        <h5 className="text-xl font-bold text-black">
                           {currentUser.first_name} {currentUser.last_name}
                         </h5>
                         <span className="">{currentUser.username}</span>
                       </div>
                     </div>
                     <a
-                      className="inline-block w-64 py-3 px-6 text-center text-sm leading-6 font-bold transition duration-200 rounded-xl hover:bg-gray-800"
+                      className="text-white bg-orange-500 inline-block w-64 py-3 px-6 text-center text-sm leading-6 font-bold transition duration-200 rounded-xl hover:bg-gray-800"
                       onClick={() =>
                         navigate(`/profile/${currentUser.stytch_id}/edit`)
                       }
