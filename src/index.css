@@ -15,3 +15,8 @@ code {
 .orange-bg {
   background-color: #ececec
 }
+
+.bg-orange,
+.btn-primary:hover {
+  background-color: #fb923c
+}
