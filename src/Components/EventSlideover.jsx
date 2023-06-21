@@ -23,7 +23,9 @@ export default function EventSlideover({
   setChatVisible,
   setChatTargetID,
   setProfileOpen,
+  editEventSlideOverOpen,
   setEditEventSlideOverOpen,
+  rsvpSuccess,
 }) {
   const currentUserId = currentUser.id;
 
@@ -129,9 +131,10 @@ export default function EventSlideover({
                                               .get(
                                                 `${API}/usersevents/${currentUserId}`
                                               )
-                                              .then((res) =>
-                                                setCurrentUsersRSVPS(res.data)
-                                              );
+                                              .then((res) => {
+                                                setCurrentUsersRSVPS(res.data);
+                                                rsvpSuccess();
+                                              });
                                           });
                                   }}
                                 >
@@ -171,54 +174,20 @@ export default function EventSlideover({
                                       leaveFrom="transform opacity-100 scale-100"
                                       leaveTo="transform opacity-0 scale-95"
                                     >
-                                      <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                      <Menu.Items className="group absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white hover:bg-orange-500 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                         <div className="py-1">
                                           <Menu.Item>
                                             {({ active }) => (
-                                              <a
-                                                href="#"
-                                                className={classNames(
-                                                  active
-                                                    ? "bg-gray-100 text-gray-900"
-                                                    : "text-gray-700",
-                                                  "block px-4 py-2 text-sm"
-                                                )}
-                                              >
-                                                View profile
-                                              </a>
-                                            )}
-                                          </Menu.Item>
-                                          <Menu.Item>
-                                            {({ active }) => (
-                                              <a
-                                                href="#"
-                                                className={classNames(
-                                                  active
-                                                    ? "bg-gray-100 text-gray-900"
-                                                    : "text-gray-700",
-                                                  "block px-4 py-2 text-sm"
-                                                )}
-                                              >
-                                                Copy profile link
-                                              </a>
-                                            )}
-                                          </Menu.Item>
-                                          <Menu.Item>
-                                            {({ active }) => (
-                                              <a
-                                                href="#"
-                                                className={classNames(
-                                                  active
-                                                    ? "bg-gray-100 text-gray-900"
-                                                    : "text-gray-700",
-                                                  "block px-4 py-2 text-sm"
-                                                )}
+                                              <div
+                                                className={
+                                                  "text-gray-700 group-hover:text-white block px-4 py-2 text-sm cursor-pointer"
+                                                }
                                                 onClick={
                                                   handleOnClickEditSliderOver
                                                 }
                                               >
                                                 Edit Event
-                                              </a>
+                                              </div>
                                             )}
                                           </Menu.Item>
                                         </div>
@@ -272,6 +241,7 @@ export default function EventSlideover({
                               Comments
                             </h1>
                             <Comments
+                              editEventSlideOverOpen={editEventSlideOverOpen}
                               currentUser={currentUser}
                               currentEvent={currentEvent}
                               currentUserId={currentUserId}

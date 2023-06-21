@@ -19,8 +19,10 @@ export default function EditEventSlideOver({
   updateEvents,
   currentEvent,
   changeEvent,
+  editEvent,
+  setEditEvent,
 }) {
-  const [editEvent, setEditEvent] = useState({});
+  // const [editEvent, setEditEvent] = useState({});
 
   const [address, setAddress] = useState({
     streetAddress: "",
@@ -43,7 +45,6 @@ export default function EditEventSlideOver({
       startDate: editEvent.event_date,
       endDate: editEvent.event_date,
     });
-    console.log(value);
   }, [editEvent]);
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -58,7 +59,7 @@ export default function EditEventSlideOver({
   const handleSubmit = (e) => {
     e.preventDefault();
     let date;
-    console.log(editEvent.event_date);
+    console.log(editEvent);
 
     // This works, but if the user does not put a date then I get an error stating editEvent.event_date is undefined
     if (value.startDate) {
@@ -379,7 +380,7 @@ export default function EditEventSlideOver({
                         className=" ml-6 mr-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded"
                         onClick={handleSubmit}
                       >
-                        Create
+                        Edit
                       </button>
                     </div>
                   </div>

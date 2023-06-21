@@ -210,22 +210,29 @@ console.log(listingEvents)
       </thead>
       <tbody className="divide-y divide-gray-100 bg-white">
         {listingEvents?.map((event, key) => (
-          
-          <tr key={event.id} className="hover:bg-orange-500 group">
-            
-            <td className="w-full max-w-0 whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900 group-hover:text-white cursor-pointer">
+          <tr
+            key={event.id}
+            className="hover:bg-orange-500 group cursor-pointer"
+          >
+            <td
+              className="w-full max-w-0 whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900 group-hover:text-white cursor-pointer"
+              onClick={() => {
+                setCurrentEvent(event);
+                setSlideoverOpen(true);
+              }}
+            >
               <div className="flex items-center space-x-3 lg:pl-2">
                 
         
               
                 <div
-                  className="truncate"
-                  onClick={() => {
-                    setCurrentEvent(event);
-                    setSlideoverOpen(true);
-                  }}
-                >
-                  
+                  className={classNames(
+                    event.bgColorClass,
+                    "bg-pink-600 h-2.5 w-2.5 flex-shrink-0 rounded-full"
+                  )}
+                  aria-hidden="true"
+                />
+                <div className="truncate group-hover:text-white">
                   <span className="group-hover:text-white">
                     {event.event_name}{" "}
                     <span className="font-normal text-gray-500 group-hover:text-white mr-2">
@@ -246,7 +253,13 @@ console.log(listingEvents)
                 </div>
               </div>
             </td>
-            <td className="px-6 py-3 text-sm font-medium text-gray-500 group-hover:text-white">
+            <td
+              className="px-6 py-3 text-sm font-medium text-gray-500 group-hover:text-white"
+              onClick={() => {
+                setCurrentEvent(event);
+                setSlideoverOpen(true);
+              }}
+            >
               <div className="flex items-center space-x-2">
                 <div className="flex flex-shrink-0 -space-x-1">
                   {rsvpdUsers
@@ -273,7 +286,13 @@ console.log(listingEvents)
                 ) : null}
               </div>
             </td>
-            <td className="hidden whitespace-nowrap px-6 py-3 text-right text-sm text-gray-500 md:table-cell group-hover:text-white mr-2">
+            <td
+              className="hidden whitespace-nowrap px-6 py-3 text-right text-sm text-gray-500 md:table-cell group-hover:text-white"
+              onClick={() => {
+                setCurrentEvent(event);
+                setSlideoverOpen(true);
+              }}
+            >
               {event.event_date}
             </td>
             <td className="whitespace-nowrap px-6 py-3 text-right text-sm font-medium">
@@ -301,8 +320,8 @@ console.log(listingEvents)
                           currentUsersRSVPS.some(
                             (entry) => entry.event_id === event.id
                           )
-                            ? rsvpSuccess()
-                            : unRSVPSuccess();
+                            ? unRSVPSuccess()
+                            : rsvpSuccess();
                         });
                 }}
               >
