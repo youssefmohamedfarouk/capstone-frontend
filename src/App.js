@@ -119,6 +119,19 @@ function App() {
                 />
               }
             />
+            <Route
+              path="/"
+              element={
+                <Dashboard
+                  API={API}
+                  session={session}
+                  currentUser={currentUser}
+                  setCurrentUser={setCurrentUser}
+                  isLoaded={isLoaded}
+                  toast={toast}
+                />
+              }
+            />
           </Routes>
         </main>
       </Router>
