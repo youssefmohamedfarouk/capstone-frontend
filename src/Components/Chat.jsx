@@ -64,7 +64,10 @@ export default function Chat({
     <div
       ref={chatboxEl}
       id="chatBox"
-      className="absolute bottom-0 right-0 h-1/3 w-1/3"
+      className={
+        (chatOpen ? "-z-9999" : "z-100") +
+        " absolute bottom-0 left-0 h-1/3 w-1/3"
+      }
     />
   );
 }

@@ -64,6 +64,7 @@ function classNames(...classes) {
 }
 
 export default function Comments({
+  editEventSlideOverOpen,
   currentUser,
   currentUserId,
   currentEvent,
@@ -79,9 +80,11 @@ export default function Comments({
   const commentRef = useRef();
 
   useEffect(() => {
-    axios.get(`${API}/events/${currentEvent.id}/comments`).then((res) => {
-      setComments(res.data);
-    });
+    if (currentEvent.id) {
+      axios.get(`${API}/events/${currentEvent.id}/comments`).then((res) => {
+        setComments(res.data);
+      });
+    }
   }, [currentEvent]);
 
   useEffect(() => {
@@ -123,7 +126,7 @@ export default function Comments({
           <img
             className="inline-block h-10 w-10 rounded-full outline outline-1 outline-orange-500"
             src={currentUser.profile_pic}
-            alt=""
+            alt="Current User's Profile Picture"
           />
         </div>
         <div className="min-w-0 flex-1 ">
@@ -256,33 +259,78 @@ export default function Comments({
           </form>
         </div>
       </div>
-      {comments.map(({ username, user_comment, profile_pic, user_id }) => {
-        return (
-          <div className="mt-4" ref={commentRef}>
-            <div class="flex flex-col space-y-2">
-              <div class="bg-white p-2 rounded-lg shadow-md flex">
-                <img
-                  src={profile_pic}
-                  className="rounded-full h-6 w-6 outline outline-orange-500 outline-1 cursor-pointer"
-                  onClick={() => {
-                    setProfileOpen(true);
-                    setChatTargetID(user_id);
-                  }}
-                ></img>
-                <div className="pl-3">
-                  <h3
-                    class="text-sm font-bold cursor-pointer"
-                    onClick={() => setProfileOpen(true)}
-                  >
-                    {username}
-                  </h3>
-                  <p class=" mt-1 text-sm text-gray-700">{user_comment}</p>
+      {(comments || []).map(
+        ({ id, username, user_comment, profile_pic, user_id, mood }) => {
+          return (
+            <div className="mt-4 group" ref={commentRef}>
+              <div class="flex flex-col space-y-2">
+                <div class="bg-white p-2 rounded-lg shadow-md relative">
+                  <img
+                    src={profile_pic}
+                    className="rounded-full h-6 w-6 outline outline-orange-500 outline-1 cursor-pointer absolute left-2 top-2"
+                    onClick={() => {
+                      setChatTargetID(user_id);
+                      setProfileOpen(true);
+                    }}
+                  ></img>
+                  {currentUser.id === user_id ? (
+                    <button
+                      type="button"
+                      className="absolute top-1 right-2 rounded-md bg-white text-gray-400 hover:text-gray-500 hover:outline hover:outline-white focus:ring-2 focus:ring-white"
+                      onClick={() => {
+                        let indxOfComment = comments.indexOf(
+                          (comment) => comment.id === id
+                        );
+                        comments.splice(indxOfComment, 1);
+                        setComments([...comments]);
+                        axios.delete(`${API}/comments/${id}`);
+                      }}
+                    >
+                      <span className="sr-only">Close panel</span>
+                      <XMarkIcon
+                        className="text-white group-hover:text-orange-500 h-4 w-4"
+                        aria-hidden="true"
+                      />
+                    </button>
+                  ) : null}
+                  {moods.map((elem) =>
+                    elem.value === mood && mood ? (
+                      <div
+                        className={classNames(
+                          elem.bgColor,
+                          "absolute bottom-0 right-0 inline-flex h-8 w-8 items-center justify-center rounded-full"
+                        )}
+                      >
+                        <elem.icon
+                          className={classNames(
+                            elem.iconColor,
+                            "h-5 w-5 flex-shrink-0"
+                          )}
+                          aria-hidden="true"
+                        />
+                      </div>
+                    ) : null
+                  )}
+                  <div className="pl-8">
+                    <h3
+                      class="text-sm font-bold cursor-pointer"
+                      onClick={() => {
+                        setChatTargetID(user_id);
+                        setProfileOpen(true);
+                      }}
+                    >
+                      {username}
+                    </h3>
+                    <p className=" mt-1 text-sm text-gray-700">
+                      {user_comment}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        }
+      )}
     </div>
   );
 }

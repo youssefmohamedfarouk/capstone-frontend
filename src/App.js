@@ -49,16 +49,13 @@ function App() {
 
   const userLogin = (stytch_id) => {
     return axios.get(`${API}/users/${stytch_id}`).then((res) => {
-      setCurrentUser(res.data);
-      localStorage.setItem("currentUserId", JSON.stringify(res.data.id));
-      localStorage.setItem(
-        "currentUserName",
-        JSON.stringify(res.data.first_name + " " + res.data.last_name)
+      console.log(res.data);
+      let currentUserPreJSON = res.data;
+      console.log(currentUserPreJSON.friends);
+      currentUserPreJSON.friends = currentUserPreJSON.friends.map((elem) =>
+        JSON.parse(elem)
       );
-      localStorage.setItem(
-        "currentUserUsername",
-        JSON.stringify(res.data.username)
-      );
+      setCurrentUser(currentUserPreJSON);
     });
   };
 

@@ -197,8 +197,17 @@ export default function ListingView({
       </thead>
       <tbody className="divide-y divide-gray-100 bg-white">
         {listingEvents?.map((event, key) => (
-          <tr key={event.id} className="hover:bg-orange-500 group">
-            <td className="w-full max-w-0 whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900 group-hover:text-white cursor-pointer">
+          <tr
+            key={event.id}
+            className="hover:bg-orange-500 group cursor-pointer"
+          >
+            <td
+              className="w-full max-w-0 whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900 group-hover:text-white cursor-pointer"
+              onClick={() => {
+                setCurrentEvent(event);
+                setSlideoverOpen(true);
+              }}
+            >
               <div className="flex items-center space-x-3 lg:pl-2">
                 <div
                   className={classNames(
@@ -207,13 +216,7 @@ export default function ListingView({
                   )}
                   aria-hidden="true"
                 />
-                <div
-                  className="truncate group-hover:text-white"
-                  onClick={() => {
-                    setCurrentEvent(event);
-                    setSlideoverOpen(true);
-                  }}
-                >
+                <div className="truncate group-hover:text-white">
                   <span className="group-hover:text-white">
                     {event.event_name}{" "}
                     <span className="font-normal text-gray-500 group-hover:text-white">
@@ -223,7 +226,13 @@ export default function ListingView({
                 </div>
               </div>
             </td>
-            <td className="px-6 py-3 text-sm font-medium text-gray-500 group-hover:text-white">
+            <td
+              className="px-6 py-3 text-sm font-medium text-gray-500 group-hover:text-white"
+              onClick={() => {
+                setCurrentEvent(event);
+                setSlideoverOpen(true);
+              }}
+            >
               <div className="flex items-center space-x-2">
                 <div className="flex flex-shrink-0 -space-x-1">
                   {rsvpdUsers
@@ -250,7 +259,13 @@ export default function ListingView({
                 ) : null}
               </div>
             </td>
-            <td className="hidden whitespace-nowrap px-6 py-3 text-right text-sm text-gray-500 md:table-cell group-hover:text-white">
+            <td
+              className="hidden whitespace-nowrap px-6 py-3 text-right text-sm text-gray-500 md:table-cell group-hover:text-white"
+              onClick={() => {
+                setCurrentEvent(event);
+                setSlideoverOpen(true);
+              }}
+            >
               {event.event_date}
             </td>
             <td className="whitespace-nowrap px-6 py-3 text-right text-sm font-medium">
@@ -278,8 +293,8 @@ export default function ListingView({
                           currentUsersRSVPS.some(
                             (entry) => entry.event_id === event.id
                           )
-                            ? rsvpSuccess()
-                            : unRSVPSuccess();
+                            ? unRSVPSuccess()
+                            : rsvpSuccess();
                         });
                 }}
               >
