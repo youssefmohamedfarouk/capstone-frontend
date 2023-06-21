@@ -51,8 +51,9 @@ function App() {
     return axios.get(`${API}/users/${stytch_id}`).then((res) => {
       console.log(res.data);
       let currentUserPreJSON = res.data;
+      currentUserPreJSON.friends = currentUserPreJSON.friends || [];
       console.log(currentUserPreJSON.friends);
-      currentUserPreJSON.friends = currentUserPreJSON.friends.map((elem) =>
+      currentUserPreJSON.friends = currentUserPreJSON?.friends?.map((elem) =>
         JSON.parse(elem)
       );
       setCurrentUser(currentUserPreJSON);

@@ -5,8 +5,7 @@ import BadgesContent from "./BadgesContent";
 import AboutMeContent from "./AboutMeContent";
 import { Badge } from "@mui/material";
 
-const UserProfile = ({currentUser, session,}) => {
-
+const UserProfile = ({ currentUser, session }) => {
   // This component is for
 
   const navigate = useNavigate();
@@ -15,8 +14,6 @@ const UserProfile = ({currentUser, session,}) => {
     // Logic to send a message or email
   };
 
-
-  
   useEffect(() => {
     if (!session || !session.session_id) {
       navigate("/login");
@@ -96,7 +93,15 @@ const UserProfile = ({currentUser, session,}) => {
             <div className="container px-4 mx-auto">
               <div className="p-6 mb-8 bg-gray-50 rounded-xl header-bg-orange">
                 <div className="relative">
-                  <img className="block w-full h-72 object-cover" src={currentUser.coverPhoto ? currentUser.coverPhoto : "https://i.imgur.com/Pwx7wV3.png"} alt="" />
+                  <img
+                    className="block w-full h-72 object-cover"
+                    src={
+                      currentUser.cover_photo
+                        ? currentUser.cover_photo
+                        : "https://i.imgur.com/Pwx7wV3.png"
+                    }
+                    alt=""
+                  />
                   <div className="absolute bottom-0 left-0 w-full flex flex-wrap p-6 items-center justify-between">
                     <div className="flex items-center w-full md:w-auto mb-5 md:mb-0">
                       <img
@@ -105,15 +110,20 @@ const UserProfile = ({currentUser, session,}) => {
                         alt=""
                       />
                       <div>
-                        <h5 className="text-xl  font-bold">{currentUser.first_name} {currentUser.last_name}</h5>
+                        <h5 className="text-xl font-bold text-white">
+                          {currentUser.first_name} {currentUser.last_name}
+                        </h5>
                         <span className="">{currentUser.username}</span>
                       </div>
                     </div>
-                    <a className="inline-block w-64 py-3 px-6 text-center text-sm leading-6 font-bold transition duration-200 rounded-xl hover:bg-gray-800"  onClick={() =>
-                                  navigate(
-                                    `/profile/${currentUser.stytch_id}/edit`
-                                  )
-                                }>Edit </a>
+                    <a
+                      className="inline-block w-64 py-3 px-6 text-center text-sm leading-6 font-bold transition duration-200 rounded-xl hover:bg-gray-800"
+                      onClick={() =>
+                        navigate(`/profile/${currentUser.stytch_id}/edit`)
+                      }
+                    >
+                      Edit{" "}
+                    </a>
                   </div>
                 </div>
               </div>
@@ -124,7 +134,8 @@ const UserProfile = ({currentUser, session,}) => {
                       <li>
                         <a
                           className="block py-2 px-3 text-sm leading-6 hover:text-white font-medium rounded-lg transition duration-100 hover:bg-gray-800"
-                          href="#" onClick={() => handleButtonClick("content1")}
+                          href="#"
+                          onClick={() => handleButtonClick("content1")}
                         >
                           About Me
                         </a>
@@ -132,7 +143,8 @@ const UserProfile = ({currentUser, session,}) => {
                       <li>
                         <a
                           className="block py-2 px-3 text-sm leading-6 hover:text-white font-medium rounded-lg transition duration-100 hover:bg-gray-800"
-                          href="#" onClick={() => handleButtonClick("content2")}
+                          href="#"
+                          onClick={() => handleButtonClick("content2")}
                         >
                           Badges
                         </a>
@@ -176,10 +188,10 @@ const UserProfile = ({currentUser, session,}) => {
                   </div>
                 </div>
                 <div className="w-full lg:w-2/3 px-4">
-                
-                {activeContent === "content1" && <AboutMeContent currentUser={currentUser} />}
-                {activeContent === "content2" && <BadgesContent />}
-        
+                  {activeContent === "content1" && (
+                    <AboutMeContent currentUser={currentUser} />
+                  )}
+                  {activeContent === "content2" && <BadgesContent />}
                 </div>
               </div>
             </div>
