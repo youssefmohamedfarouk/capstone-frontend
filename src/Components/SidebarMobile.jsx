@@ -9,6 +9,7 @@ export default function SidebarMobile({
   setNavigation,
   LogoSVG,
   XMarkIcon,
+  setSearchTerm,
 }) {
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");

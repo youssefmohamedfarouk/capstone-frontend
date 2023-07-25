@@ -226,6 +226,7 @@ export default function Dashboard({
         <SidebarMobile
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
+          setSearchTerm={setSearchTerm}
           navigation={navigation}
           setNavigation={setNavigation}
           setViewType={setViewType}
@@ -276,6 +277,9 @@ export default function Dashboard({
                       className="block h-full w-full border-transparent py-2 pl-8 pr-3 text-gray-900 focus:border-transparent focus:outline-none focus:ring-0 focus:placeholder:text-gray-400 sm:text-sm"
                       placeholder="Search"
                       type="search"
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                      }}
                     />
                   </div>
                 </form>
@@ -288,7 +292,7 @@ export default function Dashboard({
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src="https://cdn.mos.cms.futurecdn.net/kXUihcLa33aC96RgbUpX6a-1920-80.png"
+                        src={currentUser.profile_pic}
                         alt=""
                       />
                     </Menu.Button>
