@@ -32,7 +32,7 @@ export default function CreateEventSlideOver({
     event_photos: "",
   });
 
-  const [interest, setInterest] = useState([])
+  const [interest, setInterest] = useState([]);
 
   const [address, setAddress] = useState({
     streetAddress: "",
@@ -51,7 +51,7 @@ export default function CreateEventSlideOver({
   // const navigate = useNavigate();
 
   const handleValueChange = (newValue) => {
-    setCreateEvent({ ...createEvent, event_date: newValue,  });
+    setCreateEvent({ ...createEvent, event_date: newValue });
   };
 
   const handleSubmit = (e) => {
@@ -66,9 +66,13 @@ export default function CreateEventSlideOver({
     date = `${month}/${day}/${year}`;
 
     axios
-      .post(`${API}/events`, { ...createEvent, event_date: date, category: selectedOptions})
+      .post(`${API}/events`, {
+        ...createEvent,
+        event_date: date,
+        category: selectedOptions,
+      })
       .then((res) => {
-        console.log(res.data)
+        console.log(res.data);
         if (eventPhoto) {
           const formData = new FormData();
           formData.append("event_photo", eventPhoto);
@@ -159,58 +163,60 @@ export default function CreateEventSlideOver({
   // }
 
   // this logic allows the user to only select up to 3 checkboxes
-const maxSelected = 3;
-const [selectedOptions, setSelectedOptions] = useState([]);
-const handleCheckboxChange = (e, option) => {
-  const checkbox = e.target;
+  const maxSelected = 3;
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const handleCheckboxChange = (e, option) => {
+    const checkbox = e.target;
 
-  if (checkbox.checked) {
-    if (selectedOptions.length >= maxSelected) {
-      checkbox.checked = false;
-      return;
+    if (checkbox.checked) {
+      if (selectedOptions.length >= maxSelected) {
+        checkbox.checked = false;
+        return;
+      }
+      setSelectedOptions([...selectedOptions, option]);
+    } else {
+      const updatedOptions = selectedOptions.filter(
+        (selectedOption) => selectedOption !== option
+      );
+      setSelectedOptions(updatedOptions);
     }
-    setSelectedOptions([...selectedOptions, option]);
-  } else {
-    const updatedOptions = selectedOptions.filter((selectedOption) => selectedOption !== option);
-    setSelectedOptions(updatedOptions);
+  };
+
+  const interests = [];
+  if (selectedOptions.includes("Anime")) {
+    interests.push("Anime");
   }
-};
-
-
-const interests = [];
-if (selectedOptions.includes('Anime')) {
-  interests.push('Anime');
-}
-if (selectedOptions.includes('Gaming')) {
-  interests.push('Gaming');
-}
-if (selectedOptions.includes('Personal')) {
-  interests.push('Personal');
-}
-if (selectedOptions.includes('Outdoors')) {
-  interests.push('Outdoors');
-}
-if (selectedOptions.includes('Food')) {
-  interests.push('Food');
-}
-if (selectedOptions.includes('Music')) {
-  interests.push('Music');
-}
-if (selectedOptions.includes('Limited Time')) {
-  interests.push('Limited Time');
-}
-// Add more interests as needed
-
-
-const isCheckboxSelected = (option) => selectedOptions.includes(option);
-
-const isCheckboxDisabled = (option) => {
-  if (selectedOptions.length >= maxSelected && !selectedOptions.includes(option)) {
-    return true;
+  if (selectedOptions.includes("Gaming")) {
+    interests.push("Gaming");
   }
-  return false;
-};
+  if (selectedOptions.includes("Personal")) {
+    interests.push("Personal");
+  }
+  if (selectedOptions.includes("Outdoors")) {
+    interests.push("Outdoors");
+  }
+  if (selectedOptions.includes("Food")) {
+    interests.push("Food");
+  }
+  if (selectedOptions.includes("Music")) {
+    interests.push("Music");
+  }
+  if (selectedOptions.includes("Limited Time")) {
+    interests.push("Limited Time");
+  }
+  // Add more interests as needed
 
+  const isCheckboxSelected = (option) => selectedOptions.includes(option);
+
+  const isCheckboxDisabled = (option) => {
+    if (
+      selectedOptions.length >= maxSelected &&
+      !selectedOptions.includes(option)
+    ) {
+      return true;
+    }
+    return false;
+  };
 
   return (
     <Transition.Root show={createEventSlideOverOpen} as={Fragment}>
@@ -415,64 +421,182 @@ const isCheckboxDisabled = (option) => {
                       </div>
                     </div>
                     <div class=" mt-5 mb-9 ml-6 mr-6">
-
                       <label
                         htmlFor="street-address"
                         className="block mt-2 text-medium font-medium leading-6 text-gray-900"
                       >
                         Interests
                       </label>
-                      <br/>
-                      <div class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${isCheckboxDisabled('Anime') ? 'opacity-50' : ''}`}>
-                        <input id="bordered-checkbox-1" type="checkbox" value="anime" name="bordered-checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"   onChange={(e) => handleCheckboxChange(e, 'anime')}
-          disabled={isCheckboxDisabled('anime')}
-          checked={selectedOptions.includes('anime')}/>
-                        <label for="bordered-checkbox-1" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Anime</label>
+                      <br />
+                      <div
+                        class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${
+                          isCheckboxDisabled("Anime") ? "opacity-50" : ""
+                        }`}
+                      >
+                        <input
+                          id="bordered-checkbox-1"
+                          type="checkbox"
+                          value="anime"
+                          name="bordered-checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          onChange={(e) => handleCheckboxChange(e, "anime")}
+                          disabled={isCheckboxDisabled("anime")}
+                          checked={selectedOptions.includes("anime")}
+                        />
+                        <label
+                          for="bordered-checkbox-1"
+                          class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                        >
+                          Anime
+                        </label>
                       </div>
-                      <br/>
-                      <div class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${isCheckboxDisabled('Gaming') ? 'opacity-50' : ''}`}>
-                        <input id="bordered-checkbox-1" type="checkbox" value="gaming" name="bordered-checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"  onChange={(e) => handleCheckboxChange(e, 'gaming')}
-          disabled={isCheckboxDisabled('gaming')}
-          checked={selectedOptions.includes('gaming')}/>
-                        <label for="bordered-checkbox-2" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Gaming</label>
+                      <br />
+                      <div
+                        class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${
+                          isCheckboxDisabled("Gaming") ? "opacity-50" : ""
+                        }`}
+                      >
+                        <input
+                          id="bordered-checkbox-1"
+                          type="checkbox"
+                          value="gaming"
+                          name="bordered-checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          onChange={(e) => handleCheckboxChange(e, "gaming")}
+                          disabled={isCheckboxDisabled("gaming")}
+                          checked={selectedOptions.includes("gaming")}
+                        />
+                        <label
+                          for="bordered-checkbox-2"
+                          class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                        >
+                          Gaming
+                        </label>
                       </div>
-                      <br/>
-                      <div class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${isCheckboxDisabled('Personal') ? 'opacity-50' : ''}`}>
-                        <input id="bordered-checkbox-1" type="checkbox" value="personal" name="bordered-checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"  onChange={(e) => handleCheckboxChange(e, 'personal')}
-          disabled={isCheckboxDisabled('personal')}
-          checked={selectedOptions.includes('personal')}/>
-                        <label for="bordered-checkbox-3" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Personal</label>
+                      <br />
+                      <div
+                        class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${
+                          isCheckboxDisabled("Personal") ? "opacity-50" : ""
+                        }`}
+                      >
+                        <input
+                          id="bordered-checkbox-1"
+                          type="checkbox"
+                          value="personal"
+                          name="bordered-checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          onChange={(e) => handleCheckboxChange(e, "personal")}
+                          disabled={isCheckboxDisabled("personal")}
+                          checked={selectedOptions.includes("personal")}
+                        />
+                        <label
+                          for="bordered-checkbox-3"
+                          class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                        >
+                          Personal
+                        </label>
                       </div>
-                      <br/>
-                      <div class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${isCheckboxDisabled('Outdoors') ? 'opacity-50' : ''}`}>
-                        <input id="bordered-checkbox-1" type="checkbox" value="outdoors" name="bordered-checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"onChange={(e) => handleCheckboxChange(e, 'outdoors')}
-          disabled={isCheckboxDisabled('outdoors')}
-          checked={selectedOptions.includes('outdoors')}/>
-                        <label for="bordered-checkbox-4" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Outdoors</label>
+                      <br />
+                      <div
+                        class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${
+                          isCheckboxDisabled("Outdoors") ? "opacity-50" : ""
+                        }`}
+                      >
+                        <input
+                          id="bordered-checkbox-1"
+                          type="checkbox"
+                          value="outdoors"
+                          name="bordered-checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          onChange={(e) => handleCheckboxChange(e, "outdoors")}
+                          disabled={isCheckboxDisabled("outdoors")}
+                          checked={selectedOptions.includes("outdoors")}
+                        />
+                        <label
+                          for="bordered-checkbox-4"
+                          class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                        >
+                          Outdoors
+                        </label>
                       </div>
-                      <br/>
-                      <div class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${isCheckboxDisabled('Food') ? 'opacity-50' : ''}`}>
-                        <input id="bordered-checkbox-1" type="checkbox" value="food" name="bordered-checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"  onChange={(e) => handleCheckboxChange(e, 'food')}
-          disabled={isCheckboxDisabled('food')}
-          checked={selectedOptions.includes('food')} />
-                        <label for="bordered-checkbox-5" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Food</label>
+                      <br />
+                      <div
+                        class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${
+                          isCheckboxDisabled("Food") ? "opacity-50" : ""
+                        }`}
+                      >
+                        <input
+                          id="bordered-checkbox-1"
+                          type="checkbox"
+                          value="food"
+                          name="bordered-checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          onChange={(e) => handleCheckboxChange(e, "food")}
+                          disabled={isCheckboxDisabled("food")}
+                          checked={selectedOptions.includes("food")}
+                        />
+                        <label
+                          for="bordered-checkbox-5"
+                          class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                        >
+                          Food
+                        </label>
                       </div>
-                      <br/>
-                      <div class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${isCheckboxDisabled('Music') ? 'opacity-50' : ''}`}>
-                        <input id="bordered-checkbox-1" type="checkbox" value="music" name="bordered-checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"   onChange={(e) => handleCheckboxChange(e, 'music')}
-          disabled={isCheckboxDisabled('music')}
-          checked={selectedOptions.includes('music')}/>
-                        <label for="bordered-checkbox-6" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Music</label>
+                      <br />
+                      <div
+                        class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${
+                          isCheckboxDisabled("Music") ? "opacity-50" : ""
+                        }`}
+                      >
+                        <input
+                          id="bordered-checkbox-1"
+                          type="checkbox"
+                          value="music"
+                          name="bordered-checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          onChange={(e) => handleCheckboxChange(e, "music")}
+                          disabled={isCheckboxDisabled("music")}
+                          checked={selectedOptions.includes("music")}
+                        />
+                        <label
+                          for="bordered-checkbox-6"
+                          class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                        >
+                          Music
+                        </label>
                       </div>
-                      <br/>
-                      <div class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${isCheckboxDisabled('Limited Time') ? 'opacity-50' : ''}`} style={{ backgroundImage: 'linear-gradient(191deg, #2fea4f, #d4ccbf, #348aee, #ee112d, #ee8811)', backgroundSize: '1000% 1000%', animation: 'limited-time 38s ease infinite' }}>
-                        <input id="bordered-checkbox-1" type="checkbox" value="limited-time" name="bordered-checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"  onChange={(e) => handleCheckboxChange(e, 'limitedtime')}
-          disabled={isCheckboxDisabled('limitedtime')}
-          checked={selectedOptions.includes('limitedtime')} />
-                        <label for="bordered-checkbox-7" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Limited Time</label>
+                      <br />
+                      <div
+                        class={`flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ${
+                          isCheckboxDisabled("Limited Time") ? "opacity-50" : ""
+                        }`}
+                        style={{
+                          backgroundImage:
+                            "linear-gradient(191deg, #2fea4f, #d4ccbf, #348aee, #ee112d, #ee8811)",
+                          backgroundSize: "1000% 1000%",
+                          animation: "limited-time 38s ease infinite",
+                        }}
+                      >
+                        <input
+                          id="bordered-checkbox-1"
+                          type="checkbox"
+                          value="limited-time"
+                          name="bordered-checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          onChange={(e) =>
+                            handleCheckboxChange(e, "limitedtime")
+                          }
+                          disabled={isCheckboxDisabled("limitedtime")}
+                          checked={selectedOptions.includes("limitedtime")}
+                        />
+                        <label
+                          for="bordered-checkbox-7"
+                          class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                        >
+                          Limited Time
+                        </label>
                       </div>
                     </div>
-
 
                     <br />
                     <br />
@@ -494,8 +618,6 @@ const isCheckboxDisabled = (option) => {
     </Transition.Root>
   );
 }
-
-
 
 const PlacesAutocomplete = ({ setSelected }) => {
   const {
@@ -532,7 +654,8 @@ const PlacesAutocomplete = ({ setSelected }) => {
                 key={place_id}
                 value={description}
                 className={({ active }) =>
-                  `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? "bg-orange-500 text-white" : "text-gray-900"
+                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                    active ? "bg-orange-500 text-white" : "text-gray-900"
                   }`
                 }
               >

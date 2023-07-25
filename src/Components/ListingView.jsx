@@ -27,6 +27,7 @@ export default function ListingView({
   toast,
   unRSVPSuccess,
   setChatTargetID,
+  navigation,
 }) {
   const currentUserId = currentUser.id;
   const [attendeesSortOrder, setAttendeesSortOrder] = useState(0);

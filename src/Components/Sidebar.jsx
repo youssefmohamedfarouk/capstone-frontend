@@ -8,20 +8,18 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
-import {
-  Bars3CenterLeftIcon,
-  Bars4Icon,
-  ClockIcon,
-  HomeIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
 
-function Sidebar({ currentUser, session }) {
-  const navigation = [
-    { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
-    { name: "My Events", href: "#", icon: Bars4Icon, current: false },
-    { name: "Recently Viewed", href: "#", icon: ClockIcon, current: false },
-  ];
+export default function Sidebar({
+  currentUser,
+  session,
+  currentUserName,
+  currentUserUsername,
+  setProfileOpen,
+  setSearchTerm,
+  setChatTargetID,
+  navigation,
+  setNavigation,
+}) {
   const teams = [
     { name: "Rock Climbing", href: "#", bgColorClass: "bg-indigo-500" },
     { name: "Comic Book Club", href: "#", bgColorClass: "bg-green-500" },
@@ -48,8 +46,8 @@ function Sidebar({ currentUser, session }) {
 
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-gray-200 lg:bg-gray-100 lg:pb-4 lg:pt-5">
-      <div className="flex flex-shrink-0 items-center px-6">
-        <img className="h-8 w-auto" src={LogoSVG} alt="Social CIRCLE" />
+      <div className="flex flex-shrink-0 items-center px-4">
+        <img className="h-11 w-auto" src={LogoSVG} alt="Social CIRCLE" />
       </div>
       {/* Sidebar component, swap this element with another sidebar if you like */}
       <div className="mt-5 flex h-0 flex-1 flex-col overflow-y-auto pt-1">
@@ -61,18 +59,15 @@ function Sidebar({ currentUser, session }) {
                 <span className="flex min-w-0 items-center justify-between space-x-3">
                   <img
                     className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"
-                    src={
-                      currentUser.profile_pic ||
-                      "https://cdn.mos.cms.futurecdn.net/kXUihcLa33aC96RgbUpX6a-1920-80.png"
-                    }
+                    src={currentUser?.profile_pic}
                     alt=""
                   />
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate text-sm font-medium text-gray-900">
-                      {currentUser.first_name + " " + currentUser.last_name}
+                      {currentUserName}
                     </span>
                     <span className="truncate text-sm text-gray-500">
-                      @{currentUser.username}
+                      @{currentUserUsername}
                     </span>
                   </span>
                 </span>
@@ -96,29 +91,27 @@ function Sidebar({ currentUser, session }) {
               <div className="py-1">
                 <Menu.Item>
                   {({ active }) => (
-                    <a
-                      href="#"
+                    <div
                       className={classNames(
                         active ? "bg-orange-500 text-white" : "text-gray-700",
-                        "block px-4 py-2 text-sm"
+                        "block px-4 py-2 text-sm cursor-pointer"
                       )}
-                      onClick={viewProfile}
+                      onClick={() => setProfileOpen(true)}
                     >
                       View profile
-                    </a>
+                    </div>
                   )}
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
-                    <a
-                      href="#"
+                    <div
                       className={classNames(
                         active ? "bg-orange-500 text-white" : "text-gray-700",
-                        "block px-4 py-2 text-sm"
+                        "block px-4 py-2 text-sm cursor-pointer"
                       )}
                     >
                       Settings
-                    </a>
+                    </div>
                   )}
                 </Menu.Item>
                 <Menu.Item>
@@ -127,7 +120,7 @@ function Sidebar({ currentUser, session }) {
                       href="#"
                       className={classNames(
                         active ? "bg-orange-500 text-white" : "text-gray-700",
-                        "block px-4 py-2 text-sm"
+                        "block px-4 py-2 text-sm cursor-pointer"
                       )}
                     >
                       Notifications
@@ -142,7 +135,7 @@ function Sidebar({ currentUser, session }) {
                       href="#"
                       className={classNames(
                         active ? "bg-orange-500 text-white" : "text-gray-700",
-                        "block px-4 py-2 text-sm"
+                        "block px-4 py-2 text-sm cursor-pointer"
                       )}
                     >
                       About
@@ -154,10 +147,9 @@ function Sidebar({ currentUser, session }) {
                 <Menu.Item>
                   {({ active }) => (
                     <a
-                      // href="javascript:;"
                       className={classNames(
                         active ? "bg-orange-500 text-white" : "text-gray-700",
-                        "block px-4 py-2 text-sm"
+                        "block px-4 py-2 text-sm cursor-pointer"
                       )}
                       onClick={logout}
                     >
@@ -187,6 +179,9 @@ function Sidebar({ currentUser, session }) {
               id="search"
               className="block w-full rounded-md border-0 py-1.5 pl-9 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 text-black focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
               placeholder="Search Events"
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+              }}
             />
           </div>
         </div>
@@ -194,16 +189,24 @@ function Sidebar({ currentUser, session }) {
         <nav className="mt-6 px-3">
           <div className="space-y-1">
             {navigation.map((item) => (
-              <a
+              <div
                 key={item.name}
-                href={item.href}
+                // href={item.href}
                 className={classNames(
                   item.current
                     ? "bg-orange-500 text-white"
                     : "text-gray-700 hover:bg-gray-50 hover:text-gray-900",
-                  "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+                  "group flex items-center rounded-md px-2 py-2 text-sm font-medium cursor-pointer"
                 )}
                 aria-current={item.current ? "page" : undefined}
+                onClick={() => {
+                  const indexOfCurrent = navigation.findIndex(
+                    (item) => item.current
+                  );
+                  navigation[indexOfCurrent].current = false;
+                  item.current = true;
+                  setNavigation([...navigation]);
+                }}
               >
                 <item.icon
                   className={classNames(
@@ -215,7 +218,7 @@ function Sidebar({ currentUser, session }) {
                   aria-hidden="true"
                 />
                 {item.name}
-              </a>
+              </div>
             ))}
           </div>
           <div className="mt-8">
@@ -224,29 +227,39 @@ function Sidebar({ currentUser, session }) {
               className="px-3 text-sm font-medium text-gray-500"
               id="desktop-teams-headline"
             >
-              Event Groups
+              Friends
             </h3>
             <div
               className="mt-1 space-y-1"
               role="group"
               aria-labelledby="desktop-teams-headline"
             >
-              {teams.map((team) => (
-                <a
-                  key={team.name}
-                  href={team.href}
-                  className="group flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                >
-                  <span
-                    className={classNames(
-                      team.bgColorClass,
-                      "mr-4 h-2.5 w-2.5 rounded-full"
-                    )}
-                    aria-hidden="true"
-                  />
-                  <span className="truncate">{team.name}</span>
-                </a>
-              ))}
+              {currentUser.friends?.map((friend) => {
+                return (
+                  <div
+                    key={friend.name}
+                    className="cursor-pointer group flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                    onClick={() => {
+                      setChatTargetID(friend.id);
+                      setProfileOpen(true);
+                    }}
+                  >
+                    <img
+                      src={friend?.profile_pic}
+                      alt={friend?.name + "'s Profile Picture"}
+                      className="h-5 w-auto"
+                    />
+                    <span
+                      className={classNames(
+                        friend.bgColorClass,
+                        " h-2.5 w-2.5 rounded-full"
+                      )}
+                      aria-hidden="true"
+                    />
+                    <span className="truncate">{friend.name}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </nav>
@@ -254,5 +267,3 @@ function Sidebar({ currentUser, session }) {
     </div>
   );
 }
-
-export default Sidebar;

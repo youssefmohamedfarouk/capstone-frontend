@@ -51,6 +51,7 @@ export default function MapView({
   const containerStyle = {
     width: "100%",
     height: "600px",
+    color: "0xffffff",
   };
 
   // const [selectedMarker, setSelectedMarker] = useState(null);
@@ -79,7 +80,7 @@ export default function MapView({
     if (matchingIndex > -1 && markRef.current[matchingIndex]) {
       markRef.current[matchingIndex].setIcon({
         path: "M7.8,1.3L7.8,1.3C6-0.4,3.1-0.4,1.3,1.3c-1.8,1.7-1.8,4.6-0.1,6.3c0,0,0,0,0.1,0.1 l3.2,3.2l3.2-3.2C9.6,6,9.6,3.2,7.8,1.3C7.9,1.4,7.9,1.4,7.8,1.3z M4.6,5.8c-0.7,0-1.3-0.6-1.3-1.4c0-0.7,0.6-1.3,1.4-1.3 c0.7,0,1.3,0.6,1.3,1.3 C5.9,5.3,5.3,5.9,4.6,5.8z",
-        fillColor: "orange",
+        fillColor: "#f97316",
         fillOpacity: 0.9,
         scale: 2,
         strokeColor: "dark",
@@ -188,11 +189,14 @@ export default function MapView({
 
             <div className="overflow-auto  pl-[10px] pr-[10px] pb-[10px] flex flex-col max-h-[600px]">
               {events.map((event, key) => {
-                console.log(event)
+                console.log(event);
                 return (
                   <Card
                     key={key}
                     className="mt-3 w-100 border-solid border-2 hover:shadow-orange-500 hover:bg-gray-50 hover:scale-105"
+                    onClick={() => {
+                      handleOnClick(event);
+                    }}
                   >
                     <CardBody className=" flex flex-row">
                       <div className="min-w-32 min-h-32 max-w-32 max-h-32 border-solid border-2 shrink-0 rounded-md">
@@ -202,27 +206,32 @@ export default function MapView({
                             "https://as2.ftcdn.net/v2/jpg/01/20/28/25/1000_F_120282530_gMCruc8XX2mwf5YtODLV2O1TGHzu4CAb.jpg"
                           }
                           alt=""
-                          className="w-32 h-32 object-cover rounded-md"
+                          className="w-32 h-32 object-cover rounded-md cursor-pointer"
                         />
                       </div>
                       <div className="flex flex-col pl-4 ">
                         <Typography
                           variant="h5"
                           color="blue-gray"
-                          className="mb-2"
+                          className="mb-2 cursor-pointer"
                         >
                           {event.event_name}
                         </Typography>
                         <Typography>{event.event_date}</Typography>
                         <Typography>{event.event_address}</Typography>
-                        <Typography>   {event.category && event.category.map((categoryItem, index) => (
-              <span
-                key={index}
-                className="bg-gray-200 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-              >
-                {categoryItem.charAt(0).toUpperCase() + categoryItem.slice(1)}
-              </span>
-            ))}</Typography>
+                        <Typography>
+                          {" "}
+                          {event.category &&
+                            event.category.map((categoryItem, index) => (
+                              <span
+                                key={index}
+                                className="bg-gray-200 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+                              >
+                                {categoryItem.charAt(0).toUpperCase() +
+                                  categoryItem.slice(1)}
+                              </span>
+                            ))}
+                        </Typography>
                       </div>
                     </CardBody>
                     <CardFooter className=" flex pt-0">

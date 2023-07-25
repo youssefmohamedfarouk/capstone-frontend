@@ -49,25 +49,15 @@ export default function Chat({
       conversation.setParticipant(chatUserOne);
       conversation.setParticipant(otherUser);
 
-      const chatbox = session.createPopup({ launcher: "always" });
+      const chatbox = session.createChatbox();
       chatbox.select(conversation);
-      chatbox.mount({ show: false });
 
-      if (chatOpen) chatbox.show();
+      if (chatOpen) chatbox.mount(document.getElementById("talkjs-container"));
 
       return () => session.destroy();
     }
   }, [talkLoaded, chatOpen]);
 
   //   console.log(chatboxEl.current.className);
-  return (
-    <div
-      ref={chatboxEl}
-      id="chatBox"
-      className={
-        (chatOpen ? "-z-9999" : "z-100") +
-        " absolute bottom-0 left-0 h-1/3 w-1/3"
-      }
-    />
-  );
+  return <div ref={chatboxEl} id="chatBox" className="z-100" />;
 }

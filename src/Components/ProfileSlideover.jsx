@@ -23,6 +23,7 @@ export default function ProfileSlideover({
   chatTarget,
   setChatTarget,
   setChatOpen,
+  setViewType,
 }) {
   const navigate = useNavigate();
 
@@ -147,7 +148,9 @@ export default function ProfileSlideover({
                                     ) {
                                       const indxOfFriend =
                                         currentUser?.friends.indexOf(
-                                          (frnd) => frnd.id === chatTargetID
+                                          currentUser?.friends.find(
+                                            (frnd) => frnd.id === chatTargetID
+                                          )
                                         );
                                       console.log(indxOfFriend);
                                       currentUser?.friends.splice(
@@ -199,6 +202,7 @@ export default function ProfileSlideover({
                                     );
                                   } else {
                                     setChatOpen(true);
+                                    setViewType(2);
                                   }
                                 }}
                               >
