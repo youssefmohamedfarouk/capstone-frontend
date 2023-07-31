@@ -19,6 +19,7 @@ export default function Sidebar({
   setChatTargetID,
   navigation,
   setNavigation,
+  setViewType,
 }) {
   const teams = [
     { name: "Rock Climbing", href: "#", bgColorClass: "bg-indigo-500" },
@@ -54,13 +55,18 @@ export default function Sidebar({
         {/* User account dropdown */}
         <Menu as="div" className="relative inline-block px-3 text-left">
           <div>
-            <Menu.Button className="group w-full rounded-md bg-gray-100 px-3.5 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-100">
+            <Menu.Button className="group w-full rounded-md bg-gray-100 px-3.5 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-100">
               <span className="flex w-full items-center justify-between">
                 <span className="flex min-w-0 items-center justify-between space-x-3">
                   <img
-                    className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"
+                    className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300 outline outline-offset-1 outline-orange-500"
                     src={currentUser?.profile_pic}
-                    alt=""
+                    alt={
+                      currentUser?.first_name +
+                      " " +
+                      currentUser?.last_name +
+                      "'s profile picture"
+                    }
                   />
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate text-sm font-medium text-gray-900">
@@ -177,7 +183,7 @@ export default function Sidebar({
               type="text"
               name="search"
               id="search"
-              className="block w-full rounded-md border-0 py-1.5 pl-9 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 text-black focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"
+              className="block w-full rounded-md border-0 py-1.5 pl-9 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 text-black focus:ring-1 focus:ring-orange-500 sm:text-sm sm:leading-6"
               placeholder="Search Events"
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -206,6 +212,7 @@ export default function Sidebar({
                   navigation[indexOfCurrent].current = false;
                   item.current = true;
                   setNavigation([...navigation]);
+                  setViewType(0);
                 }}
               >
                 <item.icon
@@ -230,7 +237,7 @@ export default function Sidebar({
               Friends
             </h3>
             <div
-              className="mt-1 space-y-1"
+              className="mt-1 space-y-1 divide-y divide-dotted divide-gray-300"
               role="group"
               aria-labelledby="desktop-teams-headline"
             >

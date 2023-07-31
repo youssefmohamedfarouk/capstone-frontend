@@ -53,12 +53,12 @@ export default function ListingView({
     if (attendeesSortOrder === 2) {
       setListingEvents([
         ...listingEvents.sort((a, b) => {
-          const aTotalRSVPS = totalRSVPS.find(
-            (event) => event.event_id === a.id
-          ).total_rsvps;
-          const bTotalRSVPS = totalRSVPS.find(
-            (event) => event.event_id === b.id
-          ).total_rsvps;
+          const aTotalRSVPS =
+            totalRSVPS.find((event) => event.event_id === a.id)?.total_rsvps ||
+            0;
+          const bTotalRSVPS =
+            totalRSVPS.find((event) => event.event_id === b.id)?.total_rsvps ||
+            0;
 
           console.log(aTotalRSVPS, bTotalRSVPS);
 
@@ -68,12 +68,12 @@ export default function ListingView({
     } else if (attendeesSortOrder === 1) {
       setListingEvents([
         ...listingEvents.sort((a, b) => {
-          const aTotalRSVPS = totalRSVPS.find(
-            (event) => event.event_id === a.id
-          ).total_rsvps;
-          const bTotalRSVPS = totalRSVPS.find(
-            (event) => event.event_id === b.id
-          ).total_rsvps;
+          const aTotalRSVPS =
+            totalRSVPS.find((event) => event.event_id === a.id)?.total_rsvps ||
+            0;
+          const bTotalRSVPS =
+            totalRSVPS.find((event) => event.event_id === b.id)?.total_rsvps ||
+            0;
 
           return bTotalRSVPS - aTotalRSVPS;
         }),
@@ -266,7 +266,7 @@ export default function ListingView({
                     .map((member, key) => (
                       <img
                         key={member.username + key}
-                        className="h-6 w-6 max-w-none rounded-full ring-2 ring-white"
+                        className="h-6 w-6 max-w-none rounded-full ring-2 ring-orange-500 ring-offset-0 group-hover:ring-white bg-white hover:scale-110"
                         src={member.profile_pic}
                         alt={member.username}
                       />

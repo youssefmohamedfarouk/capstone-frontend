@@ -118,6 +118,11 @@ export default function MapView({
     setCurrentEvent(event);
     setSlideoverOpen(true);
   };
+
+  const handleOnHover = (event) => {
+    setCurrentEvent(event);
+  };
+
   console.log(
     eventMarkers.map((marker) => {
       return marker.id === currentEvent.id;
@@ -193,7 +198,7 @@ export default function MapView({
                 return (
                   <Card
                     key={key}
-                    className="mt-3 w-100 border-solid border-2 hover:shadow-orange-500 hover:bg-gray-50 hover:scale-105"
+                    className="mt-3 w-100 border-solid border-2 hover:bg-gray-50 hover:border-solid hover:border-orange-500"
                     onClick={() => {
                       handleOnClick(event);
                     }}

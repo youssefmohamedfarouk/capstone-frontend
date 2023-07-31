@@ -201,6 +201,7 @@ export default function Comments({
                             leave="transition ease-in duration-100"
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
+                            className="bottom-full"
                           >
                             <Listbox.Options
                               id="comments-section"
@@ -298,7 +299,7 @@ export default function Comments({
                       <div
                         className={classNames(
                           elem.bgColor,
-                          "absolute bottom-0 right-0 inline-flex h-8 w-8 items-center justify-center rounded-full"
+                          "absolute -bottom-1 -right-1 inline-flex h-8 w-8 items-center justify-center rounded-full shadow-sm shadow-gray-500"
                         )}
                       >
                         <elem.icon

@@ -244,6 +244,7 @@ export default function Dashboard({
           setChatTargetID={setChatTargetID}
           navigation={navigation}
           setNavigation={setNavigation}
+          setViewType={setViewType}
         />
 
         {/* Main column */}
@@ -618,6 +619,7 @@ export default function Dashboard({
               setChatTarget={setChatTarget}
               setChatOpen={setChatOpen}
               setViewType={setViewType}
+              toast={toast}
             />
 
             <EditEventSlideOver
